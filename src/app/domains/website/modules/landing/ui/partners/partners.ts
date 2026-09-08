@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
 import { PARTNERS } from '../../data';
 import { IPartner } from '../../interfaces';
 
 @Component({
   selector: 'partners',
-  imports: [MatButtonModule, MatIconModule, RouterLink],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './partners.html',
   styleUrl: './partners.css'
 })
