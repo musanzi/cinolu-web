@@ -1,0 +1,79 @@
+<section class="relative scroll-mt-[8.75rem] bg-white lg:scroll-mt-[9.25rem]" id="history">
+  <div class="mx-auto w-full max-w-screen-2xl px-5 py-16 sm:px-8 lg:px-16 lg:py-20 xl:px-24 2xl:px-32">
+    <p
+      class="mb-5 inline-flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-primary-600 uppercase before:h-0.5 before:w-6 before:bg-primary-600 before:content-['']">
+      Notre Histoire
+    </p>
+    <h2
+      class="text-[clamp(2rem,4vw,3rem)] leading-[1.1] font-bold tracking-tight text-[#0c1222] [&_span]:text-primary-600">
+      Notre
+      <span>parcours</span>
+    </h2>
+    <p class="mt-4 max-w-160 text-[1.0625rem] leading-[1.65] text-slate-500">
+      Découvrez les étapes clés qui ont façonné notre organisation au fil des ans.
+    </p>
+
+    <div
+      class="relative mt-14 hidden before:absolute before:top-11 before:right-[8%] before:left-[8%] before:z-0 before:h-0.5 before:bg-primary-600/45 before:content-[''] lg:flex"
+      aria-label="Frise chronologique">
+      @for (item of historyData; track item.id) {
+        <article class="relative z-1 flex-1 px-3 text-center">
+          <div
+            class="mx-auto mb-5 flex size-14 items-center justify-center rounded-full border-2 border-primary-600 bg-white text-primary-600"
+            aria-hidden="true">
+            <mat-icon [svgIcon]="item.icon" class="size-5" />
+          </div>
+          <p class="mb-2 text-2xl font-bold text-[#0c1222]">{{ item.date }}</p>
+          <span
+            class="mb-3 inline-block rounded-full bg-primary-600/10 px-2.5 py-1 text-xs font-bold tracking-[0.06em] text-primary-600 uppercase">
+            {{ item.status }}
+          </span>
+          <p
+            class="min-h-28 rounded-xl border border-slate-900/8 bg-slate-50 p-4 text-left text-base leading-[1.55] text-slate-500">
+            {{ item.description }}
+          </p>
+        </article>
+      }
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 lg:hidden">
+      @for (item of historyData; track item.id) {
+        <article
+          class="overflow-hidden rounded-2xl border bg-white {{
+            expandedMenu() === item.id ? 'border-primary-600/40 ring-1 ring-primary-600/12' : 'border-slate-900/8'
+          }}">
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between gap-4 bg-transparent px-6 py-5 text-left font-[inherit] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-primary-600"
+            [attr.id]="'history-trigger-' + item.id"
+            [attr.aria-expanded]="expandedMenu() === item.id"
+            [attr.aria-controls]="'history-panel-' + item.id"
+            (click)="toggleExpand(item.id)">
+            <div>
+              <p class="text-3xl font-bold text-primary-600">{{ item.date }}</p>
+              <span class="text-xs font-bold tracking-wider text-brand-700 uppercase">{{ item.status }}</span>
+            </div>
+            <mat-icon
+              svgIcon="chevron-right"
+              class="size-5 shrink-0 text-gray-500 transition-transform duration-300"
+              aria-hidden="true"
+              [class.rotate-90]="expandedMenu() === item.id" />
+          </button>
+          <div
+            class="grid transition-[grid-template-rows] duration-300 ease-in-out data-[open=false]:grid-rows-[0fr] data-[open=true]:grid-rows-[1fr]"
+            [attr.id]="'history-panel-' + item.id"
+            [attr.data-open]="expandedMenu() === item.id ? 'true' : 'false'"
+            [attr.aria-hidden]="expandedMenu() !== item.id"
+            [attr.aria-labelledby]="'history-trigger-' + item.id"
+            role="region">
+            <div class="overflow-hidden">
+              <p class="border-t border-slate-900/8 px-6 pt-4 pb-5 text-[0.9375rem] leading-[1.6] text-slate-500">
+                {{ item.description }}
+              </p>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

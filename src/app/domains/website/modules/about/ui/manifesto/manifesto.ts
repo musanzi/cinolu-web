@@ -4,8 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'landing-hero',
-  imports: [RouterLink, MatButtonModule, MatIconModule],
-  templateUrl: './hero.html'
+  selector: 'about-manifesto',
+  imports: [MatButtonModule, MatIconModule, RouterLink],
+  templateUrl: './manifesto.html'
 })
-export class LandingHero {}
+export class AboutManifesto {}

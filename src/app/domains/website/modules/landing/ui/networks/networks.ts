@@ -3,10 +3,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { NETWORKS } from '../../data';
 
 @Component({
-  selector: 'networks',
+  selector: 'landing-networks',
   imports: [MatIconModule],
   templateUrl: './networks.html'
 })
-export class Networks {
+export class LandingNetworks {
   protected readonly networks = NETWORKS;
 }

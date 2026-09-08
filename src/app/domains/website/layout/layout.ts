@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Header } from './ui/header/header';
-import { Footer } from './ui/footer/footer';
+import { WebsiteHeader } from './ui/header/header';
+import { WebsiteFooter } from './ui/footer/footer';
 import { PageLoader } from '@/app/shared/ui';
 
 @Component({
   selector: 'web-layout',
-  imports: [RouterOutlet, Header, Footer, PageLoader],
+  imports: [RouterOutlet, WebsiteHeader, WebsiteFooter, PageLoader],
   template: `
     @defer (on immediate) {
-      <div class="public-site min-h-screen overflow-x-hidden font-outfit">
-        <app-header />
+      <div class="min-h-screen overflow-x-hidden font-outfit">
+        <website-header />
         <main id="main-content">
           <router-outlet />
         </main>
-        <app-footer />
+        <website-footer />
       </div>
     } @placeholder {
       <app-page-loader />

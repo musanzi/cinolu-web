@@ -5,12 +5,12 @@ import { PARTNERS } from '../../data';
 import { IPartner } from '../../interfaces';
 
 @Component({
-  selector: 'partners',
+  selector: 'landing-partners',
   imports: [MatButtonModule, MatIconModule],
   templateUrl: './partners.html',
   styleUrl: './partners.css'
 })
-export class Partners {
+export class LandingPartners {
   protected readonly partners = PARTNERS;
   protected readonly firstRowDuplicated: IPartner[];
   protected readonly secondRowDuplicated: IPartner[];

@@ -11,6 +11,11 @@ const routes: Routes = [
         title: 'Accueil',
         loadChildren: () => import('./modules/landing/routes')
       },
+      {
+        path: 'about',
+        title: 'A propos',
+        loadChildren: () => import('./modules/about/routes')
+      },
       { path: '**', redirectTo: '' }
     ]
   }

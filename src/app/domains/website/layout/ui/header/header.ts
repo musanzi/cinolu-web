@@ -1,35 +1,25 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { filter, map } from 'rxjs';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { NAVIGATION_LINKS } from '../../data/navigation';
 
 @Component({
-  selector: 'app-header',
+  selector: 'website-header',
   imports: [MatButtonModule, MatIcon, RouterLink, RouterLinkActive],
   host: {
     '(window:scroll)': 'updateScrolledState()'
   },
   templateUrl: './header.html'
 })
-export class Header {
+export class WebsiteHeader {
   protected readonly authStore = inject(AuthStore);
-  private readonly router = inject(Router);
   protected isScrolled = signal(false);
   protected isMenuOpen = signal(false);
-  private readonly currentUrl = toSignal(
-    this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map((event) => event.urlAfterRedirects)
-    ),
-    { initialValue: this.router.url }
-  );
 
   protected links = NAVIGATION_LINKS;
-  protected solidHeader = computed(() => this.isScrolled() || this.currentUrl().split('#')[0] !== '/');
+  protected solidHeader = computed(() => this.isScrolled());
 
   protected toggleMenu(): void {
     this.isMenuOpen.update((isOpen) => !isOpen);

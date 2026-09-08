@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Hero } from '../ui/hero/hero';
-import { Networks } from '../ui/networks/networks';
-import { Partners } from '../ui/partners/partners';
+import { LandingHero } from '../ui/hero/hero';
+import { LandingNetworks } from '../ui/networks/networks';
+import { LandingPartners } from '../ui/partners/partners';
 
 @Component({
   selector: 'app-landing',
-  imports: [Hero, Networks, Partners],
+  imports: [LandingHero, LandingNetworks, LandingPartners],
   templateUrl: './landing.html'
 })
 export class Landing {}
