@@ -1,17 +1,6 @@
-# onestop Web
+# Onestop Web
 
 An opinionated Angular onestop for public websites, authentication flows, and role-based application areas. It includes standalone components, lazy-loaded routes, Angular Material, Tailwind CSS, NgRx Signal Store, and hybrid server/client rendering.
-
-## Included features
-
-- Public landing page rendered on the server
-- Sign-in, sign-up, forgot-password, and reset-password flows
-- Cookie-based authentication with session restoration through `GET /auth/me`
-- Route guards for guests, authenticated users, and administrators
-- User profile and password management
-- Admin dashboard, user management, role management, and CSV export
-- Responsive Angular Material layouts with bundled Geist fonts and Lucide icons
-- Express production server and development/production Docker configurations
 
 ## Tech stack
 
@@ -86,36 +75,6 @@ Each domain can contain layouts, route definitions, and feature modules. Feature
 - `ui`: reusable visual elements that do not interact with a store directly.
 
 Use the `@/` TypeScript alias for imports rooted at `src/`.
-
-## Routes and rendering
-
-| Route            | Access              | Rendering | Purpose                              |
-| ---------------- | ------------------- | --------- | ------------------------------------ |
-| `/`              | Public              | Server    | Landing page                         |
-| `/auth/*`        | Guests              | Client    | Authentication and password recovery |
-| `/user/profile`  | Authenticated users | Client    | Profile and password settings        |
-| `/admin`         | Administrators      | Client    | Dashboard statistics                 |
-| `/admin/users`   | Administrators      | Client    | User management                      |
-| `/admin/roles`   | Administrators      | Client    | Role management                      |
-| `/admin/profile` | Administrators      | Client    | Profile and password settings        |
-
-All route groups are lazy-loaded. Public routes use server rendering; authentication, user, and admin routes use client rendering. Browser hydration is enabled globally. Unknown public routes redirect to `/`.
-
-Authentication state is initialized in the browser before guarded navigation. Guest-only routes redirect signed-in users to their role-specific area, while protected routes redirect unauthorized visitors to `/auth/sign-in`.
-
-## Styling and theming
-
-Global styles enter through `src/styles/styles.css`, which loads:
-
-- Tailwind CSS and the project theme tokens
-- Angular CDK overlay styles
-- The Angular Material Azure Blue structural theme
-- Project typography and Material token overrides
-- Lucide icon styles
-
-The application bundles Geist fonts under `public/fonts`. Lucide SVG icons are registered centrally through `provideIcons()`. `provideTheming()` generates primary and error tonal palettes as CSS custom properties; change its seed colors in `src/app/app.config.ts` to rebrand the application.
-
-Use Angular Material when adding interactive UI elements, with Tailwind utilities for layout and presentation.
 
 ## Available commands
 
