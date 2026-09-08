@@ -1,0 +1,116 @@
+<header
+  class="fixed top-0 right-0 left-0 z-50 isolate flex w-full flex-col py-1.5 font-semibold transition-colors duration-300 lg:block lg:py-0"
+  [class.text-gray-900]="solidHeader()"
+  [class.text-white]="!solidHeader()">
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300"
+    [class.opacity-100]="solidHeader()"
+    [class.opacity-0]="!solidHeader()">
+    <div class="absolute inset-0 border-b border-gray-200/80 bg-white/95 backdrop-blur-xl"></div>
+  </div>
+  <div
+    class="pointer-events-none absolute inset-0 -z-20 transition-opacity duration-300"
+    [class.opacity-0]="solidHeader()"
+    [class.opacity-100]="!solidHeader()"></div>
+  <nav
+    class="mx-auto flex h-14 w-full max-w-screen-2xl items-center justify-between gap-4 px-4 sm:px-8 lg:h-auto lg:gap-6 lg:px-16 lg:py-2.5 xl:px-24 2xl:px-32">
+    <a routerLink="/" aria-label="Cinolu, accueil" class="inline-block" (click)="closeMenu()">
+      <img
+        [src]="solidHeader() ? '/images/logo/logo-g.png' : '/images/logo/logo-w.png'"
+        width="64"
+        height="68"
+        alt="Cinolu"
+        class="h-9 w-auto cursor-pointer object-contain transition-transform duration-200 hover:scale-[1.02] max-sm:h-8 lg:h-10" />
+    </a>
+
+    <div class="hidden min-w-0 flex-1 items-center justify-between lg:flex">
+      <nav
+        class="mx-auto flex items-center gap-1 rounded-2xl border px-1.5 py-1 backdrop-blur-md"
+        [class.border-transparent]="solidHeader()"
+        [class.bg-transparent]="solidHeader()"
+        [class.border-white/15]="!solidHeader()"
+        [class.bg-white/5]="!solidHeader()">
+        @for (link of links; track link.label) {
+          <a
+            [routerLink]="link.path"
+            [fragment]="link.fragment"
+            routerLinkActive
+            #desktopLink="routerLinkActive"
+            [routerLinkActiveOptions]="{ paths: 'exact', fragment: 'exact' }"
+            class="rounded-xl px-4 py-2.5 font-semibold transition-colors duration-200"
+            [class]="navLinkClasses(desktopLink.isActive)">
+            {{ link.label }}
+          </a>
+        }
+      </nav>
+      <div class="flex shrink-0 items-center gap-3 lg:gap-4">
+        <a matButton="filled" routerLink="/auth/sign-up" class="min-h-10 text-white">Se connecter</a>
+      </div>
+    </div>
+
+    <button
+      matIconButton
+      type="button"
+      class="relative z-50 lg:hidden"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-controls="mobile-navigation"
+      [attr.aria-label]="isMenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'">
+      <mat-icon [svgIcon]="isMenuOpen() ? 'x' : 'menu'" />
+    </button>
+  </nav>
+
+  @if (isMenuOpen()) {
+    <button
+      type="button"
+      class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+      aria-label="Fermer le menu"
+      (click)="closeMenu()"></button>
+    <div
+      id="mobile-navigation"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation principale"
+      class="fixed top-0 right-0 z-50 h-dvh w-[92vw] max-w-md border-l border-gray-200 bg-white text-gray-900 shadow-[-8px_0_30px_rgba(15,23,42,0.08)] lg:hidden">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between border-b border-gray-200/70 px-7 py-6">
+          <a routerLink="/" (click)="closeMenu()"
+            ><img
+              src="/images/logo/logo-g.png"
+              width="64"
+              height="68"
+              alt="Cinolu"
+              class="h-9 w-auto object-contain" /></a
+          ><button matIconButton type="button" (click)="closeMenu()" aria-label="Fermer le menu">
+            <mat-icon svgIcon="x" />
+          </button>
+        </div>
+        <nav class="flex min-h-0 flex-1 flex-col overflow-y-auto py-3">
+          @for (link of links; track link.label) {
+            <a
+              [routerLink]="link.path"
+              [fragment]="link.fragment"
+              routerLinkActive="bg-primary-50 text-primary-700"
+              (click)="closeMenu()"
+              class="flex items-center px-7 py-4 text-base font-semibold leading-[1.2] text-gray-800 transition-colors duration-200 hover:bg-gray-50"
+              >{{ link.label }}</a
+            >
+          }
+        </nav>
+        <div class="shrink-0 border-t border-gray-200 bg-gray-50/80 px-7 py-5">
+          @if (authStore.user()) {
+            <div class="grid gap-2">
+              <a matButton="outlined" routerLink="/user" (click)="closeMenu()">Mon compte</a
+              ><button matButton type="button" (click)="signOut()">Déconnexion</button>
+            </div>
+          } @else {
+            <div class="grid gap-3">
+              <a matButton="outlined" routerLink="/auth/sign-in" (click)="closeMenu()">Connexion</a
+              ><a matButton="filled" routerLink="/auth/sign-up" (click)="closeMenu()">Inscription</a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</header>

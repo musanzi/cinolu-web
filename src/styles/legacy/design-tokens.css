@@ -1,0 +1,44 @@
+/* Design tokens — TailAdmin alignment (single source of truth) */
+
+:root {
+  --radius-card: 1rem; /* rounded-2xl */
+  --radius-control: 0.5rem; /* rounded-lg — buttons, inputs */
+  --radius-icon-well: 0.75rem; /* rounded-xl */
+  --radius-badge: 9999px; /* rounded-full */
+
+  --space-content: 1rem; /* p-4 */
+  --space-content-md: 1.5rem; /* md:p-6 */
+  --space-card-padding: 1.25rem; /* p-5 */
+  --space-card-padding-md: 1.5rem; /* md:p-6 */
+  --space-grid-gap: 1rem; /* gap-4 */
+  --space-grid-gap-md: 1.5rem; /* md:gap-6 */
+  --space-sidebar-x: 1.25rem; /* px-5 */
+}
+
+/* Scoped reinforcement inside dashboard shell */
+.dashboard-shell {
+  --radius-card: 1rem;
+  --radius-control: 0.5rem;
+  --radius-icon-well: 0.75rem;
+  --radius-badge: 9999px;
+  --space-card-padding: 1.25rem;
+  --space-card-padding-md: 1.5rem;
+  --space-grid-gap: 1rem;
+  --space-grid-gap-md: 1.5rem;
+}
+
+@utility ds-card {
+  @apply rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6;
+}
+
+@utility ds-card-padding {
+  @apply p-5 md:p-6;
+}
+
+@utility ds-section-gap {
+  @apply gap-4 md:gap-6;
+}
+
+@utility ds-icon-well {
+  @apply flex items-center justify-center rounded-xl;
+}

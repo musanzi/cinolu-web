@@ -1,0 +1,9 @@
+@defer (on immediate) {
+  <app-auth-card [title]="content().asideTitle" [description]="content().asideDescription">
+    <router-outlet (activate)="updateContent()" />
+  </app-auth-card>
+} @placeholder {
+  <app-page-loader />
+} @loading (minimum 500ms) {
+  <app-page-loader />
+}

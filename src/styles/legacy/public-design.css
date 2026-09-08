@@ -1,0 +1,113 @@
+/* Public site — aligné dashboard (couleurs unies, border-first, peu d’ombres) */
+
+.public-site {
+  --color-accent: var(--color-brand-600, #508c3c);
+  --color-accent-hover: var(--color-brand-700, #385f2c);
+  --color-accent-subtle: var(--color-brand-50, #f1f8ed);
+  font-family: var(--font-outfit, Outfit, sans-serif);
+}
+
+.public-site h1,
+.public-site h2,
+.public-site h3,
+.public-site h4,
+.public-site h5,
+.public-site h6 {
+  font-family: inherit;
+}
+
+/* Satoshi explicite → hérite Outfit dans le shell public */
+.public-site .font-satoshi {
+  font-family: inherit;
+}
+
+/* CTA principaux — conservés pour compatibilité ; préférer app-public-button */
+.public-btn-primary {
+  @apply inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-600 px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-700;
+}
+
+.public-btn-secondary {
+  @apply inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-900 transition-colors duration-200 hover:bg-gray-50;
+}
+
+/* Alternance de fonds entre sections (évite blocs gris/blanc identiques qui se suivent) */
+.public-band-surface {
+  @apply bg-white;
+}
+
+.public-band-muted {
+  @apply bg-gray-50;
+}
+
+.public-band-surface,
+.public-band-muted {
+  @apply border-t border-gray-200/80;
+}
+
+/* Hero sombre : pas de bordure haute sur la section suivante */
+.public-site app-hero + * .public-band-surface,
+.public-site app-hero + * .public-band-muted,
+.public-site app-hero-card + * .public-band-surface,
+.public-site app-hero-card + * .public-band-muted,
+.public-site app-public-page-hero + app-public-section .public-band-surface,
+.public-site app-public-page-hero + app-public-section .public-band-muted,
+.public-site app-public-page-hero + * .public-band-surface,
+.public-site app-public-page-hero + * .public-band-muted,
+.public-site .about-page > *:first-child + .public-band-surface,
+.public-site .about-page > *:first-child + .public-band-muted,
+.public-site .about-page > *:first-child + * .public-band-surface,
+.public-site .about-page > *:first-child + * .public-band-muted {
+  border-top-width: 0;
+}
+
+/* Cartes */
+.public-site .public-card,
+.public-site .card-outlined,
+.public-site .card-elevated {
+  box-shadow: none;
+}
+
+.public-site .public-card-hover {
+  @apply rounded-2xl border border-gray-200 bg-white transition-colors duration-200;
+  box-shadow: none;
+}
+
+.public-site .public-card-hover:hover {
+  @apply border-gray-300;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Badge de section */
+.public-site .public-section-badge {
+  @apply inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700;
+}
+
+/* Accent titre (pas de dégradé text) */
+.public-site .public-heading-accent {
+  @apply text-brand-700;
+}
+
+/* Puits d’icône */
+.public-site .public-icon-well {
+  @apply flex items-center justify-center rounded-xl bg-brand-600 text-white;
+}
+
+.public-site .public-icon-well-muted {
+  @apply flex items-center justify-center rounded-xl bg-brand-50 text-brand-700;
+}
+
+/* Boutons — ombre légère uniquement */
+.public-site .btn-primary {
+  @apply bg-brand-600 hover:bg-brand-700 active:bg-brand-800;
+  box-shadow: none;
+}
+
+.public-site .btn-primary:hover {
+  box-shadow: none;
+}
+
+/* Suppression des halos décoratifs type dashboard */
+.public-site .public-no-glow {
+  display: none;
+}

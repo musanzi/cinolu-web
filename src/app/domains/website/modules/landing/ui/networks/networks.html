@@ -1,0 +1,62 @@
+<section class="public-band-muted relative overflow-hidden bg-gray-50 py-12 lg:py-20">
+  <div class="pointer-events-none absolute inset-0 opacity-30" aria-hidden="true">
+    <div class="absolute top-20 right-10 hidden h-72 w-72 rounded-full bg-primary-200 mix-blend-multiply"></div>
+    <div class="absolute bottom-20 left-10 hidden h-72 w-72 rounded-full bg-brand-100 mix-blend-multiply"></div>
+  </div>
+
+  <div class="relative mx-auto w-full max-w-screen-2xl px-5 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <header class="mb-12 flex flex-col justify-between gap-8 lg:mb-16 lg:flex-row lg:items-end">
+      <div class="max-w-2xl">
+        <h2 class="mb-4 hyphens-none text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+          Réseaux dont <span class="public-heading-accent">Cinolu est membre</span>
+        </h2>
+      </div>
+    </header>
+
+    <div class="mb-12 grid max-w-7xl grid-cols-1 gap-5 sm:grid-cols-2 lg:mb-16 lg:grid-cols-3 lg:gap-6 xl:grid-cols-5">
+      @for (network of networks; track network.name) {
+        <div class="group h-full">
+          <div
+            class="relative flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-colors duration-200 hover:border-primary-300">
+            <div
+              class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <mat-icon svgIcon="globe" class="size-3.5 text-primary-600" />
+            </div>
+
+            <div
+              class="relative flex min-h-32 items-center justify-center border-b border-gray-100 bg-gray-50 p-6 md:min-h-40">
+              <div
+                class="absolute inset-0 bg-brand-50/0 opacity-0 transition-opacity duration-500 group-hover:bg-brand-50/40 group-hover:opacity-100"></div>
+              <img
+                [src]="network.image"
+                [alt]="network.name"
+                [title]="network.name"
+                class="relative z-10 h-auto max-h-20 w-auto max-w-full object-contain grayscale opacity-60 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100" />
+            </div>
+
+            <div class="flex flex-1 flex-col p-4">
+              <div class="mb-3 flex-1 space-y-2">
+                <h4
+                  class="line-clamp-2 text-base leading-snug font-semibold text-gray-900 transition-colors duration-200 group-hover:text-primary-700 sm:text-lg">
+                  {{ network.name }}
+                </h4>
+                <p class="line-clamp-2 text-sm leading-6 text-slate-600 sm:text-[15px]">{{ network.description }}</p>
+              </div>
+
+              @if (network.website) {
+                <a
+                  [href]="network.website"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group/link -mx-4 -mb-4 inline-flex items-center justify-center gap-2 rounded-b-lg border-t border-gray-100 px-4 py-2.5 text-xs font-semibold text-brand-700 transition-colors duration-300 hover:bg-brand-700 hover:text-white">
+                  <span class="text-sm tracking-wide uppercase">Visiter le site</span>
+                  <mat-icon svgIcon="globe" class="size-3.5 transition-transform group-hover/link:translate-x-1" />
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

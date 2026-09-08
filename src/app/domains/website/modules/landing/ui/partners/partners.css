@@ -1,0 +1,43 @@
+.partners-scroll-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.partners-scroll-track {
+  display: flex;
+  width: fit-content;
+  gap: 1.5rem;
+}
+
+.partners-scroll-item {
+  flex-shrink: 0;
+}
+
+.partners-scroll-right {
+  animation: partners-scroll 60s linear infinite;
+}
+
+.partners-scroll-left {
+  animation: partners-scroll 60s linear infinite reverse;
+}
+
+.partners-scroll-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes partners-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-scroll-track {
+    animation-play-state: paused;
+  }
+}

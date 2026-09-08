@@ -1,0 +1,16 @@
+<div class="flex h-full min-h-full w-full flex-auto flex-col bg-primary-950 text-on-primary">
+  <div class="relative flex items-center gap-x-2.5 pt-5 pr-4 pb-0 pl-6">
+    <a routerLink="/" class="flex items-center gap-1">
+      <!-- <img src="/images/favicon.png" alt="" class="size-8 object-contain" /> -->
+      <span class="text-3xl font-bold tracking-tight text-on-primary transition-colors">onestop.</span>
+    </a>
+  </div>
+
+  <navigation class="mt-8 mb-4 flex-auto" [items]="navigation()" />
+
+  <div class="flex-auto"></div>
+
+  <div class="p-2">
+    <user [profileRoute]="profileRoute()" />
+  </div>
+</div>

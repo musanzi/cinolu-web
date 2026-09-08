@@ -1,0 +1,87 @@
+<footer class="relative overflow-hidden bg-gray-900">
+  <div class="absolute inset-0 bg-[url('/images/about.jpg')] bg-cover bg-center bg-no-repeat opacity-20"></div>
+  <div class="absolute inset-0 bg-gray-950/75"></div>
+  <div class="relative z-10">
+    <div class="mx-auto max-w-screen-2xl px-6 py-12 sm:px-8 sm:py-16 lg:px-16 lg:py-20 xl:px-24 2xl:px-32">
+      <div class="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-8">
+        <div class="space-y-4 sm:space-y-6 lg:col-span-4">
+          <a routerLink="/" class="inline-block"
+            ><img
+              src="/images/logo/logo-w.png"
+              alt="Logo CINOLU"
+              class="h-auto w-14 transition-transform duration-300 hover:scale-110 sm:w-16"
+          /></a>
+          <p class="max-w-sm text-sm leading-relaxed text-gray-300">
+            Cinolu est un hub d'innovation qui connecte les talents, structure les collaborations et transforme les
+            défis locaux en opportunités.
+          </p>
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <div class="h-2 w-2 animate-pulse rounded-full bg-primary-500"></div>
+            <span>Bienvenue sur Cinolu OneStop</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8 lg:col-span-8">
+          <div class="space-y-3 sm:space-y-4">
+            <h2 class="relative inline-block pb-2 text-sm font-bold tracking-wide text-white sm:text-base">
+              Parcourir<span class="absolute bottom-0 left-0 h-0.5 w-8 rounded-full bg-brand-600"></span>
+            </h2>
+            <ul class="space-y-2.5 text-sm text-gray-300 sm:space-y-3">
+              <li><a routerLink="/" class="hover:text-white">Accueil</a></li>
+              <li><a routerLink="/activites" class="hover:text-white">Activités</a></li>
+              <li><a routerLink="/portefeuilles" class="hover:text-white">Portefeuilles</a></li>
+              <li><a routerLink="/a-propos" class="hover:text-white">À propos</a></li>
+            </ul>
+          </div>
+          <div class="space-y-3 sm:space-y-4">
+            <h2 class="relative inline-block pb-2 text-sm font-bold tracking-wide text-white sm:text-base">
+              Mon Cinolu<span class="absolute bottom-0 left-0 h-0.5 w-8 rounded-full bg-brand-600"></span>
+            </h2>
+            <ul class="space-y-2.5 text-sm text-gray-300 sm:space-y-3">
+              <li><a routerLink="/auth/sign-in" class="hover:text-white">Connexion</a></li>
+              <li><a routerLink="/auth/sign-up" class="hover:text-white">Inscription</a></li>
+              <li><a routerLink="/user" class="hover:text-white">Mon espace</a></li>
+            </ul>
+          </div>
+          <div class="space-y-3 sm:space-y-4">
+            <h2 class="relative inline-block pb-2 text-sm font-bold tracking-wide text-white sm:text-base">
+              Réseaux sociaux<span class="absolute bottom-0 left-0 h-0.5 w-8 rounded-full bg-brand-600"></span>
+            </h2>
+            <ul class="space-y-2.5 text-sm text-gray-300 sm:space-y-3">
+              <li>
+                <a
+                  href="https://www.facebook.com/share/15cR36qNs8/"
+                  target="_blank"
+                  rel="noopener"
+                  class="hover:text-white"
+                  >Facebook</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/company/cinolu/"
+                  target="_blank"
+                  rel="noopener"
+                  class="hover:text-white"
+                  >LinkedIn</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div
+        class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-3 px-6 py-6 text-xs sm:flex-row sm:px-8 sm:text-sm lg:px-16 xl:px-24 2xl:px-32">
+        <p class="text-gray-400">
+          &copy; {{ currentYear }} <span class="font-semibold text-white">CINOLU</span>. Tous droits réservés.
+        </p>
+        <div class="flex items-center gap-6 text-gray-400">
+          <a href="#" class="hover:text-white">Politique de confidentialité</a
+          ><span class="h-1 w-1 rounded-full bg-gray-600"></span
+          ><a href="#" class="hover:text-white">Conditions d'utilisation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

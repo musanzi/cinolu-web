@@ -1,0 +1,75 @@
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal } from '@angular/core';
+import { applyEach, form, FormField, required, validate } from '@angular/forms/signals';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { IField, IForm, IFormAnswer, IFormAnswersModel, IFormResponses } from '@/app/shared/interfaces';
+
+@Component({
+  selector: 'form-renderer',
+  imports: [FormField, MatCheckboxModule, MatInputModule, MatRadioModule, MatSelectModule],
+  templateUrl: './form-renderer.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class FormRenderer {
+  sections = input.required<IForm[]>();
+  initialResponses = input<IFormResponses>({});
+
+  private answersModel = linkedSignal<IFormAnswersModel>(() => ({
+    answers: this.sections().flatMap((section) => section.fields.map((field) => this.buildAnswer(field)))
+  }));
+
+  answerForm = form(this.answersModel, (schemaPath) => {
+    applyEach(schemaPath.answers, (answer) => {
+      required(answer.value, {
+        message: 'This field is required.',
+        when: ({ valueOf }) => valueOf(answer.required) && valueOf(answer.type) !== 'checkbox'
+      });
+      validate(answer.options, ({ value, valueOf }) =>
+        valueOf(answer.required) && valueOf(answer.type) === 'checkbox' && !value().some((option) => option.checked)
+          ? { kind: 'required', message: 'Select at least one option.' }
+          : undefined
+      );
+    });
+  });
+
+  invalid = computed(() => this.answerForm().invalid());
+
+  protected renderedSections = computed(() => {
+    let answerIndex = 0;
+    return this.sections().map((section) => ({
+      phase: section.phase,
+      questions: section.fields.map((field) => ({ field, answerIndex: answerIndex++ }))
+    }));
+  });
+
+  responses(): Record<string, string | string[]> {
+    return Object.fromEntries(
+      this.answersModel().answers.map((answer) => [
+        answer.name,
+        answer.type === 'checkbox'
+          ? answer.options.filter((option) => option.checked).map((option) => option.value)
+          : answer.value
+      ])
+    );
+  }
+
+  protected fieldInputType(type: string): string {
+    return type === 'email' || type === 'number' || type === 'date' ? type : 'text';
+  }
+
+  private buildAnswer(field: IField): IFormAnswer {
+    const initial = this.initialResponses()[field.name];
+    return {
+      name: field.name,
+      type: field.type,
+      required: field.required ?? false,
+      value: typeof initial === 'string' ? initial : '',
+      options: (field.options ?? []).map((option) => ({
+        ...option,
+        checked: Array.isArray(initial) && initial.includes(option.value)
+      }))
+    };
+  }
+}
