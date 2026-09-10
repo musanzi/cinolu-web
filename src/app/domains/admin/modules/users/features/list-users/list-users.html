@@ -19,7 +19,17 @@
           [(ngModel)]="q" />
       </div>
 
-      <button matButton="outlined" type="button" [disabled]="store.isExporting()" (click)="store.exportUsers()">
+      <input #csvInput class="hidden" type="file" accept=".csv,text/csv" (change)="onImportSelected($event)" />
+      <button matButton="outlined" type="button" [disabled]="store.isImporting()" (click)="csvInput.click()">
+        <mat-icon svgIcon="upload" />
+        {{ store.isImporting() ? 'Importing...' : 'Import CSV' }}
+      </button>
+
+      <button
+        matButton="outlined"
+        type="button"
+        [disabled]="store.isExporting()"
+        (click)="store.exportUsers(q().trim())">
         <mat-icon svgIcon="download" />
         {{ store.isExporting() ? 'Exporting...' : 'Export CSV' }}
       </button>
@@ -27,7 +37,7 @@
       <button
         matButton="filled"
         type="button"
-        [disabled]="store.isSaving() || store.isLoadingRoles()"
+        [disabled]="store.isSaving() || store.isLoadingRoles() || store.isImporting()"
         (click)="openCreateDialog()">
         <mat-icon svgIcon="plus" />
         Create
@@ -83,6 +93,9 @@
           <ng-container matColumnDef="actions">
             <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
             <td class="text-right" mat-cell *matCellDef="let user">
+              <a matIconButton aria-label="View user" [routerLink]="[user.email]">
+                <mat-icon svgIcon="eye" />
+              </a>
               <button
                 matIconButton
                 type="button"

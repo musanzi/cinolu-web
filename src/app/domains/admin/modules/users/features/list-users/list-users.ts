@@ -7,6 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { UsersStore } from '../../data-access/users.store';
 import { IQueryParams, IRemoveUserDialogData, IUserDialogData, IUserDialogResult, IUserRow } from '../../interfaces';
@@ -14,7 +15,16 @@ import { RemoveUserDialog } from '../../ui/remove-user-dialog/remove-user-dialog
 import { UserFormDialog } from '../../ui/user-form-dialog/user-form-dialog';
 
 @Component({
-  imports: [DatePipe, FormsModule, MatButtonModule, MatDialogModule, MatIconModule, MatPaginatorModule, MatTableModule],
+  imports: [
+    DatePipe,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule,
+    RouterLink
+  ],
   templateUrl: './list-users.html',
   providers: [UsersStore]
 })
@@ -33,7 +43,10 @@ export default class Users implements OnInit {
     q: this.debouncedQuery.value()
   }));
 
-  private readonly loadUsersEffect = effect(() => this.store.loadUsers(this.queryParams()));
+  private readonly loadUsersEffect = effect(() => {
+    this.store.mutationVersion();
+    this.store.loadUsers(this.queryParams());
+  });
 
   ngOnInit(): void {
     this.store.loadRoles();
@@ -41,6 +54,13 @@ export default class Users implements OnInit {
 
   protected onPageChange(event: PageEvent): void {
     this.page.set(event.pageIndex + 1);
+  }
+
+  protected onImportSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) this.store.importUsers(file);
+    input.value = '';
   }
 
   protected openCreateDialog(): void {

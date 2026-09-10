@@ -4,31 +4,35 @@ import { Component } from '@angular/core';
   selector: 'app-page-loader',
   templateUrl: './page-loader.html',
   styles: `
+    /* HTML: <div class="loader"></div> */
     .loader {
       width: 50px;
       aspect-ratio: 1;
-      border-radius: 50%;
-      border: 8px solid #0000;
-      border-right-color: var(--theme-color-primary-500);
-      position: relative;
-      animation: l24 1s infinite linear;
+      display: grid;
     }
-    .loader:before,
-    .loader:after {
+    .loader::before,
+    .loader::after {
       content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: inherit;
-      animation: inherit;
-      animation-duration: 2s;
+      grid-area: 1/1;
+      --c: no-repeat radial-gradient(farthest-side, #508c3c 92%, #0000);
+      background:
+        var(--c) 50% 0,
+        var(--c) 50% 100%,
+        var(--c) 100% 50%,
+        var(--c) 0 50%;
+      background-size: 12px 12px;
+      animation: l12 1s infinite;
     }
-    .loader:after {
-      animation-duration: 4s;
+    .loader::before {
+      margin: 4px;
+      filter: hue-rotate(45deg);
+      background-size: 8px 8px;
+      animation-timing-function: linear;
     }
-    @keyframes l24 {
+
+    @keyframes l12 {
       100% {
-        transform: rotate(1turn);
+        transform: rotate(0.5turn);
       }
     }
   `

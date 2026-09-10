@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>{{ data.program ? 'Edit program' : 'Create program' }}</h2>
+
+<form (submit)="onSubmit(); $event.preventDefault()">
+  <mat-dialog-content class="flex flex-col gap-5">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Name</mat-label>
+      <input matInput [formField]="programForm.name" autocomplete="off" />
+      @if (programForm.name().touched() && programForm.name().errors().length) {
+        <mat-error>{{ programForm.name().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="4" [formField]="programForm.description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Portfolio</mat-label>
+      <mat-select [formField]="programForm.portfolioId">
+        @for (portfolio of data.portfolios; track portfolio.id) {
+          <mat-option [value]="portfolio.id">{{ portfolio.name }}</mat-option>
+        }
+      </mat-select>
+      @if (programForm.portfolioId().touched() && programForm.portfolioId().errors().length) {
+        <mat-error>{{ programForm.portfolioId().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Managers</mat-label>
+      <mat-select multiple [formField]="programForm.managers">
+        @for (member of data.staff; track member.id) {
+          <mat-option [value]="member.id">{{ member.name }} — {{ member.email }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="rounded-md border border-outline-variant p-4">
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <p class="text-sm font-medium">Program logo</p>
+          <p class="truncate text-xs text-on-surface-variant">
+            {{ selectedLogo()?.name ?? (data.program?.logo ? 'Keep current logo' : 'No file selected') }}
+          </p>
+        </div>
+        <div class="flex shrink-0 items-center gap-1">
+          <input class="sr-only" type="file" accept="image/*" (change)="onLogoSelected($event)" #logoInput />
+          @if (selectedLogo()) {
+            <button matIconButton type="button" aria-label="Clear selected logo" (click)="clearLogo(logoInput)">
+              <mat-icon svgIcon="x" />
+            </button>
+          }
+          <button matButton="outlined" type="button" (click)="logoInput.click()">
+            <mat-icon svgIcon="image-plus" />
+            Choose image
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" [mat-dialog-close]="undefined">Cancel</button>
+    <button matButton="filled" type="submit" [disabled]="programForm().invalid()">
+      {{ data.program ? 'Save' : 'Create' }}
+    </button>
+  </mat-dialog-actions>
+</form>

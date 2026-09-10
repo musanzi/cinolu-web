@@ -1,0 +1,155 @@
+<section class="flex flex-col gap-10 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight">Activities</h1>
+    <p class="mt-1 text-sm text-on-surface-variant">Browse published activities and their schedules.</p>
+  </div>
+
+  <section aria-labelledby="recent-activities-heading">
+    <div class="mb-4 flex items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold" id="recent-activities-heading">Ongoing now</h2>
+        <p class="text-sm text-on-surface-variant">The five most recent ongoing activities.</p>
+      </div>
+      @if (recentResource.error()) {
+        <button matButton="outlined" type="button" (click)="recentResource.reload()">Retry</button>
+      }
+    </div>
+
+    @if (recentResource.isLoading()) {
+      <div class="flex min-h-32 items-center justify-center" aria-label="Loading recent activities">
+        <span class="text-sm text-on-surface-variant">Loading...</span>
+      </div>
+    } @else if (recentResource.error()) {
+      <div class="rounded-md bg-error-container p-4 text-sm text-on-error-container" role="alert">
+        Recent activities could not be loaded.
+      </div>
+    } @else {
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        @for (activity of recentResource.value() ?? []; track activity.id) {
+          <mat-card class="rounded-md" appearance="outlined">
+            @if (activity.cover) {
+              <img class="h-32 w-full object-cover" mat-card-image [src]="activity.cover" [alt]="activity.name" />
+            }
+            <mat-card-header>
+              <mat-card-title class="line-clamp-2 text-base">{{ activity.name }}</mat-card-title>
+              <mat-card-subtitle>{{ activity.program.name }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="mt-3 text-sm text-on-surface-variant">
+              {{ activity.startDate | date: 'dd MMM' }} – {{ activity.endDate | date: 'dd MMM yyyy' }}
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <a matButton [routerLink]="[activity.slug]">View</a>
+            </mat-card-actions>
+          </mat-card>
+        } @empty {
+          <p
+            class="col-span-full rounded-md border border-outline-variant p-6 text-center text-sm text-on-surface-variant">
+            There are no ongoing activities.
+          </p>
+        }
+      </div>
+    }
+  </section>
+
+  <section aria-labelledby="published-activities-heading">
+    <div class="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+      <div>
+        <h2 class="text-lg font-semibold" id="published-activities-heading">All published activities</h2>
+        <p class="text-sm text-on-surface-variant">Search by name and narrow the schedule by date.</p>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <mat-form-field appearance="outline">
+          <mat-label>Search activities</mat-label>
+          <mat-icon matPrefix svgIcon="search" />
+          <input matInput type="search" [value]="q()" (input)="onSearch($any($event.target).value)" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Starts from</mat-label>
+          <input
+            matInput
+            readonly
+            [matDatepicker]="startPicker"
+            [value]="startDate()"
+            (dateChange)="onStartDateChange($event.value)" />
+          <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+          <mat-datepicker #startPicker />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ends by</mat-label>
+          <input
+            matInput
+            readonly
+            [matDatepicker]="endPicker"
+            [value]="endDate()"
+            (dateChange)="onEndDateChange($event.value)" />
+          <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+          <mat-datepicker #endPicker />
+        </mat-form-field>
+
+        <button matButton="outlined" type="button" (click)="clearFilters()">Clear</button>
+      </div>
+    </div>
+
+    @if (activitiesResource.isLoading()) {
+      <div class="flex min-h-64 items-center justify-center" aria-label="Loading activities">
+        <span class="text-sm text-on-surface-variant">Loading...</span>
+      </div>
+    } @else if (activitiesResource.error()) {
+      <div
+        class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+        role="alert">
+        <span>Activities could not be loaded.</span>
+        <button matButton type="button" (click)="activitiesResource.reload()">Retry</button>
+      </div>
+    } @else {
+      <div class="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        @for (activity of activities(); track activity.id) {
+          <mat-card class="rounded-md" appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>{{ activity.name }}</mat-card-title>
+              <mat-card-subtitle>{{ activity.program.name }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="mt-4 flex flex-col gap-3">
+              <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                <mat-icon class="size-4" svgIcon="calendar-days" />
+                <span
+                  >{{ activity.startDate | date: 'dd MMM yyyy' }} – {{ activity.endDate | date: 'dd MMM yyyy' }}</span
+                >
+              </div>
+              @if (activity.description) {
+                <p class="line-clamp-3 text-sm text-on-surface-variant">{{ activity.description }}</p>
+              }
+              <div class="flex flex-wrap gap-2">
+                @for (type of activity.types; track type.id) {
+                  <span class="rounded-full bg-surface-container px-2.5 py-1 text-xs">{{ type.name }}</span>
+                }
+              </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <a matButton [routerLink]="[activity.slug]">View details</a>
+            </mat-card-actions>
+          </mat-card>
+        } @empty {
+          <p
+            class="col-span-full rounded-md border border-outline-variant p-10 text-center text-sm text-on-surface-variant">
+            No activities match these filters.
+          </p>
+        }
+      </div>
+
+      @if (total() > pageSize) {
+        <mat-paginator
+          class="mt-6 rounded-md border border-outline-variant"
+          aria-label="Select a page of activities"
+          [length]="total()"
+          [pageIndex]="page() - 1"
+          [pageSize]="pageSize"
+          [hidePageSize]="true"
+          (page)="onPageChange($event)" />
+      }
+    }
+  </section>
+</section>

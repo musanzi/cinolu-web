@@ -1,98 +1,152 @@
-<div class="mx-auto flex w-full max-w-80 flex-col sm:min-w-80">
-  <div class="mb-8 flex items-baseline text-sm font-medium">
-    <div class="text-neutral-500">Vous avez déjà un compte ?</div>
-    <a class="ml-1 underline underline-offset-4 hover:underline text-primary-600" routerLink="/auth/sign-in">
-      Se connecter
-    </a>
-  </div>
-
-  <form class="space-y-6" (submit)="signUp($event)">
-    <div class="flex flex-col gap-y-4">
-      <mat-form-field class="w-full">
-        <mat-label>Nom complet</mat-label>
-        <input id="name" matInput [formField]="signUpForm.name" />
-        @if ((signUpForm.name().touched() || signUpForm.name().dirty()) && signUpForm.name().errors()[0]; as error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field class="w-full">
-        <mat-label>Adresse e-mail</mat-label>
-        <input id="email" matInput [formField]="signUpForm.email" />
-        @if ((signUpForm.email().touched() || signUpForm.email().dirty()) && signUpForm.email().errors()[0]; as error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Mot de passe</mat-label>
-        <input id="password" matInput type="password" [formField]="signUpForm.password" #passwordField />
-        <button
-          matIconButton
-          type="button"
-          (click)="
-            passwordField.type === 'password' ? (passwordField.type = 'text') : (passwordField.type = 'password')
-          "
-          matSuffix>
-          @if (passwordField.type === 'password') {
-            <mat-icon class="size-5" svgIcon="eye"></mat-icon>
-          }
-          @if (passwordField.type === 'text') {
-            <mat-icon class="size-5" svgIcon="eye-off"></mat-icon>
-          }
-        </button>
-        @if (
-          (signUpForm.password().touched() || signUpForm.password().dirty()) && signUpForm.password().errors()[0];
-          as error
-        ) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Confirmer le mot de passe</mat-label>
-        <input
-          id="confirmPassword"
-          matInput
-          type="password"
-          [formField]="signUpForm.confirmPassword"
-          #confirmPasswordField />
-        <button
-          matIconButton
-          type="button"
-          (click)="
-            confirmPasswordField.type === 'password'
-              ? (confirmPasswordField.type = 'text')
-              : (confirmPasswordField.type = 'password')
-          "
-          matSuffix>
-          @if (confirmPasswordField.type === 'password') {
-            <mat-icon class="size-5" svgIcon="eye"></mat-icon>
-          }
-          @if (confirmPasswordField.type === 'text') {
-            <mat-icon class="size-5" svgIcon="eye-off"></mat-icon>
-          }
-        </button>
-        @if (
-          (signUpForm.confirmPassword().touched() || signUpForm.confirmPassword().dirty()) &&
-            signUpForm.confirmPassword().errors()[0];
-          as error
-        ) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
-      </mat-form-field>
-    </div>
-
-    @if (authStore.error(); as error) {
-      <message class="mt-4" [message]="error" (dismissed)="authStore.clearError()" />
-    }
-
-    <button
-      type="submit"
-      matButton="filled"
-      class="min-h-12! w-full rounded-lg!"
-      [disabled]="signUpForm().invalid() || authStore.isLoading()">
-      {{ authStore.isLoading() ? 'Création du compte...' : 'Créer mon compte' }}
-    </button>
-  </form>
+<div class="mb-8 flex items-baseline text-sm font-medium">
+  <div class="text-neutral-500">Vous avez déjà un compte ?</div>
+  <a class="ml-1 underline underline-offset-4 hover:underline text-primary-600" routerLink="/auth/sign-in">
+    Se connecter
+  </a>
 </div>
+
+<form (submit)="signUp($event, stepper)">
+  <mat-stepper #stepper linear class="rounded-lg bg-white">
+    <mat-step label="Profil" [completed]="profileStepValid()">
+      <div class="flex flex-col gap-y-4 pt-6">
+        <div>
+          <h2 class="text-xl font-semibold text-neutral-900">Parlez-nous de vous</h2>
+          <p class="mt-1 text-sm text-neutral-500">Renseignez les informations qui apparaîtront sur votre profil.</p>
+        </div>
+
+        <mat-form-field class="w-full">
+          <mat-label>Nom complet</mat-label>
+          <input id="name" matInput autocomplete="name" [formField]="signUpForm.name" />
+          @if ((signUpForm.name().touched() || signUpForm.name().dirty()) && signUpForm.name().errors()[0]; as error) {
+            <mat-error>{{ error.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Adresse e-mail</mat-label>
+          <input id="email" matInput type="email" autocomplete="email" [formField]="signUpForm.email" />
+          @if (
+            (signUpForm.email().touched() || signUpForm.email().dirty()) && signUpForm.email().errors()[0];
+            as error
+          ) {
+            <mat-error>{{ error.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Biographie</mat-label>
+          <textarea id="biography" matInput rows="5" [formField]="signUpForm.biography"></textarea>
+          @if (
+            (signUpForm.biography().touched() || signUpForm.biography().dirty()) && signUpForm.biography().errors()[0];
+            as error
+          ) {
+            <mat-error>{{ error.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          type="button"
+          matButton="filled"
+          class="min-h-12! w-full rounded-lg!"
+          (click)="continueToSecurity(stepper)">
+          Continuer
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Sécurité">
+      <div class="flex flex-col gap-y-4 pt-6">
+        <div>
+          <h2 class="text-xl font-semibold text-neutral-900">Sécurisez votre compte</h2>
+          <p class="mt-1 text-sm text-neutral-500">Choisissez un mot de passe d'au moins 6 caractères.</p>
+        </div>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Mot de passe</mat-label>
+          <input
+            id="password"
+            matInput
+            type="password"
+            autocomplete="new-password"
+            [formField]="signUpForm.password"
+            #passwordField />
+          <button
+            matIconButton
+            type="button"
+            [attr.aria-label]="
+              passwordField.type === 'password' ? 'Afficher le mot de passe' : 'Masquer le mot de passe'
+            "
+            (click)="
+              passwordField.type === 'password' ? (passwordField.type = 'text') : (passwordField.type = 'password')
+            "
+            matSuffix>
+            @if (passwordField.type === 'password') {
+              <mat-icon class="size-5" svgIcon="eye"></mat-icon>
+            } @else {
+              <mat-icon class="size-5" svgIcon="eye-off"></mat-icon>
+            }
+          </button>
+          @if (
+            (signUpForm.password().touched() || signUpForm.password().dirty()) && signUpForm.password().errors()[0];
+            as error
+          ) {
+            <mat-error>{{ error.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Confirmer le mot de passe</mat-label>
+          <input
+            id="confirmPassword"
+            matInput
+            type="password"
+            autocomplete="new-password"
+            [formField]="signUpForm.confirmPassword"
+            #confirmPasswordField />
+          <button
+            matIconButton
+            type="button"
+            [attr.aria-label]="
+              confirmPasswordField.type === 'password' ? 'Afficher la confirmation' : 'Masquer la confirmation'
+            "
+            (click)="
+              confirmPasswordField.type === 'password'
+                ? (confirmPasswordField.type = 'text')
+                : (confirmPasswordField.type = 'password')
+            "
+            matSuffix>
+            @if (confirmPasswordField.type === 'password') {
+              <mat-icon class="size-5" svgIcon="eye"></mat-icon>
+            } @else {
+              <mat-icon class="size-5" svgIcon="eye-off"></mat-icon>
+            }
+          </button>
+          @if (
+            (signUpForm.confirmPassword().touched() || signUpForm.confirmPassword().dirty()) &&
+              signUpForm.confirmPassword().errors()[0];
+            as error
+          ) {
+            <mat-error>{{ error.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        @if (authStore.error(); as error) {
+          <message [message]="error" (dismissed)="authStore.clearError()" />
+        }
+
+        <div class="flex flex-col-reverse gap-3 sm:flex-row">
+          <button type="button" matButton="outlined" class="min-h-12! flex-1 rounded-lg!" (click)="stepper.previous()">
+            Retour
+          </button>
+          <button
+            type="submit"
+            matButton="filled"
+            class="min-h-12! flex-1 rounded-lg!"
+            [disabled]="authStore.isLoading()">
+            {{ authStore.isLoading() ? 'Création...' : 'Créer mon compte' }}
+          </button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</form>

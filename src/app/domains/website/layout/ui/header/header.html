@@ -37,14 +37,14 @@
             routerLinkActive
             #desktopLink="routerLinkActive"
             [routerLinkActiveOptions]="{ paths: 'exact', fragment: 'exact' }"
-            class="rounded-xl px-4 py-2.5 font-semibold transition-colors duration-200"
+            class="rounded-2xl px-4 py-2.5 font-semibold transition-colors duration-200"
             [class]="navLinkClasses(desktopLink.isActive)">
             {{ link.label }}
           </a>
         }
       </nav>
       <div class="flex shrink-0 items-center gap-3 lg:gap-4">
-        <a matButton="filled" routerLink="/auth/sign-up" class="min-h-10 text-white">Se connecter</a>
+        <a matButton="filled" routerLink="/auth/sign-in" class="min-h-10 text-white">Se connecter</a>
       </div>
     </div>
 

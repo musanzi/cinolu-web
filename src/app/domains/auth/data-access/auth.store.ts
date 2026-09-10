@@ -6,14 +6,11 @@ import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IUser } from '@/app/shared/interfaces';
 import { Roles } from '@/app/shared/enums';
-
-interface IAuthStore {
-  user: IUser | null;
-}
+import { IAuthState } from '../interfaces';
 
 export const AuthStore = signalStore(
   { providedIn: 'root' },
-  withState<IAuthStore>({ user: null }),
+  withState<IAuthState>({ user: null }),
   withProps(() => ({
     _http: inject(HttpClient),
     _router: inject(Router)

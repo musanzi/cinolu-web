@@ -11,6 +11,33 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ data.user ? 'New password (optional)' : 'Password (optional)' }}</mat-label>
+      <input matInput type="password" [formField]="userForm.password" autocomplete="new-password" />
+      @if (userForm.password().touched() && userForm.password().errors().length) {
+        <mat-error>{{ userForm.password().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Job title</mat-label>
+      <input matInput [formField]="userForm.jobTitle" autocomplete="organization-title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Avatar URL</mat-label>
+      <input matInput type="url" [formField]="userForm.avatar" autocomplete="url" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Social links (JSON)</mat-label>
+      <textarea matInput rows="4" [formField]="userForm.socialLinks" placeholder='{"linkedin": "https://…"}'></textarea>
+      <mat-hint>Optional key-value object of profile links.</mat-hint>
+      @if (userForm.socialLinks().touched() && userForm.socialLinks().errors().length) {
+        <mat-error>{{ userForm.socialLinks().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Email address</mat-label>
       <input matInput type="email" [formField]="userForm.email" autocomplete="email" />
       @if (userForm.email().touched() && userForm.email().errors().length) {

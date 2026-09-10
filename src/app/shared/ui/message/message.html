@@ -1,14 +1,10 @@
-<div
-  class="flex items-start gap-3 rounded-md border p-4 shadow-sm"
-  [class]="styles().container"
-  [attr.role]="role()"
-  [attr.aria-live]="ariaLive()">
+<div class="flex items-start gap-3 rounded-md border p-4 shadow-sm" [class]="styles().container">
   <span class="flex size-9 shrink-0 items-center justify-center rounded-md" [class]="styles().iconContainer">
     <mat-icon class="size-5" [svgIcon]="styles().icon" />
   </span>
   <div class="min-w-0 flex-1">
     <p class="font-semibold">{{ displayedTitle() }}</p>
-    <p class="mt-1 text-sm" [class]="styles().message">{{ message() }}</p>
+    <p class="text-sm" [class]="styles().message">{{ message() }}</p>
   </div>
   @if (dismissible()) {
     <button

@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{ data.entity ? 'Edit' : 'Create' }} {{ data.singular }}</h2>
+
+<form (submit)="onSubmit(); $event.preventDefault()">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Name</mat-label>
+      <input matInput autocomplete="off" [formField]="entityForm.name" />
+      @if (entityForm.name().touched() && entityForm.name().errors().length) {
+        <mat-error>{{ entityForm.name().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" [mat-dialog-close]="undefined">Cancel</button>
+    <button matButton="filled" type="submit" [disabled]="entityForm().invalid()">
+      {{ data.entity ? 'Save' : 'Create' }}
+    </button>
+  </mat-dialog-actions>
+</form>

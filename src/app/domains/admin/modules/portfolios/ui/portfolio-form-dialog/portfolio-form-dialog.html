@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ data.portfolio ? 'Edit portfolio' : 'Create portfolio' }}</h2>
+
+<form (submit)="onSubmit(); $event.preventDefault()">
+  <mat-dialog-content class="flex flex-col gap-5">
+    <div class="flex items-center gap-4">
+      <div
+        class="flex w-24 h-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-outline-variant bg-surface-container-low">
+        @if (logoPreview()) {
+          <img class="size-full object-contain" [src]="logoPreview()" alt="Portfolio logo preview" />
+        } @else {
+          <mat-icon class="text-on-surface-variant" svgIcon="image" />
+        }
+      </div>
+
+      <div class="flex flex-col items-start gap-1">
+        <input
+          #logoInput
+          class="hidden"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          (change)="onLogoSelected($event)" />
+        <button matButton="outlined" type="button" (click)="logoInput.click()">
+          <mat-icon svgIcon="image-plus" />
+          {{ logoPreview() ? 'Replace logo' : 'Choose logo' }}
+        </button>
+        <span class="text-xs text-on-surface-variant">PNG, JPEG or WebP</span>
+      </div>
+    </div>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Name</mat-label>
+      <input matInput [formField]="portfolioForm.name" autocomplete="off" />
+      @if (portfolioForm.name().touched() && portfolioForm.name().errors().length) {
+        <mat-error>{{ portfolioForm.name().errors()[0].message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="4" [formField]="portfolioForm.description"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" [mat-dialog-close]="undefined">Cancel</button>
+    <button matButton="filled" type="submit" [disabled]="portfolioForm().invalid()">
+      {{ data.portfolio ? 'Save' : 'Create' }}
+    </button>
+  </mat-dialog-actions>
+</form>

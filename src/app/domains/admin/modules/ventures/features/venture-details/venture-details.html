@@ -1,0 +1,78 @@
+<section class="flex flex-col gap-6 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <a class="self-start" matButton routerLink="/admin/ventures"><mat-icon svgIcon="arrow-left" />Back to ventures</a>
+  @if (ventureResource.isLoading()) {
+    <div class="flex min-h-64 items-center justify-center" aria-label="Loading venture">
+      <span class="text-sm text-on-surface-variant">Loading...</span>
+    </div>
+  } @else if (ventureResource.error()) {
+    <div
+      class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+      role="alert">
+      <span>This venture could not be loaded.</span
+      ><button matButton type="button" (click)="ventureResource.reload()">Retry</button>
+    </div>
+  } @else if (ventureResource.value(); as venture) {
+    @if (venture.cover) {
+      <img
+        class="max-h-96 w-full rounded-md object-cover"
+        [src]="assetUrl(venture.cover)"
+        [alt]="venture.name + ' cover'"
+        (error)="hideBrokenImage($event)" />
+    }
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+      <article class="flex flex-col gap-6">
+        <header class="flex items-start gap-4">
+          @if (venture.logo) {
+            <img
+              class="size-16 rounded-md border border-outline-variant object-contain"
+              [src]="assetUrl(venture.logo)"
+              [alt]="venture.name + ' logo'"
+              (error)="hideBrokenImage($event)" />
+          }
+          <div>
+            <div class="mb-2 flex gap-2">
+              <mat-chip>{{ venture.stage.replace('_', ' ') | titlecase }}</mat-chip
+              ><mat-chip>{{ venture.status | titlecase }}</mat-chip>
+            </div>
+            <h1 class="text-3xl font-semibold tracking-tight">{{ venture.name }}</h1>
+          </div>
+        </header>
+        <p class="whitespace-pre-line leading-7 text-on-surface-variant">{{ venture.description }}</p>
+        <div>
+          <h2 class="mb-2 text-sm font-semibold">Sectors</h2>
+          <mat-chip-set aria-label="Venture sectors">
+            @for (sector of venture.sectors; track sector.id) {
+              <mat-chip>{{ sector.name }}</mat-chip>
+            } @empty {
+              <span class="text-sm text-on-surface-variant">No sectors assigned</span>
+            }
+          </mat-chip-set>
+        </div>
+        @if ((venture.socials | keyvalue).length) {
+          <div>
+            <h2 class="mb-2 text-sm font-semibold">Links</h2>
+            <div class="flex flex-col gap-2">
+              @for (social of venture.socials | keyvalue; track social.key) {
+                <a class="text-sm text-primary hover:underline" target="_blank" rel="noopener" [href]="social.value">{{
+                  social.key | titlecase
+                }}</a>
+              }
+            </div>
+          </div>
+        }
+      </article>
+      <mat-card class="h-fit rounded-md" appearance="outlined"
+        ><mat-card-header><mat-card-title>Owner</mat-card-title></mat-card-header
+        ><mat-card-content class="mt-5"
+          ><p class="font-medium">{{ venture.owner.name }}</p>
+          <a class="text-sm text-primary hover:underline" [href]="'mailto:' + venture.owner.email">{{
+            venture.owner.email
+          }}</a>
+          @if (venture.owner.jobTitle) {
+            <p class="mt-2 text-sm text-on-surface-variant">{{ venture.owner.jobTitle }}</p>
+          }
+        </mat-card-content></mat-card
+      >
+    </div>
+  }
+</section>

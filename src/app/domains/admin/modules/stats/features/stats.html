@@ -1,41 +1,176 @@
-<div class="px-10 py-16">
+<div class="mx-auto w-full max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div class="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <div class="max-w-2xl">
+      <div class="mb-2 flex items-center gap-2 text-sm font-medium text-primary">
+        <mat-icon class="size-4" svgIcon="chart-no-axes-combined" />
+        <span>Analytics overview</span>
+      </div>
+      <h1 class="text-3xl font-semibold tracking-tight">Statistics</h1>
+      <p class="mt-2 text-sm leading-6 text-on-surface-variant">
+        Monitor platform growth, engagement, and operational performance in one place.
+      </p>
+    </div>
+
+    <div class="rounded-md border border-outline-variant bg-surface-container-low p-1.5">
+      <div class="mb-3 flex items-center gap-1.5 px-1.5 text-xs font-medium text-on-surface-variant">
+        <mat-icon class="size-3.5" svgIcon="calendar-range" />
+        Reporting period
+      </div>
+      <mat-button-toggle-group
+        class="max-w-full rounded-md"
+        aria-label="Statistics period"
+        hideSingleSelectionIndicator
+        [value]="months()"
+        (change)="months.set($event.value)">
+        @for (option of periodOptions; track option) {
+          <mat-button-toggle [value]="option">{{ option }} months</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
   @if (statsResource.isLoading()) {
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" aria-label="Loading statistics">
-      @for (item of [1, 2, 3, 4, 5]; track item) {
-        <mat-card appearance="filled" class="animate-pulse">
-          <mat-card-header>
-            <div class="h-4 w-28 rounded bg-surface-container-high"></div>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-12 w-20 rounded bg-surface-container-high"></div>
-            <div class="mt-2 h-4 w-40 rounded bg-surface-container"></div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Loading statistics">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <mat-card appearance="outlined" class="animate-pulse rounded-md border-outline-variant">
+          <mat-card-content class="p-5">
+            <div class="mb-7 flex items-center justify-between">
+              <div class="h-4 w-24 rounded bg-surface-container-high"></div>
+              <div class="size-10 rounded-md bg-surface-container-high"></div>
+            </div>
+            <div class="h-10 w-20 rounded bg-surface-container-high"></div>
+            <div class="mt-3 h-5 w-32 rounded bg-surface-container"></div>
           </mat-card-content>
         </mat-card>
       }
     </div>
+
+    <div class="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-2" aria-hidden="true">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <div class="h-96 animate-pulse rounded-md border border-outline-variant bg-surface-container-low"></div>
+      }
+    </div>
   } @else if (statsResource.hasValue()) {
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      @for (stat of statsResource.value(); track stat.label) {
-        <mat-card appearance="filled">
-          <mat-card-header>
-            <div class="font-medium tracking-tight">{{ stat.label }}</div>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="text-5xl font-semibold">
-              {{ stat.total | number }}
+    @let stats = statsResource.value();
+
+    <div class="mb-3 flex items-center justify-between gap-4">
+      <h2 class="text-lg font-semibold tracking-tight">Key metrics</h2>
+      <span class="text-xs text-on-surface-variant">Compared with the previous period</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      @for (kpi of orderedKpis(); track kpi.key) {
+        <mat-card appearance="outlined" class="rounded-md border-outline-variant">
+          <mat-card-content class="p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="truncate text-sm font-medium text-on-surface-variant">{{ kpi.label }}</div>
+                <div class="mt-3 text-3xl font-semibold tracking-tight tabular-nums">
+                  {{ kpi.value | number: (kpi.unit === 'average' ? '1.0-1' : '1.0-0') }}
+                  @if (kpi.unit === 'percentage') {
+                    <span class="text-xl text-on-surface-variant">%</span>
+                  }
+                </div>
+              </div>
+
+              <div
+                class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-container text-on-primary-container">
+                <mat-icon class="size-5" [svgIcon]="kpiIcon(kpi.key)" />
+              </div>
+            </div>
+
+            <div class="mt-4 min-h-6 border-t border-outline-variant pt-3">
+              @if (kpi.changePercentage !== undefined && kpi.changePercentage !== null) {
+                <div
+                  class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs font-medium"
+                  [class.text-primary]="kpi.changePercentage > 0"
+                  [class.text-error]="kpi.changePercentage < 0"
+                  [class.text-on-surface-variant]="kpi.changePercentage === 0">
+                  <mat-icon class="size-4" [svgIcon]="trendIcon(kpi.changePercentage)" />
+                  <span class="tabular-nums">{{ kpi.changePercentage | number: '1.0-1' }}%</span>
+                  <span class="font-normal text-on-surface-variant">vs previous period</span>
+                </div>
+              } @else {
+                <span class="text-xs text-on-surface-variant">No comparison available</span>
+              }
             </div>
           </mat-card-content>
         </mat-card>
       }
     </div>
-  } @else {
-    <div class="flex min-h-64 flex-col items-center justify-center gap-4 text-center">
-      <mat-icon class="text-on-surface-variant" svgIcon="triangle-alert" />
-      <div>
-        <div class="font-medium">Unable to load statistics</div>
-        <div class="mt-1 text-sm text-on-surface-variant">Please try again in a few moments.</div>
+
+    <section class="mt-10" aria-labelledby="trends-heading">
+      <div class="mb-4">
+        <h2 id="trends-heading" class="text-lg font-semibold tracking-tight">Trends over time</h2>
+        <p class="mt-1 text-sm text-on-surface-variant">How activity has changed across the selected period.</p>
       </div>
-      <button matButton="outlined" type="button" (click)="statsResource.reload()">Try again</button>
+
+      <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <admin-stats-chart
+          title="User registrations"
+          description="New accounts created during the selected period."
+          icon="user-round"
+          [options]="userRegistrationsChart()" />
+      </div>
+    </section>
+
+    <section class="mt-10" aria-labelledby="breakdowns-heading">
+      <div class="mb-4">
+        <h2 id="breakdowns-heading" class="text-lg font-semibold tracking-tight">Platform breakdowns</h2>
+        <p class="mt-1 text-sm text-on-surface-variant">Current distribution across the platform's core areas.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <admin-stats-chart
+          title="Participation statuses"
+          description="Current distribution of participation statuses."
+          icon="chart-pie"
+          [options]="participationStatusesChart()" />
+        <admin-stats-chart
+          title="Venture statuses"
+          description="Current distribution of venture statuses."
+          icon="chart-pie"
+          [options]="ventureStatusesChart()" />
+        <admin-stats-chart
+          title="Activities by type"
+          description="Activity volume across the available types."
+          icon="calendar-check"
+          [options]="activitiesByTypeChart()" />
+        <admin-stats-chart
+          title="Programs by portfolio"
+          description="Programs distributed across each portfolio."
+          icon="folder-kanban"
+          [options]="programsByPortfolioChart()" />
+      </div>
+    </section>
+
+    <div
+      class="mt-8 flex flex-col gap-2 border-t border-outline-variant pt-4 text-xs text-on-surface-variant sm:flex-row sm:items-center sm:justify-between">
+      <span class="flex items-center gap-1.5">
+        <mat-icon class="size-3.5" svgIcon="calendar-range" />
+        {{ stats.period.from | date: 'mediumDate' }} – {{ stats.period.to | date: 'mediumDate' }}
+      </span>
+      <span class="flex items-center gap-1.5">
+        <mat-icon class="size-3.5" svgIcon="clock-3" />
+        Last updated {{ stats.generatedAt | date: 'medium' }}
+      </span>
+    </div>
+  } @else {
+    <div
+      class="flex min-h-96 flex-col items-center justify-center rounded-md border border-outline-variant px-6 text-center">
+      <div class="mb-4 flex size-12 items-center justify-center rounded-md bg-error-container text-on-error-container">
+        <mat-icon svgIcon="triangle-alert" />
+      </div>
+      <div>
+        <div class="text-lg font-semibold">Unable to load statistics</div>
+        <div class="mt-1 max-w-sm text-sm leading-6 text-on-surface-variant">
+          We couldn’t retrieve the latest platform data. Please check your connection and try again.
+        </div>
+      </div>
+      <button class="mt-5" matButton="outlined" type="button" (click)="statsResource.reload()">
+        <mat-icon svgIcon="refresh-cw" />
+        Try again
+      </button>
     </div>
   }
 </div>

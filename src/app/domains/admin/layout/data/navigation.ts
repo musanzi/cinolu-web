@@ -16,6 +16,76 @@ export const NAVIGATION: INavigationItem[] = [
     ]
   },
   {
+    id: 'content',
+    label: 'Content',
+    description: 'Manage platform content',
+    children: [
+      {
+        id: 'activities',
+        label: 'Activities',
+        icon: 'calendar-days',
+        route: '/admin/activities',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'programs',
+        label: 'Programs',
+        icon: 'blocks',
+        route: 'programs',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'portfolios',
+        label: 'Portfolios',
+        icon: 'briefcase-business',
+        route: 'portfolios',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'ventures',
+        label: 'Ventures',
+        icon: 'rocket',
+        route: 'ventures',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'reviews',
+        label: 'Reviews',
+        icon: 'message-square-text',
+        route: 'reviews',
+        activeOptions: { exact: false }
+      }
+    ]
+  },
+  {
+    id: 'taxonomy',
+    label: 'Taxonomy',
+    description: 'Manage classifications',
+    children: [
+      {
+        id: 'categories',
+        label: 'Categories',
+        icon: 'tags',
+        route: 'categories',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'types',
+        label: 'Types',
+        icon: 'shapes',
+        route: 'types',
+        activeOptions: { exact: false }
+      },
+      {
+        id: 'sectors',
+        label: 'Sectors',
+        icon: 'layers-2',
+        route: 'sectors',
+        activeOptions: { exact: false }
+      }
+    ]
+  },
+  {
     id: 'users-and-access',
     label: 'Users and access',
     description: 'Manage accounts and permissions',

@@ -9,6 +9,20 @@ export interface IUserPayload {
   email: string;
   name: string;
   roles: string[];
+  password?: string;
+  avatar?: string;
+  jobTitle?: string;
+  socialLinks?: Record<string, string>;
+}
+
+export interface IUserFormModel {
+  email: string;
+  name: string;
+  roles: string[];
+  password: string;
+  avatar: string;
+  jobTitle: string;
+  socialLinks: string;
 }
 
 export type IUserRow = IUser;
@@ -48,7 +62,9 @@ export interface IUsersState {
   isLoading: boolean;
   isLoadingRoles: boolean;
   isSaving: boolean;
+  isImporting: boolean;
   isExporting: boolean;
   removingUserId: string;
+  mutationVersion: number;
   error: string;
 }

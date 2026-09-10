@@ -1,0 +1,13 @@
+# STAFF — Users
+
+| Feature           | Route                    | Params                                          | Body                                                                                                                                   | Response                             |
+| ----------------- | ------------------------ | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Create user       | `POST /users`            | None                                            | `email: string`, `name: string`, `password?: string`, `avatar?: string`, `jobTitle?: string`, `socialLinks?: object`, `roles?: UUID[]` | `UserResponse`                       |
+| List users        | `GET /users`             | Query: `page?`, `limit?`, `take?`, `q?: string` | None                                                                                                                                   | `[UserResponse[], number]`           |
+| Import CSV        | `POST /users/import/csv` | None                                            | Multipart: `file: CSV` with `Name,Email` headers                                                                                       | `void`                               |
+| Export CSV        | `GET /users/export/csv`  | Query: `q?: string`                             | None                                                                                                                                   | CSV stream with `Name,Email` columns |
+| Get user by email | `GET /users/:email`      | Path: `email: string`                           | None                                                                                                                                   | `UserResponse`                       |
+| Update user       | `PATCH /users/:id`       | Path: `id: UUID`                                | Any create field, optional                                                                                                             | `UserResponse`                       |
+| Delete user       | `DELETE /users/:id`      | Path: `id: UUID`                                | None                                                                                                                                   | `void`                               |
+
+`UserResponse` contains the base entity fields plus `name`, `email`, `avatar`, `jobTitle?`, `biography`, `socialLinks`, and role names in `roles: string[]`. Passwords are omitted.

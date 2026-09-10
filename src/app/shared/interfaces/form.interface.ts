@@ -16,6 +16,8 @@ export interface IForm {
   fields: IField[];
 }
 
+export type IFormResponses = Record<string, string | string[]>;
+
 export type IQuestionType = 'text' | 'textarea' | 'email' | 'number' | 'date' | 'select' | 'radio' | 'checkbox';
 
 export interface IQuestionTypeOption {

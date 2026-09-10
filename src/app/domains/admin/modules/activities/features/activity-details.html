@@ -1,0 +1,90 @@
+<section class="flex flex-col gap-6 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <a class="self-start" matButton routerLink="/admin/activities">
+    <mat-icon svgIcon="arrow-left" />
+    Back to activities
+  </a>
+
+  @if (activityResource.isLoading()) {
+    <div class="flex min-h-64 items-center justify-center" aria-label="Loading activity">
+      <span class="text-sm text-on-surface-variant">Loading...</span>
+    </div>
+  } @else if (activityResource.error()) {
+    <div
+      class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+      role="alert">
+      <span>This activity could not be loaded.</span>
+      <button matButton type="button" (click)="activityResource.reload()">Retry</button>
+    </div>
+  } @else if (activityResource.value(); as activity) {
+    @if (activity.cover) {
+      <img class="max-h-96 w-full rounded-md object-cover" [src]="activity.cover" [alt]="activity.name" />
+    }
+
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+      <article class="flex flex-col gap-6">
+        <header>
+          <p class="text-sm font-medium text-primary">{{ activity.program.name }}</p>
+          <h1 class="mt-1 text-3xl font-semibold tracking-tight">{{ activity.name }}</h1>
+        </header>
+
+        @if (activity.description) {
+          <p class="whitespace-pre-line leading-7 text-on-surface-variant">{{ activity.description }}</p>
+        }
+
+        <div class="flex flex-col gap-3">
+          @if (activity.types.length) {
+            <div>
+              <h2 class="mb-2 text-sm font-semibold">Types</h2>
+              <mat-chip-set aria-label="Activity types">
+                @for (type of activity.types; track type.id) {
+                  <mat-chip>{{ type.name }}</mat-chip>
+                }
+              </mat-chip-set>
+            </div>
+          }
+
+          @if (activity.categories.length) {
+            <div>
+              <h2 class="mb-2 text-sm font-semibold">Categories</h2>
+              <mat-chip-set aria-label="Activity categories">
+                @for (category of activity.categories; track category.id) {
+                  <mat-chip>{{ category.name }}</mat-chip>
+                }
+              </mat-chip-set>
+            </div>
+          }
+        </div>
+      </article>
+
+      <aside>
+        <mat-card class="rounded-md" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>Activity information</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mt-5 flex flex-col gap-5">
+            <div class="flex gap-3">
+              <mat-icon class="text-primary" svgIcon="calendar-days" />
+              <div>
+                <p class="text-sm font-medium">Schedule</p>
+                <p class="text-sm text-on-surface-variant">{{ activity.startDate | date: 'dd MMM yyyy, HH:mm' }}</p>
+                <p class="text-sm text-on-surface-variant">to {{ activity.endDate | date: 'dd MMM yyyy, HH:mm' }}</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <mat-icon class="text-primary" svgIcon="users" />
+              <div>
+                <p class="text-sm font-medium">Mentors</p>
+                @for (mentor of activity.mentors; track mentor.id) {
+                  <p class="text-sm text-on-surface-variant">{{ mentor.name }}</p>
+                } @empty {
+                  <p class="text-sm text-on-surface-variant">No mentors assigned</p>
+                }
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </aside>
+    </div>
+  }
+</section>

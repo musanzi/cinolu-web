@@ -1,0 +1,156 @@
+<section class="flex flex-col px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">Programs</h1>
+      <p class="mt-1 text-sm text-on-surface-variant">Create and manage programs, their portfolios and managers.</p>
+    </div>
+
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <label class="sr-only" for="program-search">Search programs</label>
+      <div class="relative w-full sm:w-80">
+        <mat-icon
+          class="pointer-events-none absolute top-1/2 left-3 z-10 size-5 -translate-y-1/2 text-on-surface-variant"
+          svgIcon="search" />
+        <input
+          class="h-10 w-full rounded-lg border border-outline bg-transparent pr-3 pl-10 text-sm text-on-surface outline-none placeholder:text-on-surface-variant focus:border-primary"
+          id="program-search"
+          type="search"
+          placeholder="Search programs"
+          [ngModel]="q()"
+          (ngModelChange)="onSearchChange($event)" />
+      </div>
+
+      <mat-form-field class="w-full sm:w-56" appearance="outline" subscriptSizing="dynamic">
+        <mat-select [ngModel]="portfolioId()" (ngModelChange)="onPortfolioChange($event)">
+          <mat-option value="">All portfolios</mat-option>
+          @for (portfolio of portfolios(); track portfolio.id) {
+            <mat-option [value]="portfolio.id">{{ portfolio.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        matButton="filled"
+        type="button"
+        [disabled]="store.isSaving() || areLookupsLoading()"
+        (click)="openCreateDialog()">
+        <mat-icon svgIcon="plus" />
+        Create program
+      </button>
+    </div>
+  </div>
+
+  @if (store.error()) {
+    <div
+      class="mb-4 flex items-center justify-between gap-4 rounded-lg bg-error-container p-4 text-on-error-container"
+      role="alert">
+      <span>{{ store.error() }}</span>
+      <button matButton type="button" (click)="store.clearError()">Close</button>
+    </div>
+  }
+
+  @if (programsResource.error()) {
+    <div class="rounded-md border border-error p-6 text-center" role="alert">
+      <p class="text-sm text-error">Unable to load programs.</p>
+      <button class="mt-3" matButton="outlined" type="button" (click)="programsResource.reload()">Try again</button>
+    </div>
+  } @else if (programsResource.isLoading()) {
+    <div class="flex min-h-64 items-center justify-center" aria-label="Loading programs">
+      <span class="text-sm text-on-surface-variant">Loading...</span>
+    </div>
+  } @else {
+    <div class="flex flex-col overflow-hidden rounded-xl border border-outline-variant">
+      <div class="relative isolate overflow-x-auto">
+        <table class="w-full whitespace-nowrap" mat-table [dataSource]="programs()">
+          <ng-container matColumnDef="program">
+            <th mat-header-cell *matHeaderCellDef>Program</th>
+            <td mat-cell *matCellDef="let program">
+              <div class="flex items-center gap-3 py-2">
+                <div
+                  class="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface-container-high font-semibold text-on-surface-variant">
+                  <span>{{ program.name.charAt(0).toUpperCase() }}</span>
+                  @if (program.logo) {
+                    <img
+                      class="absolute inset-0 size-full bg-surface object-contain"
+                      [src]="logoUrl(program.logo)"
+                      [alt]="program.name + ' logo'"
+                      (error)="hideBrokenImage($event)" />
+                  }
+                </div>
+                <div class="max-w-80 min-w-0">
+                  <p class="truncate font-medium">{{ program.name }}</p>
+                  <p class="truncate text-xs text-on-surface-variant">{{ program.description || 'No description' }}</p>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="portfolio">
+            <th mat-header-cell *matHeaderCellDef>Portfolio</th>
+            <td mat-cell *matCellDef="let program">{{ program.portfolio.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="managers">
+            <th mat-header-cell *matHeaderCellDef>Managers</th>
+            <td mat-cell *matCellDef="let program">
+              @for (manager of program.managers; track manager.id; let last = $last) {
+                <span>{{ manager.name }}{{ last ? '' : ', ' }}</span>
+              } @empty {
+                <span class="text-on-surface-variant">Unassigned</span>
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef>Updated</th>
+            <td mat-cell *matCellDef="let program">{{ program.updatedAt | date: 'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+            <td class="text-right" mat-cell *matCellDef="let program">
+              <button
+                matIconButton
+                type="button"
+                aria-label="Edit program"
+                [disabled]="store.isSaving() || store.removingProgramId() !== '' || areLookupsLoading()"
+                (click)="openUpdateDialog(program)">
+                <mat-icon svgIcon="pencil" />
+              </button>
+              <button
+                matIconButton
+                type="button"
+                aria-label="Delete program"
+                [disabled]="store.isSaving() || store.removingProgramId() !== ''"
+                (click)="openRemoveDialog(program)">
+                <mat-icon svgIcon="trash-2" />
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            class="group relative hover:bg-on-surface-variant/4"
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"></tr>
+
+          <tr class="h-32" *matNoDataRow>
+            <td class="text-center text-sm text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+              No programs found.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      @if (programsCount() > 40) {
+        <mat-paginator
+          aria-label="Select a page of programs"
+          [length]="programsCount()"
+          [pageIndex]="page() - 1"
+          [pageSize]="40"
+          [hidePageSize]="true"
+          (page)="onPageChange($event)" />
+      }
+    </div>
+  }
+</section>

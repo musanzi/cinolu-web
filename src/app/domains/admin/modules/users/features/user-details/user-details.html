@@ -1,0 +1,72 @@
+<section class="flex flex-col gap-6 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <a class="self-start" matButton routerLink="/admin/users"><mat-icon svgIcon="arrow-left" />Back to users</a>
+
+  @if (userResource.isLoading()) {
+    <div class="flex min-h-64 items-center justify-center" aria-label="Loading user">
+      <span class="text-sm text-on-surface-variant">Loading...</span>
+    </div>
+  } @else if (userResource.error()) {
+    <div
+      class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+      role="alert">
+      <span>This user could not be loaded.</span
+      ><button matButton type="button" (click)="userResource.reload()">Retry</button>
+    </div>
+  } @else if (userResource.value(); as user) {
+    <header>
+      <p class="text-sm font-medium text-primary">{{ user.jobTitle || 'Platform user' }}</p>
+      <h1 class="mt-1 text-3xl font-semibold tracking-tight">{{ user.name }}</h1>
+      <a class="text-sm text-on-surface-variant hover:text-primary hover:underline" [href]="'mailto:' + user.email">{{
+        user.email
+      }}</a>
+    </header>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      <mat-card class="rounded-md" appearance="outlined">
+        <mat-card-header><mat-card-title>Profile</mat-card-title></mat-card-header>
+        <mat-card-content class="mt-5 flex flex-col gap-4">
+          <div>
+            <p class="text-xs font-medium uppercase tracking-wide text-on-surface-variant">Biography</p>
+            <p class="mt-1 whitespace-pre-line">{{ user.biography || 'No biography provided.' }}</p>
+          </div>
+          <div>
+            <p class="text-xs font-medium uppercase tracking-wide text-on-surface-variant">Registered</p>
+            <p class="mt-1">{{ user.createdAt | date: 'dd MMM yyyy, HH:mm' }}</p>
+          </div>
+          <div>
+            <p class="text-xs font-medium uppercase tracking-wide text-on-surface-variant">Last updated</p>
+            <p class="mt-1">{{ user.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="rounded-md" appearance="outlined">
+        <mat-card-header><mat-card-title>Access and links</mat-card-title></mat-card-header>
+        <mat-card-content class="mt-5 flex flex-col gap-5">
+          <div>
+            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-on-surface-variant">Roles</p>
+            <mat-chip-set aria-label="User roles">
+              @for (role of user.roles; track role) {
+                <mat-chip>{{ role }}</mat-chip>
+              } @empty {
+                <span class="text-sm text-on-surface-variant">No roles assigned</span>
+              }
+            </mat-chip-set>
+          </div>
+          <div>
+            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-on-surface-variant">Social links</p>
+            <div class="flex flex-col gap-2">
+              @for (link of user.socialLinks | keyvalue; track link.key) {
+                <a class="text-primary hover:underline" target="_blank" rel="noopener" [href]="link.value">{{
+                  link.key | titlecase
+                }}</a>
+              } @empty {
+                <span class="text-sm text-on-surface-variant">No links provided</span>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</section>

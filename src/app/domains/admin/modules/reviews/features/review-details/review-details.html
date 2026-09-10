@@ -1,0 +1,51 @@
+<section class="flex flex-col gap-6 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <a class="self-start" matButton routerLink="/admin/reviews"><mat-icon svgIcon="arrow-left" />Back to reviews</a>
+
+  @if (reviewResource.isLoading()) {
+    <div class="flex min-h-64 items-center justify-center" aria-label="Loading review">
+      <span class="text-sm text-on-surface-variant">Loading...</span>
+    </div>
+  } @else if (reviewResource.error()) {
+    <div
+      class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+      role="alert">
+      <span>This review could not be loaded.</span>
+      <button matButton type="button" (click)="reviewResource.reload()">Retry</button>
+    </div>
+  } @else if (reviewResource.value(); as review) {
+    <header>
+      <p class="text-sm font-medium text-primary">{{ review.activity.name }}</p>
+      <h1 class="mt-1 text-3xl font-semibold tracking-tight">Review by {{ review.reviewer.name }}</h1>
+      <p class="mt-2 text-sm text-on-surface-variant">Submitted {{ review.createdAt | date: 'dd MMM yyyy, HH:mm' }}</p>
+    </header>
+
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+      <mat-card class="rounded-md" appearance="outlined">
+        <mat-card-header><mat-card-title>Responses</mat-card-title></mat-card-header>
+        <mat-card-content class="mt-5 flex flex-col divide-y divide-outline-variant">
+          @for (answer of review.data | keyvalue; track answer.key) {
+            <div class="py-4 first:pt-0 last:pb-0">
+              <p class="text-sm font-medium">{{ answer.key }}</p>
+              <p class="mt-1 whitespace-pre-wrap text-sm text-on-surface-variant">{{ formatAnswer(answer.value) }}</p>
+            </div>
+          } @empty {
+            <p class="text-sm text-on-surface-variant">This review has no response data.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="rounded-md" appearance="outlined">
+        <mat-card-header><mat-card-title>Reviewer</mat-card-title></mat-card-header>
+        <mat-card-content class="mt-5">
+          <p class="font-medium">{{ review.reviewer.name }}</p>
+          <a class="text-sm text-primary hover:underline" [href]="'mailto:' + review.reviewer.email">{{
+            review.reviewer.email
+          }}</a>
+          @if (review.reviewer.jobTitle) {
+            <p class="mt-2 text-sm text-on-surface-variant">{{ review.reviewer.jobTitle }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</section>

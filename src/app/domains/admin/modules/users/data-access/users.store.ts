@@ -22,8 +22,10 @@ const initialState: IUsersState = {
   isLoading: false,
   isLoadingRoles: false,
   isSaving: false,
+  isImporting: false,
   isExporting: false,
   removingUserId: '',
+  mutationVersion: 0,
   error: ''
 };
 
@@ -123,11 +125,28 @@ export const UsersStore = signalStore(
         })
       )
     ),
-    exportUsers: rxMethod<void>(
+    importUsers: rxMethod<File>(
+      pipe(
+        concatMap((file) => {
+          patchState(store, { isImporting: true, error: '' });
+          const body = new FormData();
+          body.append('file', file);
+          return _http.post<void>('/users/import/csv', body).pipe(
+            tap(() => patchState(store, { mutationVersion: store.mutationVersion() + 1 })),
+            catchError(() => {
+              patchState(store, { error: 'Unable to import users. Check that the CSV has Name and Email headers.' });
+              return EMPTY;
+            }),
+            finalize(() => patchState(store, { isImporting: false }))
+          );
+        })
+      )
+    ),
+    exportUsers: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { isExporting: true, error: '' })),
-        switchMap(() =>
-          _http.get('/users/export/csv', { responseType: 'blob' }).pipe(
+        switchMap((q) =>
+          _http.get('/users/export/csv', { params: { q }, responseType: 'blob' }).pipe(
             tap((csv) => {
               const urlApi = _document.defaultView?.URL;
               if (!urlApi) return;

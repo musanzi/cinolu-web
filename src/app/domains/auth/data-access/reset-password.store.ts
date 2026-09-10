@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { IUser } from '@/app/shared/interfaces';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, concatMap, EMPTY, finalize, pipe, tap } from 'rxjs';
@@ -17,7 +18,7 @@ export const ResetPasswordStore = signalStore(
       pipe(
         concatMap((payload) => {
           patchState(store, { isLoading: true, error: '' });
-          return _http.post<void>('/auth/password/reset', payload).pipe(
+          return _http.post<IUser>('/auth/password/reset', payload).pipe(
             tap(() => {
               void _router.navigate(['/auth/sign-in']);
             }),
