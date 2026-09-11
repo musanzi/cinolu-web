@@ -142,12 +142,12 @@
         </table>
       </div>
 
-      @if (programsCount() > 40) {
+      @if (programsCount() > pageSize) {
         <mat-paginator
           aria-label="Select a page of programs"
           [length]="programsCount()"
           [pageIndex]="page() - 1"
-          [pageSize]="40"
+          [pageSize]="pageSize"
           [hidePageSize]="true"
           (page)="onPageChange($event)" />
       }

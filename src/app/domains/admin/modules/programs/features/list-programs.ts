@@ -18,6 +18,7 @@ import {
   IPortfoliosLookupResponse,
   IProgramDialogData,
   IProgramDialogResult,
+  IProgramsQuery,
   IProgramsResponse,
   IRemoveProgramDialogData,
   IStaffLookupResponse
@@ -46,19 +47,32 @@ export default class Programs {
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
 
+  protected readonly pageSize = 100;
   protected readonly page = signal(1);
   protected readonly q = signal('');
   protected readonly portfolioId = signal('');
   protected readonly debouncedQuery = debounced(this.q, 300);
   protected readonly displayedColumns = ['program', 'portfolio', 'managers', 'updatedAt', 'actions'];
 
+  private readonly query = computed<IProgramsQuery>(() => ({
+    page: this.page(),
+    limit: this.pageSize,
+    q: this.debouncedQuery.value().trim(),
+    portfolioId: this.portfolioId()
+  }));
+
   protected readonly programsResource = httpResource<IProgramsResponse>(() => {
     this.store.mutationVersion();
-    const q = encodeURIComponent(this.debouncedQuery.value());
-    const portfolio = this.portfolioId() ? `&portfolioId=${encodeURIComponent(this.portfolioId())}` : '';
-    return `/programs?page=${this.page()}&take=40&q=${q}${portfolio}`;
+    const query = this.query();
+    const params = new URLSearchParams({
+      page: String(query.page),
+      limit: String(query.limit)
+    });
+    if (query.q) params.set('q', query.q);
+    if (query.portfolioId) params.set('portfolioId', query.portfolioId);
+    return `/programs?${params.toString()}`;
   });
-  protected readonly portfoliosResource = httpResource<IPortfoliosLookupResponse>(() => '/portfolios?take=1000');
+  protected readonly portfoliosResource = httpResource<IPortfoliosLookupResponse>(() => '/portfolios');
   protected readonly staffResource = httpResource<IStaffLookupResponse>(() => '/users/staff');
 
   protected readonly programs = computed(() =>

@@ -2,6 +2,7 @@ import { IPortfolio, IProgram, IUser } from '@/app/shared/interfaces';
 
 export interface IProgramsQuery {
   page: number;
+  limit: number;
   q: string;
   portfolioId: string;
 }

@@ -10,7 +10,6 @@ import { environment } from '@/environments/environment';
 import { IPortfolioDialogData, IPortfolioDialogResult, IPortfolioPayload } from '../../interfaces';
 
 @Component({
-  selector: 'app-portfolio-form-dialog',
   imports: [FormField, MatButtonModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule],
   templateUrl: './portfolio-form-dialog.html'
 })
@@ -31,6 +30,7 @@ export class PortfolioFormDialog {
   });
   protected readonly portfolioForm = form(this.portfolioModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Name is required.' });
+    required(schemaPath.description, { message: 'Description is required.' });
     maxLength(schemaPath.name, 150, { message: 'Name cannot exceed 150 characters.' });
     validate(schemaPath.name, ({ value }) => {
       if (value().trim().length === 0) {

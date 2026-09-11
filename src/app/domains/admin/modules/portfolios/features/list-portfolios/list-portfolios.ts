@@ -44,10 +44,7 @@ export default class Portfolios {
 
   protected readonly portfoliosResource = httpResource<IPortfoliosResponse>(() => ({
     url: '/portfolios',
-    params: {
-      page: this.queryParams().page.toString(),
-      q: this.queryParams().q
-    }
+    params: { page: this.queryParams().page, q: this.queryParams().q }
   }));
 
   protected logoUrl(logo: string): string {
