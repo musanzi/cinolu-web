@@ -99,6 +99,7 @@ export default class ListSectors {
       )
       .subscribe(({ payload }) => this.store.createSector(payload));
   }
+
   protected openUpdateDialog(sector: ISector): void {
     this.dialog
       .open<SectorFormDialog, ISectorDialogData, ISectorDialogResult>(SectorFormDialog, {
@@ -113,6 +114,7 @@ export default class ListSectors {
       )
       .subscribe(({ payload }) => this.store.updateSector({ id: sector.id, payload }));
   }
+
   protected openRemoveDialog(sector: ISector): void {
     this.dialog
       .open<RemoveSectorDialog, IRemoveSectorDialogData, boolean>(RemoveSectorDialog, {

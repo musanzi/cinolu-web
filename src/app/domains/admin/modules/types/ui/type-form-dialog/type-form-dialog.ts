@@ -7,7 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { ITypeDialogData, ITypeDialogResult, ITypePayload } from '../../interfaces';
 
 @Component({
-  selector: 'app-type-form-dialog',
   imports: [FormField, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule],
   templateUrl: './type-form-dialog.html'
 })

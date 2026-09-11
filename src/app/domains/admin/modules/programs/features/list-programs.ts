@@ -47,7 +47,7 @@ export default class Programs {
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly pageSize = 100;
+  protected readonly pageSize = 40;
   protected readonly page = signal(1);
   protected readonly q = signal('');
   protected readonly portfolioId = signal('');

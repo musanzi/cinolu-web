@@ -17,11 +17,6 @@ import { AddUserSidebar } from '../../ui/add-user-sidebar/add-user-sidebar';
 import { RemoveUserDialog } from '../../ui/remove-user-dialog/remove-user-dialog';
 import { UpdateUserSidebar } from '../../ui/update-user-sidebar/update-user-sidebar';
 
-function parsePage(value: string | null): number {
-  const page = Number(value);
-  return Number.isInteger(page) && page > 0 ? page : 1;
-}
-
 @Component({
   imports: [
     AddUserSidebar,
@@ -38,9 +33,6 @@ function parsePage(value: string | null): number {
     MatTableModule,
     UpdateUserSidebar
   ],
-  host: {
-    class: 'lg:h-full'
-  },
   templateUrl: './list-users.html',
   providers: [UsersStore]
 })
@@ -53,7 +45,7 @@ export default class Users implements OnInit {
   private readonly initialQueryParams = this.route.snapshot.queryParamMap;
 
   protected readonly pageSize = 40;
-  protected readonly page = signal(parsePage(this.initialQueryParams.get('page')));
+  protected readonly page = signal(Number(this.initialQueryParams.get('page') || 1));
   protected readonly q = signal(this.initialQueryParams.get('q') ?? '');
   protected readonly selectedUser = signal<IUserRow | undefined>(undefined);
   protected readonly isCreating = signal(false);
