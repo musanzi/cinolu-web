@@ -1,0 +1,153 @@
+<div class="flex h-full min-h-0 flex-col w-full border-none bg-white sm:w-lg relative">
+  <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
+    <div>
+      <h2 class="text-xl font-semibold">{{ heading() }}</h2>
+      <p class="text-sm text-on-surface-variant">Set the schedule, audience and application forms.</p>
+    </div>
+    <button matIconButton type="button" aria-label="Close activity editor" (click)="cancelled.emit()">
+      <mat-icon svgIcon="x" />
+    </button>
+  </header>
+
+  <form class="flex min-h-0 w-full flex-1 flex-col" (submit)="onSubmit(); $event.preventDefault()">
+    <mat-tab-group class="min-h-0 w-full flex-1 overflow-auto" animationDuration="150ms">
+      <mat-tab label="Details">
+        <div class="flex flex-col gap-5 p-5 sm:p-7">
+          <div class="flex flex-col gap-4 rounded-md border border-outline-variant p-4 sm:flex-row sm:items-center">
+            <div
+              class="flex h-28 w-full shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface-container-low sm:w-44">
+              @if (coverPreview()) {
+                <img class="size-full object-cover" [src]="coverPreview()" alt="Activity cover preview" />
+              } @else {
+                <mat-icon class="text-on-surface-variant" svgIcon="image" />
+              }
+            </div>
+            <div class="flex min-w-0 flex-col items-start gap-2">
+              <p class="max-w-full truncate text-sm text-on-surface-variant">
+                {{ selectedCover()?.name ?? (activity()?.cover ? 'Current cover image' : 'No cover selected') }}
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <input
+                  #coverInput
+                  class="hidden"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  (change)="onCoverSelected($event)" />
+                <button matButton="outlined" type="button" (click)="coverInput.click()">
+                  <mat-icon svgIcon="image-plus" />
+                  {{ coverPreview() ? 'Replace cover' : 'Choose cover' }}
+                </button>
+                @if (selectedCover()) {
+                  <button matButton type="button" (click)="clearSelectedCover(coverInput)">Clear</button>
+                }
+              </div>
+              <span class="text-xs text-on-surface-variant">PNG, JPEG or WebP</span>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Name</mat-label>
+            <input matInput [formField]="activityForm.name" autocomplete="off" />
+            @if (activityForm.name().touched() && activityForm.name().errors().length) {
+              <mat-error>{{ activityForm.name().errors()[0].message }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Description</mat-label>
+            <textarea matInput rows="4" [formField]="activityForm.description"></textarea>
+          </mat-form-field>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Starts</mat-label>
+              <input matInput [matDatepicker]="startPicker" [formField]="activityForm.startDate" />
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+              <mat-datepicker #startPicker />
+              @if (activityForm.startDate().touched() && activityForm.startDate().errors().length) {
+                <mat-error>{{ activityForm.startDate().errors()[0].message }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Ends</mat-label>
+              <input matInput [matDatepicker]="endPicker" [formField]="activityForm.endDate" />
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+              <mat-datepicker #endPicker />
+              @if (activityForm.endDate().touched() && activityForm.endDate().errors().length) {
+                <mat-error>{{ activityForm.endDate().errors()[0].message }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Program</mat-label>
+            <mat-select [formField]="activityForm.programId">
+              @for (program of lookups().programs; track program.id) {
+                <mat-option [value]="program.id">{{ program.name }}</mat-option>
+              }
+            </mat-select>
+            @if (activityForm.programId().touched() && activityForm.programId().errors().length) {
+              <mat-error>{{ activityForm.programId().errors()[0].message }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Mentors</mat-label>
+            <mat-select multiple [formField]="activityForm.mentorIds">
+              @for (mentor of lookups().mentors; track mentor.id) {
+                <mat-option [value]="mentor.id">{{ mentor.name }} — {{ mentor.email }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Types</mat-label>
+              <mat-select multiple [formField]="activityForm.typeIds">
+                @for (type of lookups().types; track type.id) {
+                  <mat-option [value]="type.id">{{ type.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Categories</mat-label>
+              <mat-select multiple [formField]="activityForm.categoryIds">
+                @for (category of lookups().categories; track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="rounded-md border border-outline-variant p-4">
+            <mat-slide-toggle [checked]="isPublished()" (change)="isPublished.set($event.checked)">
+              Publish this activity
+            </mat-slide-toggle>
+            <p class="mt-1 text-xs text-on-surface-variant">Published activities are visible to participants.</p>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Participation form">
+        <div class="p-5 sm:p-7">
+          <form-builder [(value)]="participationForm" />
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Review form">
+        <div class="p-5 sm:p-7">
+          <form-builder [(value)]="reviewForm" />
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <footer class="flex items-center justify-end gap-2 border-t border-outline-variant bg-surface px-5 py-4 sm:px-7">
+      <button matButton type="button" [disabled]="isSaving()" (click)="cancelled.emit()">Cancel</button>
+      <button matButton="filled" type="submit" [disabled]="activityForm().invalid() || isSaving()">
+        {{ isSaving() ? 'Saving…' : submitLabel() }}
+      </button>
+    </footer>
+  </form>
+</div>

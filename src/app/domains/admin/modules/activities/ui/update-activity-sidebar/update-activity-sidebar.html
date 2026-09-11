@@ -1,0 +1,8 @@
+<activity-form
+  heading="Edit activity"
+  submitLabel="Save changes"
+  [activity]="activity()"
+  [lookups]="lookups()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />

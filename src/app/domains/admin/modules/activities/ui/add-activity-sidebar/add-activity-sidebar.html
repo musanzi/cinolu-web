@@ -1,0 +1,7 @@
+<activity-form
+  heading="Create activity"
+  submitLabel="Create activity"
+  [lookups]="lookups()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />
