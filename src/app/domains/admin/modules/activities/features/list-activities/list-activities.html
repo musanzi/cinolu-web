@@ -1,0 +1,209 @@
+<div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
+  <mat-sidenav-container class="h-full flex-auto" (backdropClick)="closeSidebar()">
+    <mat-sidenav
+      class="w-full border-none bg-white sm:w-lg"
+      [mode]="'over'"
+      [opened]="isSidebarOpen()"
+      position="end"
+      disableClose>
+      @if (isCreating()) {
+        <add-activity-sidebar
+          [lookups]="lookups()"
+          [isSaving]="store.isSaving()"
+          (cancelled)="closeSidebar()"
+          (submitted)="createActivity($event)" />
+      } @else if (selectedActivity(); as activity) {
+        <update-activity-sidebar
+          [activity]="activity"
+          [lookups]="lookups()"
+          [isSaving]="store.isSaving()"
+          (cancelled)="closeSidebar()"
+          (submitted)="updateActivity(activity, $event)" />
+      }
+    </mat-sidenav>
+
+    <mat-sidenav-content class="flex flex-auto flex-col" [class.border-r]="isSidebarOpen()">
+      <section class="flex min-h-full flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+        <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">Activities</h1>
+            <p class="mt-1 text-sm text-on-surface-variant">Create, publish and manage activities and their forms.</p>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matPrefix svgIcon="search" />
+              <input
+                matInput
+                type="search"
+                placeholder="Search activities"
+                class="w-full md:w-80"
+                [value]="q()"
+                (input)="onSearch($event)" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input
+                matInput
+                readonly
+                placeholder="Starts from"
+                [matDatepicker]="startPicker"
+                [max]="endDate()"
+                [value]="startDate()"
+                (dateChange)="onStartDateChange($event.value)" />
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+              <mat-datepicker #startPicker />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input
+                matInput
+                readonly
+                placeholder="Ends by"
+                [matDatepicker]="endPicker"
+                [min]="startDate()"
+                [value]="endDate()"
+                (dateChange)="onEndDateChange($event.value)" />
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+              <mat-datepicker #endPicker />
+            </mat-form-field>
+
+            @if (hasFilters()) {
+              <button matButton type="button" (click)="clearFilters()">Clear filters</button>
+            }
+
+            <button
+              matButton="filled"
+              type="button"
+              [disabled]="areLookupsLoading() || !!lookupsError() || store.isSaving()"
+              (click)="openCreateSidebar()">
+              <mat-icon svgIcon="plus" />
+              Add activity
+            </button>
+          </div>
+        </div>
+
+        @if (store.error()) {
+          <div
+            class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+            role="alert">
+            <span>{{ store.error() }}</span>
+            <button matButton type="button" (click)="store.clearError()">Close</button>
+          </div>
+        }
+
+        @if (lookupsError()) {
+          <div
+            class="flex items-center justify-between gap-4 rounded-md border border-error p-4 text-error"
+            role="alert">
+            <span>Activity form options could not be loaded.</span>
+            <button matButton="outlined" type="button" (click)="reloadLookups()">Retry</button>
+          </div>
+        }
+
+        @if (activitiesResource.isLoading()) {
+          <div class="flex min-h-64 items-center justify-center" aria-label="Loading activities">
+            <span class="text-sm text-on-surface-variant">Loading...</span>
+          </div>
+        } @else if (activitiesResource.error()) {
+          <div
+            class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
+            role="alert">
+            <span>Activities could not be loaded.</span>
+            <button matButton type="button" (click)="activitiesResource.reload()">Retry</button>
+          </div>
+        } @else {
+          <div class="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+            @for (activity of activities(); track activity.id) {
+              <mat-card class="overflow-hidden rounded-md" appearance="outlined">
+                <div class="relative flex h-40 items-center justify-center bg-surface-container-low">
+                  @if (activity.cover) {
+                    <img
+                      class="size-full object-cover"
+                      [src]="coverUrl(activity.cover)"
+                      [alt]="activity.name + ' cover'"
+                      (load)="showCover($event)"
+                      (error)="hideBrokenCover($event)" />
+                  } @else {
+                    <mat-icon class="text-on-surface-variant" svgIcon="image" />
+                  }
+                  <span
+                    class="absolute top-3 right-3 rounded-full px-2.5 py-1 text-xs font-medium"
+                    [class.bg-primary-container]="activity.isPublished"
+                    [class.text-on-primary-container]="activity.isPublished"
+                    [class.bg-surface-container-high]="!activity.isPublished">
+                    {{ activity.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                </div>
+
+                <mat-card-header>
+                  <mat-card-title>{{ activity.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ activity.program.name }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content class="mt-4 flex flex-col gap-3">
+                  <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                    <mat-icon class="size-4" svgIcon="calendar-days" />
+                    <span>
+                      {{ activity.startDate | date: 'dd MMM yyyy, HH:mm' }} -
+                      {{ activity.endDate | date: 'dd MMM yyyy, HH:mm' }}
+                    </span>
+                  </div>
+                  @if (activity.description) {
+                    <p class="line-clamp-3 text-sm text-on-surface-variant">{{ activity.description }}</p>
+                  }
+                  <div class="flex flex-wrap gap-2">
+                    @for (type of activity.types; track type.id) {
+                      <span class="rounded-full bg-surface-container px-2.5 py-1 text-xs">{{ type.name }}</span>
+                    }
+                  </div>
+                </mat-card-content>
+                <mat-card-actions class="flex-wrap" align="end">
+                  <button
+                    matButton
+                    type="button"
+                    [disabled]="store.togglingActivityId() !== '' || store.removingActivityId() !== ''"
+                    (click)="togglePublication(activity)">
+                    <mat-icon [svgIcon]="activity.isPublished ? 'eye-off' : 'eye'" />
+                    {{ activity.isPublished ? 'Unpublish' : 'Publish' }}
+                  </button>
+                  <button
+                    matButton
+                    type="button"
+                    [disabled]="areLookupsLoading() || !!lookupsError() || store.isSaving()"
+                    (click)="openUpdateSidebar(activity)">
+                    <mat-icon svgIcon="pencil" />
+                    Edit
+                  </button>
+                  <button
+                    matIconButton
+                    type="button"
+                    aria-label="Delete activity"
+                    [disabled]="store.removingActivityId() !== '' || store.isSaving()"
+                    (click)="openRemoveDialog(activity)">
+                    <mat-icon svgIcon="trash-2" />
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            } @empty {
+              <p
+                class="col-span-full rounded-md border border-outline-variant p-10 text-center text-sm text-on-surface-variant">
+                No activities match these filters.
+              </p>
+            }
+          </div>
+
+          @if (total() > pageSize) {
+            <mat-paginator
+              class="rounded-md border border-outline-variant"
+              aria-label="Select a page of activities"
+              [length]="total()"
+              [pageIndex]="page() - 1"
+              [pageSize]="pageSize"
+              [hidePageSize]="true"
+              (page)="onPageChange($event)" />
+          }
+        }
+      </section>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
