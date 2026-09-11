@@ -4,6 +4,7 @@ import { IActivityFormResult, IActivityLookups } from '../../interfaces';
 import { ActivityForm } from '../activity-form/activity-form';
 
 @Component({
+  selector: 'update-activity-sidebar',
   imports: [ActivityForm],
   templateUrl: './update-activity-sidebar.html'
 })
