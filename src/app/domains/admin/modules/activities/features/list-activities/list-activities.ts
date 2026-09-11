@@ -32,18 +32,6 @@ import { AddActivitySidebar } from '../../ui/add-activity-sidebar/add-activity-s
 import { RemoveActivityDialog } from '../../ui/remove-activity-dialog/remove-activity-dialog';
 import { UpdateActivitySidebar } from '../../ui/update-activity-sidebar/update-activity-sidebar';
 
-function parsePage(value: string | null): number {
-  const page = Number(value);
-  return Number.isInteger(page) && page > 0 ? page : 1;
-}
-
-function parseDate(value: string | null): Date | null {
-  if (!value) return null;
-
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
 @Component({
   imports: [
     DatePipe,
@@ -61,9 +49,6 @@ function parseDate(value: string | null): Date | null {
     AddActivitySidebar,
     UpdateActivitySidebar
   ],
-  host: {
-    class: 'lg:h-full'
-  },
   templateUrl: './list-activities.html',
   providers: [ActivitiesStore]
 })
@@ -77,10 +62,10 @@ export default class ListActivities {
   private readonly initialQueryParams = this.route.snapshot.queryParamMap;
 
   protected readonly pageSize = 40;
-  protected readonly page = signal(parsePage(this.initialQueryParams.get('page')));
+  protected readonly page = signal(Number(this.initialQueryParams.get('page') || 1));
   protected readonly q = signal(this.initialQueryParams.get('q') ?? '');
-  protected readonly startDate = signal(parseDate(this.initialQueryParams.get('startDate')));
-  protected readonly endDate = signal(parseDate(this.initialQueryParams.get('endDate')));
+  protected readonly startDate = signal(this.initialQueryParams.get('startDate'));
+  protected readonly endDate = signal(this.initialQueryParams.get('endDate'));
   protected readonly selectedActivity = signal<IActivity | undefined>(undefined);
   protected readonly isCreating = signal(false);
   private readonly debouncedQuery = debounced(this.q, 300);
@@ -93,8 +78,8 @@ export default class ListActivities {
       page: this.page(),
       limit: this.pageSize,
       ...(q && { q }),
-      ...(startDate && { startDate: startDate.toISOString() }),
-      ...(endDate && { endDate: endDate.toISOString() })
+      ...(startDate && { startDate: new Date(startDate).toISOString() }),
+      ...(endDate && { endDate: new Date(endDate).toISOString() })
     };
   });
 
@@ -163,20 +148,13 @@ export default class ListActivities {
     this.page.set(1);
   }
 
-  protected onStartDateChange(value: Date | null): void {
-    this.startDate.set(value);
+  protected onStartDateChange(value: Date): void {
+    this.startDate.set(value.toISOString());
     this.page.set(1);
   }
 
-  protected onEndDateChange(value: Date | null): void {
-    this.endDate.set(value);
-    this.page.set(1);
-  }
-
-  protected clearFilters(): void {
-    this.q.set('');
-    this.startDate.set(null);
-    this.endDate.set(null);
+  protected onEndDateChange(value: Date): void {
+    this.endDate.set(value.toISOString());
     this.page.set(1);
   }
 
@@ -226,22 +204,7 @@ export default class ListActivities {
       .subscribe(() => this.store.removeActivity({ id: activity.id }));
   }
 
-  protected reloadLookups(): void {
-    this.programsResource.reload();
-    this.mentorsResource.reload();
-    this.typesResource.reload();
-    this.categoriesResource.reload();
-  }
-
   protected coverUrl(cover: string): string {
     return cover.startsWith('http') ? cover : `${environment.apiUrl}/uploads/activities/${encodeURIComponent(cover)}`;
-  }
-
-  protected hideBrokenCover(event: Event): void {
-    (event.target as HTMLImageElement).hidden = true;
-  }
-
-  protected showCover(event: Event): void {
-    (event.target as HTMLImageElement).hidden = false;
   }
 }

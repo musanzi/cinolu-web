@@ -68,10 +68,6 @@
               <mat-datepicker #endPicker />
             </mat-form-field>
 
-            @if (hasFilters()) {
-              <button matButton type="button" (click)="clearFilters()">Clear filters</button>
-            }
-
             <button
               matButton="filled"
               type="button"
@@ -97,7 +93,6 @@
             class="flex items-center justify-between gap-4 rounded-md border border-error p-4 text-error"
             role="alert">
             <span>Activity form options could not be loaded.</span>
-            <button matButton="outlined" type="button" (click)="reloadLookups()">Retry</button>
           </div>
         }
 
@@ -121,9 +116,7 @@
                     <img
                       class="size-full object-cover"
                       [src]="coverUrl(activity.cover)"
-                      [alt]="activity.name + ' cover'"
-                      (load)="showCover($event)"
-                      (error)="hideBrokenCover($event)" />
+                      [alt]="activity.name + ' cover'" />
                   } @else {
                     <mat-icon class="text-on-surface-variant" svgIcon="image" />
                   }
