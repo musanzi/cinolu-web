@@ -1,0 +1,10 @@
+# Guest — Auth
+
+| Feature                 | Route                        | Params                                         | Body                                                                                | Response                                               |
+| ----------------------- | ---------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Sign up                 | `POST /auth/signup`          | None                                           | `name: string`, `email: email`, `biography: string`, `password: string` (minimum 6) | `IUser`                                                |
+| Sign in                 | `POST /auth/signin`          | None                                           | `email: string`, `password: string`                                                 | `IUser`; establishes a session                         |
+| Start Google sign-in    | `GET /auth/signin/google`    | Provider query parameters, if any              | None                                                                                | OAuth redirect/challenge                               |
+| Complete Google sign-in | `GET /auth/google/redirect`  | OAuth callback query; optional `state` is read | None                                                                                | Redirect to configured frontend; establishes a session |
+| Request password reset  | `POST /auth/password/forgot` | None                                           | `email: email`                                                                      | `void`                                                 |
+| Reset password          | `POST /auth/password/reset`  | None                                           | `token: string`, `password: string` (minimum 6)                                     | `IUser`                                                |

@@ -21,10 +21,10 @@ export const NAVIGATION: INavigationItem[] = [
     description: 'Manage platform content',
     children: [
       {
-        id: 'activities',
-        label: 'Activities',
-        icon: 'calendar-days',
-        route: '/admin/activities',
+        id: 'portfolios',
+        label: 'Portfolios',
+        icon: 'briefcase-business',
+        route: 'portfolios',
         activeOptions: { exact: false }
       },
       {
@@ -35,10 +35,10 @@ export const NAVIGATION: INavigationItem[] = [
         activeOptions: { exact: false }
       },
       {
-        id: 'portfolios',
-        label: 'Portfolios',
-        icon: 'briefcase-business',
-        route: 'portfolios',
+        id: 'activities',
+        label: 'Activities',
+        icon: 'calendar-days',
+        route: '/admin/activities',
         activeOptions: { exact: false }
       },
       {
@@ -46,13 +46,6 @@ export const NAVIGATION: INavigationItem[] = [
         label: 'Ventures',
         icon: 'rocket',
         route: 'ventures',
-        activeOptions: { exact: false }
-      },
-      {
-        id: 'reviews',
-        label: 'Reviews',
-        icon: 'message-square-text',
-        route: 'reviews',
         activeOptions: { exact: false }
       }
     ]

@@ -5,6 +5,7 @@ import type { IProgram } from './program.interface';
 import type { IReview } from './review.interface';
 import type { IType } from './type.interface';
 import type { IUser } from './user.interface';
+import type { IForm } from './form.interface';
 
 export interface IActivity extends IAbstractEntity {
   name: string;
@@ -12,9 +13,9 @@ export interface IActivity extends IAbstractEntity {
   description?: string;
   startDate: Date;
   endDate: Date;
-  participationForm: Record<string, string>;
+  participationForm: IForm[];
   isPublished: boolean;
-  reviewForm: Record<string, string>;
+  reviewForm: IForm[];
   cover?: string;
   program: IProgram;
   mentors: IUser[];
