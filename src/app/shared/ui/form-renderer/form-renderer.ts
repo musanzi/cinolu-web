@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, linkedSignal } from '@angular/core';
+import { Component, computed, input, linkedSignal } from '@angular/core';
 import { applyEach, form, FormField, required, validate } from '@angular/forms/signals';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
@@ -9,8 +9,7 @@ import { IField, IForm, IFormAnswer, IFormAnswersModel, IFormResponses } from '@
 @Component({
   selector: 'form-renderer',
   imports: [FormField, MatCheckboxModule, MatInputModule, MatRadioModule, MatSelectModule],
-  templateUrl: './form-renderer.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './form-renderer.html'
 })
 export class FormRenderer {
   sections = input.required<IForm[]>();

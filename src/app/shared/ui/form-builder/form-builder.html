@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-5">
+<div class="flex w-full flex-col gap-5">
   <div class="flex items-center justify-between gap-4">
     <p class="text-sm text-neutral-500">
       {{ questionsCount() }} {{ questionsCount() === 1 ? 'question' : 'questions' }}
@@ -10,7 +10,7 @@
   </div>
 
   @for (section of value(); track $index; let sectionIndex = $index) {
-    <mat-card appearance="outlined" class="overflow-hidden rounded-md">
+    <mat-card appearance="outlined" class="w-full overflow-hidden rounded-md">
       <div class="p-5">
         <div class="flex items-start gap-3">
           <mat-form-field appearance="outline" class="flex-auto">
@@ -53,42 +53,38 @@
                   <mat-icon svgIcon="grip-horizontal" />
                 </button>
               </div>
-              <div class="grid gap-x-4 gap-y-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
-                <mat-form-field appearance="outline">
-                  <mat-label>Question</mat-label>
-                  <input
-                    matInput
-                    type="text"
-                    [value]="question.label"
-                    (input)="updateQuestion(sectionIndex, questionIndex, { label: $any($event.target).value })" />
-                </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Question</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  [value]="question.label"
+                  (input)="updateQuestion(sectionIndex, questionIndex, { label: $any($event.target).value })" />
+              </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Question type</mat-label>
-                  <mat-select
-                    [value]="question.type"
-                    (selectionChange)="updateQuestionType(sectionIndex, questionIndex, $event.value)">
-                    @for (type of questionTypes; track type.value) {
-                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div class="grid gap-4 lg:grid-cols-2">
-                <mat-form-field appearance="outline">
-                  <mat-label>Technical name</mat-label>
-                  <input
-                    matInput
-                    type="text"
-                    [value]="question.name"
-                    (input)="updateQuestion(sectionIndex, questionIndex, { name: $any($event.target).value })" />
-                  <mat-hint>Key used in responses</mat-hint>
-                  @if (!question.name.trim()) {
-                    <mat-hint align="end" class="text-red-600">Required</mat-hint>
+              <mat-form-field appearance="outline">
+                <mat-label>Question type</mat-label>
+                <mat-select
+                  [value]="question.type"
+                  (selectionChange)="updateQuestionType(sectionIndex, questionIndex, $event.value)">
+                  @for (type of questionTypes; track type.value) {
+                    <mat-option [value]="type.value">{{ type.label }}</mat-option>
                   }
-                </mat-form-field>
-              </div>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Technical name</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  [value]="question.name"
+                  (input)="updateQuestion(sectionIndex, questionIndex, { name: $any($event.target).value })" />
+                <mat-hint>Key used in responses</mat-hint>
+                @if (!question.name.trim()) {
+                  <mat-hint align="end" class="text-red-600">Required</mat-hint>
+                }
+              </mat-form-field>
 
               @if (hasOptions(question.type)) {
                 <div class="rounded-md bg-neutral-50 p-4">
