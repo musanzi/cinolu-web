@@ -1,6 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -11,14 +11,13 @@ import { IStatsDashboard, IChartPoint, IChartSeries } from '../interfaces/stats-
 
 @Component({
   templateUrl: './stats.html',
-  imports: [DatePipe, DecimalPipe, MatButtonModule, MatButtonToggleModule, MatCardModule, MatIconModule, StatsChart],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [DatePipe, DecimalPipe, MatButtonModule, MatButtonToggleModule, MatCardModule, MatIconModule, StatsChart]
 })
 export default class Stats {
   private readonly kpiOrder = ['users', 'programs', 'ventures', 'participations'];
 
   protected readonly periodOptions = [3, 6, 12, 24];
-  protected readonly months = signal(12);
+  protected readonly months = signal(3);
   protected readonly statsResource = httpResource<IStatsDashboard>(() => `/stats?months=${this.months()}`);
   protected readonly orderedKpis = computed(() => {
     const kpis = this.statsResource.value()?.kpis ?? [];
