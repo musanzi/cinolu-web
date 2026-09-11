@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import type { IRemoveActivityDialogData } from '../../interfaces';
 
 @Component({
-  selector: 'app-remove-activity-dialog',
   imports: [MatButtonModule, MatDialogModule],
   templateUrl: './remove-activity-dialog.html'
 })

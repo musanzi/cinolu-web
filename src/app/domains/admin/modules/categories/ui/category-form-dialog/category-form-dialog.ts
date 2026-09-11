@@ -7,7 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { ICategoryDialogData, ICategoryDialogResult, ICategoryPayload } from '../../interfaces';
 
 @Component({
-  selector: 'app-category-form-dialog',
   imports: [FormField, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule],
   templateUrl: './category-form-dialog.html'
 })

@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { IRemoveCategoryDialogData } from '../../interfaces';
 
 @Component({
-  selector: 'app-remove-category-dialog',
   imports: [MatButtonModule, MatDialogModule],
   templateUrl: './remove-category-dialog.html'
 })
