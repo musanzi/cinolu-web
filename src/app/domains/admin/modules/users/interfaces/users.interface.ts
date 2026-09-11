@@ -10,7 +10,6 @@ export interface IUserPayload {
   name: string;
   roles: string[];
   password?: string;
-  avatar?: string;
   jobTitle?: string;
   socialLinks?: Record<string, string>;
 }
@@ -20,9 +19,14 @@ export interface IUserFormModel {
   name: string;
   roles: string[];
   password: string;
-  avatar: string;
   jobTitle: string;
-  socialLinks: string;
+  socialLinks: IUserSocialLinksFormModel;
+}
+
+export interface IUserSocialLinksFormModel {
+  facebook: string;
+  linkedin: string;
+  twitter: string;
 }
 
 export type IUserRow = IUser;
@@ -65,6 +69,5 @@ export interface IUsersState {
   isImporting: boolean;
   isExporting: boolean;
   removingUserId: string;
-  mutationVersion: number;
   error: string;
 }

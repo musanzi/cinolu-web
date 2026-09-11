@@ -23,19 +23,28 @@
       <input matInput [formField]="userForm.jobTitle" autocomplete="organization-title" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Avatar URL</mat-label>
-      <input matInput type="url" [formField]="userForm.avatar" autocomplete="url" />
-    </mat-form-field>
+    <fieldset class="flex flex-col gap-5 rounded-md border border-outline-variant p-4">
+      <legend class="px-1 text-sm font-medium">Social links</legend>
 
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Social links (JSON)</mat-label>
-      <textarea matInput rows="4" [formField]="userForm.socialLinks" placeholder='{"linkedin": "https://…"}'></textarea>
-      <mat-hint>Optional key-value object of profile links.</mat-hint>
-      @if (userForm.socialLinks().touched() && userForm.socialLinks().errors().length) {
-        <mat-error>{{ userForm.socialLinks().errors()[0].message }}</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Facebook</mat-label>
+        <input matInput type="url" [formField]="userForm.socialLinks.facebook" placeholder="https://facebook.com/…" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>LinkedIn</mat-label>
+        <input
+          matInput
+          type="url"
+          [formField]="userForm.socialLinks.linkedin"
+          placeholder="https://linkedin.com/in/…" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>X</mat-label>
+        <input matInput type="url" [formField]="userForm.socialLinks.twitter" placeholder="https://x.com/…" />
+      </mat-form-field>
+    </fieldset>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Email address</mat-label>

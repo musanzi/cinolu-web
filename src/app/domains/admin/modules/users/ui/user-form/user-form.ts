@@ -1,33 +1,28 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, input, linkedSignal, output } from '@angular/core';
 import { email, FormField, form, maxLength, minLength, required, submit, validate } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { IUserDialogData, IUserDialogResult, IUserFormModel, IUserPayload } from '../../interfaces';
+import type { IRole } from '@/app/shared/interfaces';
+import type { IUserFormModel, IUserPayload, IUserRow } from '../../interfaces';
 
 @Component({
-  selector: 'app-user-form-dialog',
-  imports: [FormField, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule],
-  templateUrl: './user-form-dialog.html'
+  selector: 'user-form',
+  imports: [FormField, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule],
+  templateUrl: './user-form.html'
 })
-export class UserFormDialog {
-  protected readonly data = inject<IUserDialogData>(MAT_DIALOG_DATA);
-  private readonly dialogRef = inject(MatDialogRef<UserFormDialog, IUserDialogResult>);
+export class UserForm {
+  readonly heading = input.required<string>();
+  readonly submitLabel = input.required<string>();
+  readonly roles = input.required<IRole[]>();
+  readonly user = input<IUserRow>();
+  readonly isSaving = input(false);
+  readonly cancelled = output<void>();
+  readonly submitted = output<IUserPayload>();
 
-  protected readonly userModel = signal<IUserFormModel>({
-    email: this.data.user?.email ?? '',
-    name: this.data.user?.name ?? '',
-    roles: this.data.roles.filter((role) => this.data.user?.roles.includes(role.name)).map((role) => role.id),
-    password: '',
-    jobTitle: this.data.user?.jobTitle ?? '',
-    socialLinks: {
-      facebook: this.data.user?.socialLinks?.['facebook'] ?? '',
-      linkedin: this.data.user?.socialLinks?.['linkedin'] ?? '',
-      twitter: this.data.user?.socialLinks?.['twitter'] ?? ''
-    }
-  });
+  protected readonly userModel = linkedSignal(() => this.createModel(this.user()));
 
   protected readonly userForm = form(this.userModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Name is required.' });
@@ -50,17 +45,32 @@ export class UserFormDialog {
         ...(value.socialLinks.linkedin.trim() && { linkedin: value.socialLinks.linkedin.trim() }),
         ...(value.socialLinks.twitter.trim() && { twitter: value.socialLinks.twitter.trim() })
       };
-      const payload: IUserPayload = {
+
+      this.submitted.emit({
         email: value.email.trim(),
         name: value.name.trim(),
         roles: value.roles,
         ...(value.password && { password: value.password }),
         ...(value.jobTitle.trim() && { jobTitle: value.jobTitle.trim() }),
         ...(Object.keys(socialLinks).length && { socialLinks })
-      };
-      this.dialogRef.close({
-        payload
       });
     });
+  }
+
+  private createModel(user?: IUserRow): IUserFormModel {
+    return {
+      email: user?.email ?? '',
+      name: user?.name ?? '',
+      roles: this.roles()
+        .filter((role) => user?.roles.includes(role.name))
+        .map((role) => role.id),
+      password: '',
+      jobTitle: user?.jobTitle ?? '',
+      socialLinks: {
+        facebook: user?.socialLinks?.['facebook'] ?? '',
+        linkedin: user?.socialLinks?.['linkedin'] ?? '',
+        twitter: user?.socialLinks?.['twitter'] ?? ''
+      }
+    };
   }
 }

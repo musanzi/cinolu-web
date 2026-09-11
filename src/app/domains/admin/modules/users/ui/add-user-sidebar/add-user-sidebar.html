@@ -1,0 +1,7 @@
+<user-form
+  heading="Create user"
+  submitLabel="Create user"
+  [roles]="roles()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />

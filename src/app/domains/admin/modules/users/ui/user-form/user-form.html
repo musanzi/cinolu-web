@@ -1,0 +1,88 @@
+<div class="flex h-full min-h-0 w-full flex-col border-none bg-white sm:w-lg">
+  <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
+    <div>
+      <h2 class="text-xl font-semibold">{{ heading() }}</h2>
+      <p class="text-sm text-on-surface-variant">Manage profile details and platform access.</p>
+    </div>
+    <button matIconButton type="button" aria-label="Close user editor" (click)="cancelled.emit()">
+      <mat-icon svgIcon="x" />
+    </button>
+  </header>
+
+  <form class="flex min-h-0 flex-1 flex-col" (submit)="onSubmit(); $event.preventDefault()">
+    <div class="flex min-h-0 flex-1 flex-col gap-5 overflow-auto p-5 sm:p-7">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Name</mat-label>
+        <input matInput [formField]="userForm.name" autocomplete="name" />
+        @if (userForm.name().touched() && userForm.name().errors().length) {
+          <mat-error>{{ userForm.name().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Email address</mat-label>
+        <input matInput type="email" [formField]="userForm.email" autocomplete="email" />
+        @if (userForm.email().touched() && userForm.email().errors().length) {
+          <mat-error>{{ userForm.email().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ user() ? 'New password (optional)' : 'Password (optional)' }}</mat-label>
+        <input matInput type="password" [formField]="userForm.password" autocomplete="new-password" />
+        @if (userForm.password().touched() && userForm.password().errors().length) {
+          <mat-error>{{ userForm.password().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Job title</mat-label>
+        <input matInput [formField]="userForm.jobTitle" autocomplete="organization-title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Roles</mat-label>
+        <mat-select multiple [formField]="userForm.roles">
+          @for (role of roles(); track role.id) {
+            <mat-option [value]="role.id">{{ role.name }}</mat-option>
+          }
+        </mat-select>
+        @if (userForm.roles().touched() && userForm.roles().errors().length) {
+          <mat-error>{{ userForm.roles().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <fieldset class="flex flex-col gap-5 rounded-md border border-outline-variant p-4">
+        <legend class="px-1 text-sm font-medium">Social links</legend>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Facebook</mat-label>
+          <input matInput type="url" [formField]="userForm.socialLinks.facebook" placeholder="https://facebook.com/…" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>LinkedIn</mat-label>
+          <input
+            matInput
+            type="url"
+            [formField]="userForm.socialLinks.linkedin"
+            placeholder="https://linkedin.com/in/…" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>X</mat-label>
+          <input matInput type="url" [formField]="userForm.socialLinks.twitter" placeholder="https://x.com/…" />
+        </mat-form-field>
+
+        <p class="text-xs text-on-surface-variant">All social links are optional.</p>
+      </fieldset>
+    </div>
+
+    <footer class="flex items-center justify-end gap-2 border-t border-outline-variant bg-surface px-5 py-4 sm:px-7">
+      <button matButton type="button" [disabled]="isSaving()" (click)="cancelled.emit()">Cancel</button>
+      <button matButton="filled" type="submit" [disabled]="userForm().invalid() || isSaving()">
+        {{ isSaving() ? 'Saving…' : submitLabel() }}
+      </button>
+    </footer>
+  </form>
+</div>

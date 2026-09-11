@@ -1,0 +1,8 @@
+<user-form
+  heading="Edit user"
+  submitLabel="Save changes"
+  [user]="user()"
+  [roles]="roles()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />

@@ -25,7 +25,6 @@ const initialState: IUsersState = {
   isImporting: false,
   isExporting: false,
   removingUserId: '',
-  mutationVersion: 0,
   error: ''
 };
 
@@ -132,7 +131,6 @@ export const UsersStore = signalStore(
           const body = new FormData();
           body.append('file', file);
           return _http.post<void>('/users/import/csv', body).pipe(
-            tap(() => patchState(store, { mutationVersion: store.mutationVersion() + 1 })),
             catchError(() => {
               patchState(store, { error: 'Unable to import users. Check that the CSV has Name and Email headers.' });
               return EMPTY;
