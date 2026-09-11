@@ -16,5 +16,20 @@ export interface IVentureFilterOption<T> {
 
 export type IVentureFilterKey = 'q' | 'sectorId' | 'stage' | 'status';
 
+export interface IVentureStatusPayload {
+  status: VentureStatus;
+}
+
+export interface IChangeVentureStatusCommand {
+  id: string;
+  payload: IVentureStatusPayload;
+}
+
+export interface IVenturesState {
+  changingVentureId: string;
+  mutationVersion: number;
+  error: string;
+}
+
 export type IVenturesResponse = [IVenture[], number];
 export type ISectorsLookupResponse = [ISector[], number];

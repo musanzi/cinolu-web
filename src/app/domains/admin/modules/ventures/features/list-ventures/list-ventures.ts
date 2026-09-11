@@ -1,18 +1,19 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, debounced, signal } from '@angular/core';
+import { Component, computed, debounced, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
 import { VentureStage, VentureStatus } from '@/app/shared/interfaces';
 import { environment } from '@/environments/environment';
+import { VenturesStore } from '../../data-access/ventures.store';
 import {
   ISectorsLookupResponse,
   IVentureFilterKey,
@@ -30,16 +31,17 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatMenuModule,
     MatPaginatorModule,
     MatSelectModule,
     MatTableModule,
-    RouterLink,
     TitleCasePipe
   ],
   templateUrl: './list-ventures.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [VenturesStore]
 })
 export default class ListVentures {
+  protected readonly store = inject(VenturesStore);
   protected readonly pageSize = 40;
   protected readonly page = signal(1);
   protected readonly q = signal('');
@@ -72,6 +74,7 @@ export default class ListVentures {
   }));
 
   protected readonly venturesResource = httpResource<IVenturesResponse>(() => {
+    this.store.mutationVersion();
     const query = this.query();
     const params = new URLSearchParams({ page: String(query.page), limit: String(query.limit) });
     if (query.q) params.set('q', query.q);
@@ -95,16 +98,12 @@ export default class ListVentures {
     if (target === 'status') this.status.set(value as VentureStatus | '');
   }
 
-  protected clearFilters(): void {
-    this.q.set('');
-    this.sectorId.set('');
-    this.stage.set('');
-    this.status.set('');
-    this.page.set(1);
-  }
-
   protected onPageChange(event: PageEvent): void {
     this.page.set(event.pageIndex + 1);
+  }
+
+  protected changeStatus(id: string, status: VentureStatus): void {
+    this.store.changeStatus({ id, payload: { status } });
   }
 
   protected logoUrl(logo: string): string {
