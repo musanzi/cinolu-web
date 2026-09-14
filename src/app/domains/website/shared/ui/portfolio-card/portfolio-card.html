@@ -1,0 +1,40 @@
+<mat-card
+  appearance="outlined"
+  class="group relative flex h-full flex-col overflow-visible rounded-lg border-gray-200 bg-white px-5 pt-16 pb-5 transition-colors duration-200 hover:border-primary-300 md:px-6 md:pt-16 md:pb-6">
+  <div
+    class="absolute -top-10 left-1/2 flex size-20 -translate-x-1/2 items-center justify-center overflow-hidden rounded-full border-4 border-primary-400 bg-white p-4 transition-colors duration-200">
+    @if (logoUrl(); as logo) {
+      <img
+        [src]="logo"
+        [alt]="'Logo du portefeuille ' + portfolio().name"
+        [title]="portfolio().name"
+        class="size-full object-contain transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+        decoding="async" />
+    } @else {
+      <span class="text-2xl font-bold text-primary-600" aria-hidden="true">
+        {{ portfolio().name.charAt(0) }}
+      </span>
+    }
+  </div>
+
+  <mat-card-content class="flex min-h-0 flex-1 flex-col gap-3 text-center">
+    <div class="space-y-2 sm:space-y-3">
+      <h3 class="line-clamp-1 text-lg leading-tight font-semibold text-gray-900 sm:text-xl">
+        {{ portfolio().name }}
+      </h3>
+      <div class="mx-auto h-0.5 w-12 rounded-full bg-brand-500" aria-hidden="true"></div>
+    </div>
+
+    <p class="line-clamp-3 text-sm leading-6 text-slate-600 sm:text-[15px]">
+      {{ portfolio().description || 'Découvrez les programmes de ce portefeuille.' }}
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions class="mx-auto shrink-0 pt-2 md:pt-4">
+    <a matButton="outlined" class="text-sm" routerLink="/programs" [queryParams]="{ portfolioId: portfolio().id }">
+      <span>Les programmes</span>
+      <mat-icon class="ml-2 size-4 transition-transform duration-200 group-hover:translate-x-1" svgIcon="arrow-right" />
+    </a>
+  </mat-card-actions>
+</mat-card>
