@@ -21,9 +21,19 @@ import {
 } from '../../interfaces';
 import { PortfolioFormDialog } from '../../ui/portfolio-form-dialog/portfolio-form-dialog';
 import { RemovePortfolioDialog } from '../../ui/remove-portfolio-dialog/remove-portfolio-dialog';
+import { Message } from '@/app/shared/ui';
 
 @Component({
-  imports: [DatePipe, FormsModule, MatButtonModule, MatDialogModule, MatIconModule, MatPaginatorModule, MatTableModule],
+  imports: [
+    DatePipe,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule,
+    Message
+  ],
   templateUrl: './list-portfolios.html',
   providers: [PortfoliosStore]
 })
@@ -48,7 +58,7 @@ export default class Portfolios {
   }));
 
   protected logoUrl(logo: string): string {
-    return `${environment.apiUrl}/uploads/porfolios/${logo}`;
+    return `${environment.apiUrl}/uploads/portfolios/${logo}`;
   }
 
   protected onPageChange(event: PageEvent): void {

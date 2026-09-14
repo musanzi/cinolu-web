@@ -27,18 +27,11 @@
   </div>
 
   @if (store.error()) {
-    <div
-      class="mb-4 flex items-center justify-between gap-4 rounded-lg bg-error-container p-4 text-on-error-container"
-      role="alert">
-      <span>{{ store.error() }}</span>
-      <button matButton type="button" (click)="store.clearError()">Close</button>
-    </div>
+    <message type="error" [message]="store.error()" />
   }
 
   @if (portfoliosResource.error()) {
-    <div class="mb-4 rounded-lg bg-error-container p-4 text-on-error-container" role="alert">
-      Unable to load portfolios. Please try again.
-    </div>
+    <message type="error" [message]="'Unable to load portfolios. Please try again.'" />
   }
 
   @if (portfoliosResource.isLoading()) {
