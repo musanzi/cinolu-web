@@ -1,0 +1,162 @@
+<div class="min-h-screen bg-white font-outfit text-gray-950">
+  <activities-hero />
+
+  <main class="py-12 lg:py-20" aria-labelledby="activities-results-title">
+    <div class="mx-auto w-full max-w-screen-2xl px-5 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+      <div class="mb-8 lg:mb-10">
+        <div>
+          @if (activitiesResource.hasValue()) {
+            <p class="text-sm text-gray-600">
+              {{ activitiesCount() }} {{ activitiesCount() > 1 ? 'activités trouvées' : 'activité trouvée' }}
+            </p>
+          }
+          <h2 id="activities-results-title" class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Toutes nos activités
+          </h2>
+        </div>
+
+        <div
+          class="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[minmax(16rem,1.4fr)_minmax(13rem,1fr)_minmax(12rem,0.85fr)_minmax(12rem,0.85fr)_auto]"
+          aria-label="Filtres des activités">
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-icon matPrefix svgIcon="search" />
+            <input
+              matInput
+              type="search"
+              autocomplete="off"
+              placeholder="Rechercher une activité"
+              [ngModel]="q()"
+              (ngModelChange)="onSearchChange($event)" />
+            @if (q()) {
+              <button
+                matIconSuffix
+                matIconButton
+                type="button"
+                aria-label="Effacer la recherche"
+                (click)="onSearchChange('')">
+                <mat-icon svgIcon="x" />
+              </button>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-icon matPrefix svgIcon="blocks" />
+            <mat-select
+              aria-label="Filtrer par programme"
+              [ngModel]="programId()"
+              [disabled]="programsResource.isLoading() || !!programsResource.error()"
+              (ngModelChange)="onProgramChange($event)">
+              <mat-option value="">Tous les programmes</mat-option>
+              @for (program of programs(); track program.id) {
+                <mat-option [value]="program.id">{{ program.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <input
+              matInput
+              readonly
+              placeholder="À partir du"
+              aria-label="Date de début"
+              [matDatepicker]="startPicker"
+              [max]="endDate()"
+              [ngModel]="startDate()"
+              (ngModelChange)="onStartDateChange($event)" />
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+            <mat-datepicker #startPicker />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <input
+              matInput
+              readonly
+              placeholder="Jusqu'au"
+              aria-label="Date de fin"
+              [matDatepicker]="endPicker"
+              [min]="startDate()"
+              [ngModel]="endDate()"
+              (ngModelChange)="onEndDateChange($event)" />
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+            <mat-datepicker #endPicker />
+          </mat-form-field>
+
+          @if (hasActiveFilters()) {
+            <button matButton="outlined" class="self-stretch" type="button" (click)="clearFilters()">
+              <mat-icon svgIcon="x" />
+              Réinitialiser
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (programsResource.error()) {
+        <div class="mb-6 flex items-start gap-3 rounded-md border border-amber-200 bg-white p-4" role="status">
+          <mat-icon class="mt-0.5 shrink-0 text-amber-700" svgIcon="triangle-alert" />
+          <p class="text-sm text-gray-700">Le filtre par programme est temporairement indisponible.</p>
+        </div>
+      }
+
+      @if (activitiesResource.isLoading()) {
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3" aria-label="Chargement des activités" aria-busy="true">
+          @for (skeleton of skeletons; track skeleton) {
+            <mat-card appearance="outlined" class="h-112 overflow-hidden rounded-md border-gray-200 bg-white">
+              <div class="aspect-video w-full animate-pulse bg-gray-200 motion-reduce:animate-none"></div>
+              <mat-card-content class="space-y-4 p-6">
+                <div class="h-3 w-2/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                <div class="h-6 w-4/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                <div class="space-y-2">
+                  <div class="h-4 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-11/12 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-3/4 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      } @else if (activitiesResource.error()) {
+        <div class="rounded-md border border-red-200 bg-white px-6 py-12 text-center" role="alert">
+          <mat-icon class="mb-3 text-red-600" svgIcon="triangle-alert" />
+          <h3 class="text-lg font-bold text-gray-900">Impossible de charger les activités.</h3>
+          <p class="mt-2 text-sm text-gray-600">Veuillez réessayer dans quelques instants.</p>
+          <button matButton="outlined" class="mt-5" type="button" (click)="activitiesResource.reload()">
+            <mat-icon svgIcon="refresh-cw" />
+            Réessayer
+          </button>
+        </div>
+      } @else if (activities().length) {
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          @for (activity of activities(); track activity.id) {
+            <activity-card class="block h-full" [activity]="activity" />
+          }
+        </div>
+
+        @if (activitiesCount() > pageSize) {
+          <mat-paginator
+            class="mt-10 border-t border-gray-200 bg-white pt-4"
+            aria-label="Choisir une page d'activités"
+            [length]="activitiesCount()"
+            [pageIndex]="page() - 1"
+            [pageSize]="pageSize"
+            [hidePageSize]="true"
+            (page)="onPageChange($event)" />
+        }
+      } @else {
+        <div class="rounded-md border border-gray-200 bg-white px-6 py-14 text-center">
+          <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-gray-200">
+            <mat-icon class="text-primary-700" svgIcon="calendar-days" />
+          </span>
+          <h3 class="mt-5 text-xl font-bold text-gray-900">Aucune activité trouvée</h3>
+          <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600">
+            Modifiez votre recherche, les dates ou le programme pour découvrir d'autres activités.
+          </p>
+          @if (hasActiveFilters()) {
+            <button matButton="outlined" class="mt-5" type="button" (click)="clearFilters()">
+              Réinitialiser les filtres
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>
