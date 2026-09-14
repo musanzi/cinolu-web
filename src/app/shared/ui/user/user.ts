@@ -18,8 +18,12 @@ export class User {
   user = computed(() => this.authStore.user());
 
   avatarImageUrl = computed(() => {
-    return this.user()?.avatar
-      ? `${environment.apiUrl}/uploads/profiles/${this.user()?.avatar}`
+    const user = this.user();
+
+    return user?.avatar
+      ? user.avatar.includes('https://')
+        ? user.avatar
+        : `${environment.apiUrl}/uploads/profiles/${user.avatar}`
       : '/images/avatar.webp';
   });
 

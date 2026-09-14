@@ -16,6 +16,16 @@ const routes: Routes = [
         title: 'A propos',
         loadChildren: () => import('./modules/about/routes')
       },
+      {
+        path: 'programs',
+        title: 'Programmes',
+        loadChildren: () => import('./modules/programs/routes')
+      },
+      {
+        path: 'activities',
+        title: 'Activités',
+        loadChildren: () => import('./modules/activities/routes')
+      },
       { path: '**', redirectTo: '' }
     ]
   }

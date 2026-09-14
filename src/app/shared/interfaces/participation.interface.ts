@@ -1,5 +1,6 @@
 import type { IAbstractEntity } from './abstract-entity.interface';
 import type { IActivity } from './activity.interface';
+import type { IFormResponses } from './form.interface';
 import type { IUser } from './user.interface';
 
 export enum ParticipationStatus {
@@ -8,11 +9,11 @@ export enum ParticipationStatus {
   DECLINED = 'declined'
 }
 
-export type ParticipationData = Record<string, string>;
+export type ParticipationData = IFormResponses | string;
 
 export interface IParticipation extends IAbstractEntity {
   participant: IUser;
   activity: IActivity;
-  data: Record<string, string>;
-  status: Record<string, string>;
+  data: ParticipationData;
+  status: ParticipationStatus;
 }
