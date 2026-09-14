@@ -26,10 +26,11 @@
               Parcourir<span class="absolute bottom-0 left-0 h-0.5 w-8 rounded-full bg-brand-600"></span>
             </h2>
             <ul class="space-y-2.5 text-sm text-gray-300 sm:space-y-3">
-              <li><a routerLink="/" class="hover:text-white">Accueil</a></li>
-              <li><a routerLink="/activites" class="hover:text-white">Activités</a></li>
-              <li><a routerLink="/portefeuilles" class="hover:text-white">Portefeuilles</a></li>
-              <li><a routerLink="/a-propos" class="hover:text-white">À propos</a></li>
+              @for (link of links; track link.label) {
+                <li>
+                  <a [routerLink]="link.path" [fragment]="link.fragment" class="hover:text-white">{{ link.label }}</a>
+                </li>
+              }
             </ul>
           </div>
           <div class="space-y-3 sm:space-y-4">
