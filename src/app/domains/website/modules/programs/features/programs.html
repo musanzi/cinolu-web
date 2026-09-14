@@ -1,0 +1,125 @@
+<div class="min-h-screen bg-white font-outfit text-gray-950">
+  <programs-hero />
+
+  <main class="py-12 lg:py-20" aria-labelledby="programs-results-title">
+    <div class="mx-auto w-full max-w-screen-2xl px-5 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+      <div class="mb-8 flex flex-col gap-6 lg:mb-10 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          @if (programsResource.hasValue()) {
+            <p class="mt-2 text-sm text-gray-600">
+              {{ programsCount() }} {{ programsCount() > 1 ? 'programmes trouvés' : 'programme trouvé' }}
+            </p>
+          }
+          <h2 id="programs-results-title" class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Tous nos programmes
+          </h2>
+        </div>
+
+        <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto" aria-label="Filtres des programmes">
+          <mat-form-field appearance="outline" class="w-full sm:w-80" subscriptSizing="dynamic">
+            <mat-icon matPrefix svgIcon="search" />
+            <input matInput type="search" autocomplete="off" [ngModel]="q()" (ngModelChange)="onSearchChange($event)" />
+            @if (q()) {
+              <button
+                matIconSuffix
+                matIconButton
+                type="button"
+                aria-label="Effacer la recherche"
+                (click)="onSearchChange('')">
+                <mat-icon svgIcon="x" />
+              </button>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full sm:w-64" subscriptSizing="dynamic">
+            <mat-icon matPrefix svgIcon="layers" />
+            <mat-select
+              [ngModel]="portfolioId()"
+              [disabled]="portfoliosResource.isLoading() || !!portfoliosResource.error()"
+              (ngModelChange)="onPortfolioChange($event)">
+              <mat-option value="">Tous les portefeuilles</mat-option>
+              @for (portfolio of portfolios(); track portfolio.id) {
+                <mat-option [value]="portfolio.id">{{ portfolio.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (hasActiveFilters()) {
+            <button matButton="outlined" class="sm:self-stretch" type="button" (click)="clearFilters()">
+              <mat-icon svgIcon="x" />
+              Réinitialiser
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (portfoliosResource.error()) {
+        <div class="mb-6 flex items-start gap-3 rounded-md border border-amber-200 bg-white p-4" role="status">
+          <mat-icon class="mt-0.5 shrink-0 text-amber-700" svgIcon="triangle-alert" />
+          <p class="text-sm text-gray-700">Le filtre par portefeuille est temporairement indisponible.</p>
+        </div>
+      }
+
+      @if (programsResource.isLoading()) {
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3" aria-label="Chargement des programmes" aria-busy="true">
+          @for (skeleton of skeletons; track skeleton) {
+            <mat-card appearance="outlined" class="h-112 overflow-hidden rounded-md border-gray-200 bg-white">
+              <div class="aspect-video w-full animate-pulse bg-gray-200 motion-reduce:animate-none"></div>
+              <mat-card-content class="space-y-4 p-6">
+                <div class="h-3 w-2/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                <div class="h-6 w-4/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                <div class="space-y-2">
+                  <div class="h-4 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-11/12 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-3/4 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      } @else if (programsResource.error()) {
+        <div class="rounded-md border border-red-200 bg-white px-6 py-12 text-center" role="alert">
+          <mat-icon class="mb-3 text-red-600" svgIcon="triangle-alert" />
+          <h3 class="text-lg font-bold text-gray-900">Impossible de charger les programmes.</h3>
+          <p class="mt-2 text-sm text-gray-600">Veuillez réessayer dans quelques instants.</p>
+          <button matButton="outlined" class="mt-5" type="button" (click)="programsResource.reload()">
+            <mat-icon svgIcon="refresh-cw" />
+            Réessayer
+          </button>
+        </div>
+      } @else if (programs().length) {
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          @for (program of programs(); track program.id) {
+            <program-card class="block h-full" [program]="program" />
+          }
+        </div>
+
+        @if (programsCount() > pageSize) {
+          <mat-paginator
+            class="mt-10 border-t border-gray-200 bg-white pt-4"
+            aria-label="Choisir une page de programmes"
+            [length]="programsCount()"
+            [pageIndex]="page() - 1"
+            [pageSize]="pageSize"
+            [hidePageSize]="true"
+            (page)="onPageChange($event)" />
+        }
+      } @else {
+        <div class="rounded-md border border-gray-200 bg-white px-6 py-14 text-center">
+          <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-gray-200">
+            <mat-icon class="text-primary-700" svgIcon="search" />
+          </span>
+          <h3 class="mt-5 text-xl font-bold text-gray-900">Aucun programme trouvé</h3>
+          <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-600">
+            Modifiez votre recherche ou réinitialisez les filtres pour afficher d'autres programmes.
+          </p>
+          @if (hasActiveFilters()) {
+            <button matButton="outlined" class="mt-5" type="button" (click)="clearFilters()">
+              Réinitialiser les filtres
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>

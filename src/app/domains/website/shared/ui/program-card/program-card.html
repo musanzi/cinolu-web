@@ -1,0 +1,40 @@
+<mat-card
+  appearance="outlined"
+  class="group flex h-full flex-col overflow-hidden rounded-md border-gray-200 bg-white transition-colors duration-200 hover:border-primary-300">
+  <div
+    class="relative flex aspect-video w-full items-center justify-center overflow-hidden border-b border-gray-100 bg-gray-50">
+    <span
+      class="absolute top-3 left-3 z-10 inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-gray-700 uppercase">
+      {{ program().portfolio.name }}
+    </span>
+
+    @if (logoUrl(); as logo) {
+      <img
+        [src]="logo"
+        [alt]="'Logo du programme ' + program().name"
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+        decoding="async" />
+    } @else {
+      <div class="flex size-20 items-center justify-center rounded-full border border-gray-200 bg-white">
+        <mat-icon class="size-8 text-primary-600" svgIcon="blocks" />
+      </div>
+    }
+  </div>
+
+  <mat-card-content class="flex flex-1 flex-col p-5 md:p-6">
+    <h3 class="line-clamp-2 text-lg leading-snug font-bold text-gray-900 sm:text-xl">
+      {{ program().name }}
+    </h3>
+    <p class="mt-3 line-clamp-3 text-sm leading-6 text-gray-600 sm:text-[15px]">
+      {{ program().description || "Découvrez ce programme et les opportunités qu'il propose." }}
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions class="px-5 pb-5 md:px-6 md:pb-6">
+    <a matButton="outlined" routerLink="/activities" [queryParams]="{ programId: program().id }">
+      Voir les activités
+      <mat-icon class="ml-2 size-4 transition-transform duration-200 group-hover:translate-x-1" svgIcon="arrow-right" />
+    </a>
+  </mat-card-actions>
+</mat-card>
