@@ -21,6 +21,7 @@ import {
 } from '../../interfaces';
 import { CategoryFormDialog } from '../../ui/category-form-dialog/category-form-dialog';
 import { RemoveCategoryDialog } from '../../ui/remove-category-dialog/remove-category-dialog';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   imports: [
@@ -31,7 +32,8 @@ import { RemoveCategoryDialog } from '../../ui/remove-category-dialog/remove-cat
     MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    Message
   ],
   templateUrl: './list-categories.html',
   providers: [CategoriesStore]
