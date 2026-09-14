@@ -61,6 +61,7 @@ export interface IActivitiesState {
   removingActivityId: string;
   togglingActivityId: string;
   error: string;
+  success: string;
 }
 
 export interface IActivitiesQuery {

@@ -3,7 +3,6 @@ import { httpResource } from '@angular/common/http';
 import { Component, computed, debounced, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@/environments/environment';
 import { Media } from '@/app/core/media';
@@ -31,12 +31,12 @@ import type {
 import { AddActivitySidebar } from '../../ui/add-activity-sidebar/add-activity-sidebar';
 import { RemoveActivityDialog } from '../../ui/remove-activity-dialog/remove-activity-dialog';
 import { UpdateActivitySidebar } from '../../ui/update-activity-sidebar/update-activity-sidebar';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   imports: [
     DatePipe,
     MatButtonModule,
-    MatCardModule,
     MatDatepickerModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -46,8 +46,10 @@ import { UpdateActivitySidebar } from '../../ui/update-activity-sidebar/update-a
     MatSidenav,
     MatSidenavContainer,
     MatSidenavContent,
+    MatTableModule,
     AddActivitySidebar,
-    UpdateActivitySidebar
+    UpdateActivitySidebar,
+    Message
   ],
   templateUrl: './list-activities.html',
   providers: [ActivitiesStore]
@@ -66,6 +68,7 @@ export default class ListActivities {
   protected readonly q = signal(this.initialQueryParams.get('q') ?? '');
   protected readonly startDate = signal(this.initialQueryParams.get('startDate'));
   protected readonly endDate = signal(this.initialQueryParams.get('endDate'));
+  protected readonly displayedColumns = ['activity', 'program', 'types', 'schedule', 'status', 'actions'];
   protected readonly selectedActivity = signal<IActivity | undefined>(undefined);
   protected readonly isCreating = signal(false);
   private readonly debouncedQuery = debounced(this.q, 300);
@@ -126,6 +129,13 @@ export default class ListActivities {
   protected readonly isSidebarOpen = computed(() => this.isCreating() || this.selectedActivity() !== undefined);
 
   constructor() {
+    effect(() => {
+      if (!this.store.success()) return;
+
+      this.closeSidebar();
+      this.activitiesResource.reload();
+    });
+
     effect(() => {
       const query = this.query();
 

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, concatMap, EMPTY, finalize, Observable, of, pipe, switchMap } from 'rxjs';
+import { catchError, concatMap, EMPTY, finalize, Observable, of, pipe, switchMap, tap } from 'rxjs';
 import type { IActivity } from '@/app/shared/interfaces';
 import type {
   IActivitiesState,
@@ -15,7 +15,8 @@ const initialState: IActivitiesState = {
   isSaving: false,
   removingActivityId: '',
   togglingActivityId: '',
-  error: ''
+  error: '',
+  success: ''
 };
 
 function uploadCover(http: HttpClient, activity: IActivity, cover?: File): Observable<IActivity> {
@@ -33,7 +34,7 @@ export const ActivitiesStore = signalStore(
     createActivity: rxMethod<ICreateActivityCommand>(
       pipe(
         concatMap(({ payload, cover }) => {
-          patchState(store, { isSaving: true, error: '' });
+          patchState(store, { isSaving: true, error: '', success: '' });
           return _http.post<IActivity>('/activities', payload).pipe(
             switchMap((activity) =>
               uploadCover(_http, activity, cover).pipe(
@@ -43,6 +44,9 @@ export const ActivitiesStore = signalStore(
                 })
               )
             ),
+            tap(() => {
+              if (!store.error()) patchState(store, { success: 'Activity created successfully.' });
+            }),
             catchError(() => {
               patchState(store, { error: 'Unable to create the activity. Please try again.' });
               return EMPTY;
@@ -55,7 +59,7 @@ export const ActivitiesStore = signalStore(
     updateActivity: rxMethod<IUpdateActivityCommand>(
       pipe(
         concatMap(({ id, payload, cover }) => {
-          patchState(store, { isSaving: true, error: '' });
+          patchState(store, { isSaving: true, error: '', success: '' });
           return _http.patch<IActivity>(`/activities/${id}`, payload).pipe(
             switchMap((activity) =>
               uploadCover(_http, activity, cover).pipe(
@@ -65,6 +69,9 @@ export const ActivitiesStore = signalStore(
                 })
               )
             ),
+            tap(() => {
+              if (!store.error()) patchState(store, { success: 'Activity updated successfully.' });
+            }),
             catchError(() => {
               patchState(store, { error: 'Unable to update the activity. Please try again.' });
               return EMPTY;
@@ -104,6 +111,9 @@ export const ActivitiesStore = signalStore(
     ),
     clearError(): void {
       patchState(store, { error: '' });
+    },
+    clearSuccess(): void {
+      patchState(store, { success: '' });
     }
   }))
 );

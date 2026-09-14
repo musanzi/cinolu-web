@@ -1,7 +1,7 @@
 <div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
   <mat-sidenav-container class="h-full flex-auto" (backdropClick)="closeSidebar()">
     <mat-sidenav
-      class="w-full border-none bg-white sm:w-lg"
+      class="w-full border-none bg-white sm:w-xl"
       [mode]="'over'"
       [opened]="isSidebarOpen()"
       position="end"
@@ -79,21 +79,16 @@
           </div>
         </div>
 
+        @if (store.success()) {
+          <message type="success" [message]="store.success()" (dismissed)="store.clearSuccess()" />
+        }
+
         @if (store.error()) {
-          <div
-            class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
-            role="alert">
-            <span>{{ store.error() }}</span>
-            <button matButton type="button" (click)="store.clearError()">Close</button>
-          </div>
+          <message type="error" [message]="store.error()" />
         }
 
         @if (lookupsError()) {
-          <div
-            class="flex items-center justify-between gap-4 rounded-md border border-error p-4 text-error"
-            role="alert">
-            <span>Activity form options could not be loaded.</span>
-          </div>
+          <message type="error" [message]="'Activity form options could not be loaded.'" />
         }
 
         @if (activitiesResource.isLoading()) {
@@ -108,93 +103,124 @@
             <button matButton type="button" (click)="activitiesResource.reload()">Retry</button>
           </div>
         } @else {
-          <div class="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-            @for (activity of activities(); track activity.id) {
-              <mat-card class="overflow-hidden rounded-md" appearance="outlined">
-                <div class="relative flex h-40 items-center justify-center bg-surface-container-low">
-                  @if (activity.cover) {
-                    <img
-                      class="size-full object-cover"
-                      [src]="coverUrl(activity.cover)"
-                      [alt]="activity.name + ' cover'" />
-                  } @else {
-                    <mat-icon class="text-on-surface-variant" svgIcon="image" />
-                  }
-                  <span
-                    class="absolute top-3 right-3 rounded-full px-2.5 py-1 text-xs font-medium"
-                    [class.bg-primary-container]="activity.isPublished"
-                    [class.text-on-primary-container]="activity.isPublished"
-                    [class.bg-surface-container-high]="!activity.isPublished">
-                    {{ activity.isPublished ? 'Published' : 'Draft' }}
-                  </span>
-                </div>
+          <div class="flex flex-col overflow-hidden rounded-xl border border-outline-variant">
+            <div class="relative isolate overflow-x-auto">
+              <table class="w-full whitespace-nowrap" mat-table [dataSource]="activities()">
+                <ng-container matColumnDef="activity">
+                  <th mat-header-cell *matHeaderCellDef>Activity</th>
+                  <td mat-cell *matCellDef="let activity">
+                    <div class="flex items-center gap-3 py-2">
+                      <div
+                        class="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface-container-high font-semibold text-on-surface-variant">
+                        <span>{{ activity.name.charAt(0).toUpperCase() }}</span>
+                        @if (activity.cover) {
+                          <img
+                            class="absolute inset-0 size-full bg-surface object-cover"
+                            [src]="coverUrl(activity.cover)"
+                            [alt]="activity.name + ' cover'" />
+                        }
+                      </div>
+                      <div class="max-w-80 min-w-0">
+                        <p class="truncate font-medium">{{ activity.name }}</p>
+                        <p class="truncate text-xs text-on-surface-variant">
+                          {{ activity.description || 'No description' }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
 
-                <mat-card-header>
-                  <mat-card-title>{{ activity.name }}</mat-card-title>
-                  <mat-card-subtitle>{{ activity.program.name }}</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content class="mt-4 flex flex-col gap-3">
-                  <div class="flex items-center gap-2 text-sm text-on-surface-variant">
-                    <mat-icon class="size-4" svgIcon="calendar-days" />
-                    <span>
-                      {{ activity.startDate | date: 'dd MMM yyyy, HH:mm' }} -
-                      {{ activity.endDate | date: 'dd MMM yyyy, HH:mm' }}
-                    </span>
-                  </div>
-                  @if (activity.description) {
-                    <p class="line-clamp-3 text-sm text-on-surface-variant">{{ activity.description }}</p>
-                  }
-                  <div class="flex flex-wrap gap-2">
-                    @for (type of activity.types; track type.id) {
-                      <span class="rounded-full bg-surface-container px-2.5 py-1 text-xs">{{ type.name }}</span>
+                <ng-container matColumnDef="program">
+                  <th mat-header-cell *matHeaderCellDef>Program</th>
+                  <td mat-cell *matCellDef="let activity">{{ activity.program.name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="types">
+                  <th mat-header-cell *matHeaderCellDef>Types</th>
+                  <td mat-cell *matCellDef="let activity">
+                    @for (type of activity.types; track type.id; let last = $last) {
+                      <span>{{ type.name }}{{ last ? '' : ', ' }}</span>
+                    } @empty {
+                      <span class="text-on-surface-variant">None</span>
                     }
-                  </div>
-                </mat-card-content>
-                <mat-card-actions class="flex-wrap" align="end">
-                  <button
-                    matButton
-                    type="button"
-                    [disabled]="store.togglingActivityId() !== '' || store.removingActivityId() !== ''"
-                    (click)="togglePublication(activity)">
-                    <mat-icon [svgIcon]="activity.isPublished ? 'eye-off' : 'eye'" />
-                    {{ activity.isPublished ? 'Unpublish' : 'Publish' }}
-                  </button>
-                  <button
-                    matButton
-                    type="button"
-                    [disabled]="areLookupsLoading() || !!lookupsError() || store.isSaving()"
-                    (click)="openUpdateSidebar(activity)">
-                    <mat-icon svgIcon="pencil" />
-                    Edit
-                  </button>
-                  <button
-                    matIconButton
-                    type="button"
-                    aria-label="Delete activity"
-                    [disabled]="store.removingActivityId() !== '' || store.isSaving()"
-                    (click)="openRemoveDialog(activity)">
-                    <mat-icon svgIcon="trash-2" />
-                  </button>
-                </mat-card-actions>
-              </mat-card>
-            } @empty {
-              <p
-                class="col-span-full rounded-md border border-outline-variant p-10 text-center text-sm text-on-surface-variant">
-                No activities match these filters.
-              </p>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="schedule">
+                  <th mat-header-cell *matHeaderCellDef>Schedule</th>
+                  <td mat-cell *matCellDef="let activity">
+                    {{ activity.startDate | date: 'dd/MM/yyyy, HH:mm' }} -
+                    {{ activity.endDate | date: 'dd/MM/yyyy, HH:mm' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let activity">
+                    <span
+                      class="rounded-full px-2.5 py-1 text-xs font-medium"
+                      [class.bg-primary-container]="activity.isPublished"
+                      [class.text-on-primary-container]="activity.isPublished"
+                      [class.bg-surface-container-high]="!activity.isPublished">
+                      {{ activity.isPublished ? 'Published' : 'Draft' }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td class="text-right" mat-cell *matCellDef="let activity">
+                    <button
+                      matIconButton
+                      type="button"
+                      [attr.aria-label]="activity.isPublished ? 'Unpublish activity' : 'Publish activity'"
+                      [disabled]="store.togglingActivityId() !== '' || store.removingActivityId() !== ''"
+                      (click)="togglePublication(activity)">
+                      <mat-icon [svgIcon]="activity.isPublished ? 'eye-off' : 'eye'" />
+                    </button>
+                    <button
+                      matIconButton
+                      type="button"
+                      aria-label="Edit activity"
+                      [disabled]="areLookupsLoading() || !!lookupsError() || store.isSaving()"
+                      (click)="openUpdateSidebar(activity)">
+                      <mat-icon svgIcon="pencil" />
+                    </button>
+                    <button
+                      matIconButton
+                      type="button"
+                      aria-label="Delete activity"
+                      [disabled]="store.removingActivityId() !== '' || store.isSaving()"
+                      (click)="openRemoveDialog(activity)">
+                      <mat-icon svgIcon="trash-2" />
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  class="group relative hover:bg-on-surface-variant/4"
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"></tr>
+
+                <tr class="h-32" *matNoDataRow>
+                  <td class="text-center text-sm text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+                    No activities match these filters.
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            @if (total() > pageSize) {
+              <mat-paginator
+                aria-label="Select a page of activities"
+                [length]="total()"
+                [pageIndex]="page() - 1"
+                [pageSize]="pageSize"
+                [hidePageSize]="true"
+                (page)="onPageChange($event)" />
             }
           </div>
-
-          @if (total() > pageSize) {
-            <mat-paginator
-              class="rounded-md border border-outline-variant"
-              aria-label="Select a page of activities"
-              [length]="total()"
-              [pageIndex]="page() - 1"
-              [pageSize]="pageSize"
-              [hidePageSize]="true"
-              (page)="onPageChange($event)" />
-          }
         }
       </section>
     </mat-sidenav-content>
