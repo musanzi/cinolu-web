@@ -59,9 +59,8 @@
       type="button"
       class="relative z-50 lg:hidden"
       (click)="toggleMenu()"
-      [attr.aria-expanded]="isMenuOpen()"
-      aria-controls="mobile-navigation"
-      [attr.aria-label]="isMenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'">
+      [class.text-white]="!solidHeader()"
+      [class.text-black]="solidHeader()">
       <mat-icon [svgIcon]="isMenuOpen() ? 'x' : 'menu'" />
     </button>
   </nav>
@@ -75,8 +74,6 @@
     <div
       id="mobile-navigation"
       role="dialog"
-      aria-modal="true"
-      aria-label="Navigation principale"
       class="fixed top-0 right-0 z-50 h-dvh w-[92vw] max-w-md border-l border-gray-200 bg-white text-gray-900 shadow-[-8px_0_30px_rgba(15,23,42,0.08)] lg:hidden">
       <div class="flex h-full flex-col">
         <div class="flex items-center justify-between border-b border-gray-200/70 px-7 py-6">
@@ -96,18 +93,18 @@
             <a
               [routerLink]="link.path"
               [fragment]="link.fragment"
+              [routerLinkActiveOptions]="{ exact: false }"
               routerLinkActive="bg-primary-50 text-primary-700"
               (click)="closeMenu()"
-              class="flex items-center px-7 py-4 text-base font-semibold leading-[1.2] text-gray-800 transition-colors duration-200 hover:bg-gray-50"
-              >{{ link.label }}</a
-            >
+              class="flex items-center px-7 py-4 text-base font-semibold leading-[1.2] text-gray-800 transition-colors duration-200 hover:bg-gray-50">
+              {{ link.label }}
+            </a>
           }
         </nav>
         <div class="shrink-0 border-t border-gray-200 bg-gray-50/80 px-7 py-5">
           @if (authStore.user()) {
             <div class="grid gap-2">
-              <a matButton="outlined" routerLink="/user" (click)="closeMenu()">Mon compte</a
-              ><button matButton type="button" (click)="signOut()">Déconnexion</button>
+              <a matButton="outlined" routerLink="/user" (click)="closeMenu()">Mon compte</a>
             </div>
           } @else {
             <div class="grid gap-3">
