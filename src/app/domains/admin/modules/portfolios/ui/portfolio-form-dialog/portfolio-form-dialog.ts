@@ -22,7 +22,7 @@ export class PortfolioFormDialog {
 
   protected readonly selectedLogo = signal<File | undefined>(undefined);
   protected readonly logoPreview = signal(
-    this.data.portfolio?.logo ? `${environment.apiUrl}/uploads/porfolios/${this.data.portfolio.logo}` : ''
+    this.data.portfolio?.logo ? `${environment.apiUrl}/uploads/portfolios/${this.data.portfolio.logo}` : ''
   );
   protected readonly portfolioModel = signal<IPortfolioPayload>({
     name: this.data.portfolio?.name ?? '',
