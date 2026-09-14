@@ -1,7 +1,7 @@
 <div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
   <mat-sidenav-container class="h-full flex-auto" (backdropClick)="closeSidebar()">
     <mat-sidenav
-      class="w-full border-none bg-white sm:w-lg"
+      class="w-full border-none bg-white sm:w-xl"
       [mode]="'over'"
       [opened]="isSidebarOpen()"
       position="end"
@@ -73,12 +73,7 @@
         </div>
 
         @if (store.error()) {
-          <div
-            class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
-            role="alert">
-            <span>{{ store.error() }}</span>
-            <button matButton type="button" (click)="store.clearError()">Close</button>
-          </div>
+          <message type="error" [message]="store.error()" />
         }
 
         @if (store.isLoading()) {

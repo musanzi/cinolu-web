@@ -16,6 +16,7 @@ import type { IQueryParams, IRemoveUserDialogData, IUserPayload, IUserRow } from
 import { AddUserSidebar } from '../../ui/add-user-sidebar/add-user-sidebar';
 import { RemoveUserDialog } from '../../ui/remove-user-dialog/remove-user-dialog';
 import { UpdateUserSidebar } from '../../ui/update-user-sidebar/update-user-sidebar';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   imports: [
@@ -31,7 +32,8 @@ import { UpdateUserSidebar } from '../../ui/update-user-sidebar/update-user-side
     MatSidenavContainer,
     MatSidenavContent,
     MatTableModule,
-    UpdateUserSidebar
+    UpdateUserSidebar,
+    Message
   ],
   templateUrl: './list-users.html',
   providers: [UsersStore]
