@@ -173,14 +173,6 @@
                     <button
                       matIconButton
                       type="button"
-                      [attr.aria-label]="activity.isPublished ? 'Unpublish activity' : 'Publish activity'"
-                      [disabled]="store.togglingActivityId() !== '' || store.removingActivityId() !== ''"
-                      (click)="togglePublication(activity)">
-                      <mat-icon [svgIcon]="activity.isPublished ? 'eye-off' : 'eye'" />
-                    </button>
-                    <button
-                      matIconButton
-                      type="button"
                       aria-label="Edit activity"
                       [disabled]="areLookupsLoading() || !!lookupsError() || store.isSaving()"
                       (click)="openUpdateSidebar(activity)">
