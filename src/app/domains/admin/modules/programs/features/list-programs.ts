@@ -25,6 +25,7 @@ import {
 } from '../interfaces';
 import { ProgramFormDialog } from '../ui/program-form-dialog';
 import { RemoveProgramDialog } from '../ui/remove-program-dialog';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   selector: 'app-list-programs',
@@ -37,7 +38,8 @@ import { RemoveProgramDialog } from '../ui/remove-program-dialog';
     MatIconModule,
     MatPaginatorModule,
     MatSelectModule,
-    MatTableModule
+    MatTableModule,
+    Message
   ],
   templateUrl: './list-programs.html',
   providers: [ProgramsStore]
