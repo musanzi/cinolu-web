@@ -21,6 +21,7 @@ import {
   IVenturesQuery,
   IVenturesResponse
 } from '../../interfaces';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   imports: [
@@ -35,7 +36,8 @@ import {
     MatPaginatorModule,
     MatSelectModule,
     MatTableModule,
-    TitleCasePipe
+    TitleCasePipe,
+    Message
   ],
   templateUrl: './list-ventures.html',
   providers: [VenturesStore]
