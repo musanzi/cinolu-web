@@ -4,7 +4,7 @@
 
     @for (question of section.questions; track question.field.name) {
       @let answer = answerForm.answers[question.answerIndex];
-      <div>
+      <div class="mb-6">
         @switch (question.field.type) {
           @case ('textarea') {
             <mat-form-field appearance="outline" class="w-full">

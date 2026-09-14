@@ -1,5 +1,5 @@
 import { Component, computed, input, linkedSignal } from '@angular/core';
-import { applyEach, form, FormField, required, validate } from '@angular/forms/signals';
+import { applyEach, form, FormField, required, submit, validate } from '@angular/forms/signals';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
@@ -52,6 +52,10 @@ export class FormRenderer {
           : answer.value
       ])
     );
+  }
+
+  submit(handler: (responses: IFormResponses) => void | Promise<void>): void {
+    submit(this.answerForm, async () => handler(this.responses()));
   }
 
   protected fieldInputType(type: string): string {
