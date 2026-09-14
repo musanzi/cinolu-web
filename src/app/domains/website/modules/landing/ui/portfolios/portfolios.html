@@ -1,0 +1,35 @@
+<section id="portefeuilles" class="bg-gray-50 py-12 lg:py-20" aria-labelledby="portfolios-title">
+  <div class="mx-auto w-full max-w-screen-2xl px-5 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <div class="mb-16 max-w-2xl lg:mb-20">
+      <h2 id="portfolios-title" class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+        Découvrez nos <span class="text-brand-700">portefeuilles</span>
+      </h2>
+    </div>
+    @if (portfoliosResource.isLoading()) {
+      <div class="grid grid-cols-1 gap-x-3 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        @for (skeleton of skeletons; track skeleton) {
+          <mat-card appearance="outlined" class="relative h-64 rounded-md border-gray-200 bg-white px-6 pt-16 pb-6">
+            <div
+              class="animate-pulse duration-300 absolute -top-10 left-1/2 size-20 -translate-x-1/2 rounded-full"></div>
+            <mat-card-content class="flex h-full flex-col items-center gap-4">
+              <div class="animate-pulse duration-300 h-6 w-3/5 rounded-md"></div>
+              <div class="animate-pulse duration-300 h-1 w-12 rounded-md"></div>
+              <div class="mt-1 w-full space-y-2">
+                <div class="animate-pulse duration-300 h-4 w-full rounded-md"></div>
+                <div class="animate-pulse duration-300 h-4 w-11/12 rounded-md"></div>
+                <div class="animate-pulse duration-300 h-4 w-4/5 rounded-md"></div>
+              </div>
+              <div class="animate-pulse duration-300 mt-auto h-9 w-32 rounded-md"></div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    } @else if (portfoliosResource.hasValue()) {
+      <div class="grid grid-cols-1 gap-x-3 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        @for (portfolio of portfoliosResource.value()[0]; track portfolio.id) {
+          <portfolio-card [portfolio]="portfolio" />
+        }
+      </div>
+    }
+  </div>
+</section>
