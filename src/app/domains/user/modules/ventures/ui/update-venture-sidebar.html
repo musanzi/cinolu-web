@@ -1,0 +1,8 @@
+<venture-form
+  heading="Modifier le projet"
+  submitLabel="Enregistrer"
+  [venture]="venture()"
+  [sectors]="sectors()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />

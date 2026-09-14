@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Supprimer le projet</h2>
+
+<mat-dialog-content>
+  Voulez-vous vraiment supprimer <strong>{{ data.venture.name }}</strong> ? Cette action est irréversible.
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton type="button" [mat-dialog-close]="false">Annuler</button>
+  <button matButton="filled" type="button" [mat-dialog-close]="true">Supprimer</button>
+</mat-dialog-actions>

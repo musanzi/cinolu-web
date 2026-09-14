@@ -1,0 +1,178 @@
+<div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
+  <mat-sidenav-container class="h-full flex-auto" (backdropClick)="closeSidebar()">
+    <mat-sidenav
+      class="w-full border-none bg-white sm:w-xl"
+      mode="over"
+      [opened]="isEditing()"
+      position="end"
+      disableClose>
+      @if (venture(); as editableVenture) {
+        <update-venture-sidebar
+          [venture]="editableVenture"
+          [sectors]="sectors()"
+          [isSaving]="store.isSaving()"
+          (cancelled)="closeSidebar()"
+          (submitted)="updateVenture(editableVenture, $event)" />
+      }
+    </mat-sidenav>
+
+    <mat-sidenav-content class="flex flex-auto flex-col" [class.border-r]="isEditing()">
+      <section class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+        <div class="w-full max-w-5xl">
+          <a matButton routerLink="/user/ventures"><mat-icon svgIcon="arrow-left" />Mes projets</a>
+
+          @if (store.error()) {
+            <message class="mt-5" type="error" [message]="store.error()" (dismissed)="store.clearFeedback()" />
+          }
+          @if (store.success()) {
+            <message class="mt-5" type="success" [message]="store.success()" (dismissed)="store.clearFeedback()" />
+          }
+
+          @if (ventureResource.error()) {
+            <div class="mt-6">
+              <message
+                type="error"
+                title="Projet introuvable"
+                message="Ce projet n’existe pas ou ne vous appartient pas."
+                [dismissible]="false" />
+              <button matButton="outlined" class="mt-4" type="button" (click)="ventureResource.reload()">
+                <mat-icon svgIcon="refresh-cw" />Réessayer
+              </button>
+            </div>
+          } @else if (ventureResource.isLoading()) {
+            <div
+              class="mt-6 h-96 animate-pulse rounded-md border border-outline-variant bg-surface-container-low motion-reduce:animate-none"
+              aria-label="Chargement du projet"
+              aria-busy="true"></div>
+          } @else if (venture(); as venture) {
+            <mat-card appearance="outlined" class="mt-6 overflow-hidden rounded-md border-outline-variant shadow-sm">
+              <div class="relative flex aspect-16/6 min-h-48 items-center justify-center bg-surface-container-low">
+                @if (venture.cover) {
+                  <img
+                    class="absolute inset-0 size-full object-cover"
+                    [src]="imageUrl(venture.cover)"
+                    [alt]="venture.name" />
+                } @else {
+                  <mat-icon class="text-on-surface-variant" svgIcon="building-2" />
+                }
+              </div>
+
+              <mat-card-content class="p-5 sm:p-8">
+                <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div class="flex min-w-0 items-center gap-4">
+                    <div
+                      class="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-outline-variant bg-surface text-2xl font-semibold">
+                      {{ venture.name.charAt(0).toUpperCase() }}
+                      @if (venture.logo) {
+                        <img
+                          class="absolute inset-0 size-full bg-surface object-contain"
+                          [src]="imageUrl(venture.logo)"
+                          [alt]="'Logo ' + venture.name" />
+                      }
+                    </div>
+                    <div class="min-w-0">
+                      <h1 class="truncate text-3xl font-semibold tracking-tight">{{ venture.name }}</h1>
+                      <p class="mt-1 text-sm text-primary-700">{{ stageLabel(venture.stage) }}</p>
+                    </div>
+                  </div>
+                  <mat-chip-set aria-label="Statut du projet"
+                    ><mat-chip class="border!" [class]="statusClasses(venture.status)">{{
+                      statusLabel(venture.status)
+                    }}</mat-chip></mat-chip-set
+                  >
+                </div>
+
+                @if (venture.status !== 'pending') {
+                  <div class="mt-6 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    Toute modification replacera ce projet en attente de validation.
+                  </div>
+                }
+
+                <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                  <div>
+                    <h2 class="text-lg font-semibold">À propos</h2>
+                    <p class="mt-3 whitespace-pre-line text-sm leading-6 text-on-surface-variant">
+                      {{ venture.description }}
+                    </p>
+                  </div>
+                  <div class="space-y-6">
+                    <div>
+                      <h2 class="text-sm font-semibold">Secteurs</h2>
+                      <div class="mt-3 flex flex-wrap gap-2">
+                        @for (sector of venture.sectors; track sector.id) {
+                          <span class="rounded-md bg-surface-container px-2.5 py-1.5 text-xs">{{ sector.name }}</span>
+                        }
+                      </div>
+                    </div>
+                    <div>
+                      <h2 class="text-sm font-semibold">Informations</h2>
+                      <dl class="mt-3 space-y-2 text-sm text-on-surface-variant">
+                        <div class="flex justify-between gap-4">
+                          <dt>Créé le</dt>
+                          <dd>{{ venture.createdAt | date: 'dd/MM/yyyy' }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                          <dt>Mis à jour</dt>
+                          <dd>{{ venture.updatedAt | date: 'dd/MM/yyyy' }}</dd>
+                        </div>
+                      </dl>
+                    </div>
+                    @if (
+                      venture.socials['website'] ||
+                      venture.socials['linkedin'] ||
+                      venture.socials['facebook'] ||
+                      venture.socials['instagram']
+                    ) {
+                      <div>
+                        <h2 class="text-sm font-semibold">Liens</h2>
+                        <div class="mt-2 flex flex-col items-start gap-1">
+                          @if (venture.socials['website']) {
+                            <a matButton [href]="venture.socials['website']" target="_blank" rel="noopener noreferrer"
+                              ><mat-icon svgIcon="globe" />Site web</a
+                            >
+                          }
+                          @if (venture.socials['linkedin']; as linkedin) {
+                            <a matButton [href]="linkedin" target="_blank" rel="noopener noreferrer"
+                              ><mat-icon svgIcon="external-link" />LinkedIn</a
+                            >
+                          }
+                          @if (venture.socials['facebook']) {
+                            <a matButton [href]="venture.socials['facebook']" target="_blank" rel="noopener noreferrer"
+                              ><mat-icon svgIcon="external-link" />Facebook</a
+                            >
+                          }
+                          @if (venture.socials['instagram']) {
+                            <a matButton [href]="venture.socials['instagram']" target="_blank" rel="noopener noreferrer"
+                              ><mat-icon svgIcon="external-link" />Instagram</a
+                            >
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions align="end" class="border-t border-outline-variant px-5 py-4 sm:px-8">
+                <button
+                  matButton
+                  type="button"
+                  [disabled]="store.removingVentureId() !== ''"
+                  (click)="openRemoveDialog(venture)">
+                  <mat-icon svgIcon="trash-2" />Supprimer
+                </button>
+                <button
+                  matButton="filled"
+                  type="button"
+                  [disabled]="store.isSaving() || !sectorsResource.hasValue()"
+                  (click)="openUpdateSidebar()">
+                  <mat-icon svgIcon="pencil" />Modifier
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      </section>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

@@ -1,0 +1,213 @@
+<div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
+  <mat-sidenav-container class="h-full flex-auto" (backdropClick)="closeSidebar()">
+    <mat-sidenav
+      class="w-full border-none bg-white sm:w-xl"
+      mode="over"
+      [opened]="isSidebarOpen()"
+      position="end"
+      disableClose>
+      @if (isCreating()) {
+        <add-venture-sidebar
+          [sectors]="sectors()"
+          [isSaving]="store.isSaving()"
+          (cancelled)="closeSidebar()"
+          (submitted)="createVenture($event)" />
+      } @else if (selectedVenture(); as venture) {
+        <update-venture-sidebar
+          [venture]="venture"
+          [sectors]="sectors()"
+          [isSaving]="store.isSaving()"
+          (cancelled)="closeSidebar()"
+          (submitted)="updateVenture(venture, $event)" />
+      }
+    </mat-sidenav>
+
+    <mat-sidenav-content class="flex flex-auto flex-col" [class.border-r]="isSidebarOpen()">
+      <section class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+        <div class="w-full max-w-6xl">
+          <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-sm font-medium text-primary-600">Entrepreneuriat</p>
+              <h1 class="mt-1 text-3xl font-semibold tracking-tight">Mes projets</h1>
+              <p class="mt-2 max-w-2xl text-sm text-on-surface-variant">
+                Créez vos projets, présentez leur évolution et suivez leur validation.
+              </p>
+            </div>
+            <button
+              matButton="filled"
+              type="button"
+              [disabled]="store.isSaving() || !sectorsResource.hasValue()"
+              (click)="openCreateSidebar()">
+              <mat-icon svgIcon="plus" />
+              Nouveau projet
+            </button>
+          </div>
+
+          @if (store.error()) {
+            <message class="mb-5" type="error" [message]="store.error()" (dismissed)="store.clearFeedback()" />
+          }
+          @if (store.success()) {
+            <message class="mb-5" type="success" [message]="store.success()" (dismissed)="store.clearFeedback()" />
+          }
+          @if (sectorsResource.error()) {
+            <message
+              class="mb-5"
+              type="error"
+              title="Secteurs indisponibles"
+              message="La création et la modification sont temporairement indisponibles."
+              [dismissible]="false" />
+          }
+
+          <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matPrefix svgIcon="search" />
+              <input matInput type="search" [ngModel]="q()" (ngModelChange)="updateFilter('q', $event)" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [ngModel]="sectorId()" (ngModelChange)="updateFilter('sectorId', $event)">
+                <mat-option value="">Tous les secteurs</mat-option>
+                @for (sector of sectors(); track sector.id) {
+                  <mat-option [value]="sector.id">{{ sector.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [ngModel]="stage()" (ngModelChange)="updateFilter('stage', $event)">
+                <mat-option value="">Toutes les étapes</mat-option>
+                @for (option of stageOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [ngModel]="status()" (ngModelChange)="updateFilter('status', $event)">
+                <mat-option value="">Tous les statuts</mat-option>
+                @for (option of statusOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          @if (venturesResource.error()) {
+            <message
+              type="error"
+              title="Chargement impossible"
+              message="Vos projets ne peuvent pas être chargés pour le moment."
+              [dismissible]="false" />
+            <button matButton="outlined" class="mt-4" type="button" (click)="venturesResource.reload()">
+              <mat-icon svgIcon="refresh-cw" />
+              Réessayer
+            </button>
+          } @else if (venturesResource.isLoading()) {
+            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3" aria-label="Chargement des projets" aria-busy="true">
+              @for (item of [1, 2, 3]; track item) {
+                <div
+                  class="h-80 animate-pulse rounded-md border border-outline-variant bg-surface-container-low motion-reduce:animate-none"></div>
+              }
+            </div>
+          } @else {
+            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              @for (venture of ventures(); track venture.id) {
+                <mat-card appearance="outlined" class="overflow-hidden rounded-md border-outline-variant shadow-sm">
+                  <div class="relative flex aspect-16/7 items-center justify-center bg-surface-container-low">
+                    @if (venture.cover) {
+                      <img
+                        class="absolute inset-0 size-full object-cover"
+                        [src]="imageUrl(venture.cover)"
+                        [alt]="venture.name" />
+                    } @else {
+                      <mat-icon class="text-on-surface-variant" svgIcon="building-2" />
+                    }
+                    <div
+                      class="absolute bottom-3 left-4 flex size-14 items-center justify-center overflow-hidden rounded-md border border-outline-variant bg-surface font-semibold">
+                      {{ venture.name.charAt(0).toUpperCase() }}
+                      @if (venture.logo) {
+                        <img
+                          class="absolute inset-0 size-full bg-surface object-contain"
+                          [src]="imageUrl(venture.logo)"
+                          [alt]="'Logo ' + venture.name" />
+                      }
+                    </div>
+                  </div>
+
+                  <mat-card-content class="p-5">
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <h2 class="truncate text-lg font-semibold">{{ venture.name }}</h2>
+                        <p class="mt-1 text-xs font-medium text-primary-700">{{ stageLabel(venture.stage) }}</p>
+                      </div>
+                      <mat-chip-set aria-label="Statut du projet">
+                        <mat-chip class="border!" [class]="statusClasses(venture.status)">{{
+                          statusLabel(venture.status)
+                        }}</mat-chip>
+                      </mat-chip-set>
+                    </div>
+                    <p class="mt-4 line-clamp-3 min-h-15 text-sm leading-5 text-on-surface-variant">
+                      {{ venture.description }}
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      @for (sector of venture.sectors; track sector.id) {
+                        <span class="rounded-md bg-surface-container px-2 py-1 text-xs">{{ sector.name }}</span>
+                      }
+                    </div>
+                  </mat-card-content>
+
+                  <mat-card-actions align="end" class="border-t border-outline-variant px-3 py-2">
+                    <a matButton [routerLink]="[venture.id]">Détails</a>
+                    <button
+                      matIconButton
+                      type="button"
+                      aria-label="Modifier le projet"
+                      [disabled]="store.isSaving()"
+                      (click)="openUpdateSidebar(venture)">
+                      <mat-icon svgIcon="pencil" />
+                    </button>
+                    <button
+                      matIconButton
+                      type="button"
+                      aria-label="Supprimer le projet"
+                      [disabled]="store.removingVentureId() !== ''"
+                      (click)="openRemoveDialog(venture)">
+                      <mat-icon svgIcon="trash-2" />
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+              } @empty {
+                <mat-card appearance="outlined" class="col-span-full rounded-md border-outline-variant">
+                  <mat-card-content class="px-6 py-14 text-center">
+                    <span
+                      class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700"
+                      ><mat-icon svgIcon="building-2"
+                    /></span>
+                    <h2 class="mt-4 text-lg font-semibold">Aucun projet</h2>
+                    <p class="mx-auto mt-2 max-w-md text-sm text-on-surface-variant">
+                      {{
+                        q() || sectorId() || stage() || status()
+                          ? 'Aucun projet ne correspond à vos filtres.'
+                          : 'Créez votre premier projet pour le présenter à la communauté.'
+                      }}
+                    </p>
+                  </mat-card-content>
+                </mat-card>
+              }
+            </div>
+
+            @if (total() > pageSize) {
+              <mat-paginator
+                class="mt-6 rounded-md border border-outline-variant"
+                [length]="total()"
+                [pageIndex]="page() - 1"
+                [pageSize]="pageSize"
+                [hidePageSize]="true"
+                (page)="onPageChange($event)" />
+            }
+          }
+        </div>
+      </section>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

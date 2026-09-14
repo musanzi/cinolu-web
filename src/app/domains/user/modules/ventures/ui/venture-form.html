@@ -1,0 +1,130 @@
+<div class="relative flex h-full min-h-0 w-full flex-col border-none bg-white sm:w-xl">
+  <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
+    <div>
+      <h2 class="text-xl font-semibold">{{ heading() }}</h2>
+      <p class="text-sm text-on-surface-variant">Présentez votre projet et son état d’avancement.</p>
+    </div>
+    <button
+      matIconButton
+      type="button"
+      aria-label="Fermer l’éditeur"
+      [disabled]="isSaving()"
+      (click)="cancelled.emit()">
+      <mat-icon svgIcon="x" />
+    </button>
+  </header>
+
+  <form class="flex min-h-0 flex-1 flex-col" (submit)="onSubmit(); $event.preventDefault()">
+    <div class="flex min-h-0 flex-1 flex-col gap-5 overflow-auto p-5 sm:p-7">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-md border border-outline-variant p-3">
+          <div class="flex h-28 items-center justify-center overflow-hidden rounded-md bg-surface-container-low">
+            @if (logoPreview()) {
+              <img class="size-full object-contain" [src]="logoPreview()" alt="Aperçu du logo" />
+            } @else {
+              <mat-icon class="text-on-surface-variant" svgIcon="image" />
+            }
+          </div>
+          <input
+            #logoInput
+            class="hidden"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageSelected($event, 'logo')" />
+          <button matButton="outlined" class="mt-3 w-full" type="button" (click)="logoInput.click()">
+            <mat-icon svgIcon="image-plus" />
+            {{ logoPreview() ? 'Remplacer le logo' : 'Ajouter un logo' }}
+          </button>
+        </div>
+
+        <div class="rounded-md border border-outline-variant p-3">
+          <div class="flex h-28 items-center justify-center overflow-hidden rounded-md bg-surface-container-low">
+            @if (coverPreview()) {
+              <img class="size-full object-cover" [src]="coverPreview()" alt="Aperçu de la couverture" />
+            } @else {
+              <mat-icon class="text-on-surface-variant" svgIcon="image" />
+            }
+          </div>
+          <input
+            #coverInput
+            class="hidden"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageSelected($event, 'cover')" />
+          <button matButton="outlined" class="mt-3 w-full" type="button" (click)="coverInput.click()">
+            <mat-icon svgIcon="image-plus" />
+            {{ coverPreview() ? 'Remplacer la couverture' : 'Ajouter une couverture' }}
+          </button>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nom</mat-label>
+        <input matInput autocomplete="organization" [formField]="ventureForm.name" />
+        @if (ventureForm.name().touched() && ventureForm.name().errors().length) {
+          <mat-error>{{ ventureForm.name().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" [formField]="ventureForm.description"></textarea>
+        @if (ventureForm.description().touched() && ventureForm.description().errors().length) {
+          <mat-error>{{ ventureForm.description().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Étape</mat-label>
+          <mat-select [formField]="ventureForm.stage">
+            @for (option of stageOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Secteurs</mat-label>
+          <mat-select multiple [formField]="ventureForm.sectorIds">
+            @for (sector of sectors(); track sector.id) {
+              <mat-option [value]="sector.id">{{ sector.name }}</mat-option>
+            }
+          </mat-select>
+          @if (ventureForm.sectorIds().touched() && ventureForm.sectorIds().errors().length) {
+            <mat-error>{{ ventureForm.sectorIds().errors()[0].message }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div>
+        <h3 class="mb-3 text-sm font-medium">Présence en ligne</h3>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Site web</mat-label>
+            <input matInput type="url" placeholder="https://" [formField]="ventureForm.website" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>LinkedIn</mat-label>
+            <input matInput type="url" placeholder="https://" [formField]="ventureForm.linkedin" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Facebook</mat-label>
+            <input matInput type="url" placeholder="https://" [formField]="ventureForm.facebook" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Instagram</mat-label>
+            <input matInput type="url" placeholder="https://" [formField]="ventureForm.instagram" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <footer class="flex items-center justify-end gap-2 border-t border-outline-variant bg-surface px-5 py-4 sm:px-7">
+      <button matButton type="button" [disabled]="isSaving()" (click)="cancelled.emit()">Annuler</button>
+      <button matButton="filled" type="submit" [disabled]="ventureForm().invalid() || isSaving()">
+        {{ isSaving() ? 'Enregistrement…' : submitLabel() }}
+      </button>
+    </footer>
+  </form>
+</div>

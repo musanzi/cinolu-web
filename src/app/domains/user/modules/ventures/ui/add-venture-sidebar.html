@@ -1,0 +1,7 @@
+<venture-form
+  heading="Créer un projet"
+  submitLabel="Créer le projet"
+  [sectors]="sectors()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />
