@@ -21,6 +21,7 @@ import {
 } from '../../interfaces';
 import { RemoveTypeDialog } from '../../ui/remove-type-dialog/remove-type-dialog';
 import { TypeFormDialog } from '../../ui/type-form-dialog/type-form-dialog';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   selector: 'app-list-types',
@@ -32,7 +33,8 @@ import { TypeFormDialog } from '../../ui/type-form-dialog/type-form-dialog';
     MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    Message
   ],
   templateUrl: './list-types.html',
   providers: [TypesStore]
