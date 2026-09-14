@@ -1,0 +1,255 @@
+<div class="min-h-screen font-outfit text-gray-950">
+  @if (activityResource.isLoading()) {
+    <main class="mx-auto w-full max-w-screen-2xl px-5 py-10 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
+      <div aria-label="Chargement de l'activité" aria-busy="true">
+        <div class="aspect-16/7 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+        <div class="mx-auto mt-8 max-w-5xl space-y-5">
+          <div class="h-4 w-40 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+          <div class="h-10 w-4/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+          <div class="h-5 w-3/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+        </div>
+      </div>
+    </main>
+  } @else if (activityResource.error()) {
+    <main
+      class="mx-auto flex min-h-[60vh] w-full max-w-screen-2xl items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+      <mat-card appearance="outlined" class="mx-auto w-full max-w-2xl rounded-md border-red-200 bg-white">
+        <mat-card-content class="px-6 py-12 text-center sm:px-10">
+          <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-red-200">
+            <mat-icon class="text-red-600" svgIcon="triangle-alert" />
+          </span>
+          <h1 class="mt-5 text-2xl font-bold text-gray-900">Activité introuvable</h1>
+          <p class="mt-2 text-sm leading-6 text-gray-600">
+            Cette activité n'existe pas, n'est plus publiée ou ne peut pas être chargée actuellement.
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <a matButton="outlined" routerLink="/activities">
+              <mat-icon svgIcon="arrow-left" />
+              Toutes les activités
+            </a>
+            <button matButton="filled" type="button" (click)="activityResource.reload()">
+              <mat-icon svgIcon="refresh-cw" />
+              Réessayer
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </main>
+  } @else if (activityResource.hasValue()) {
+    @let activity = activityResource.value();
+
+    <header class="relative isolate flex min-h-[48vh] items-end overflow-hidden sm:min-h-[56vh]">
+      <img
+        [src]="coverUrl()"
+        [alt]="activity.name"
+        class="absolute inset-0 -z-20 size-full object-cover object-center"
+        loading="eager"
+        fetchpriority="high" />
+      <div class="absolute inset-0 -z-10 bg-black/65"></div>
+
+      <div class="mx-auto w-full max-w-screen-2xl px-5 pt-28 pb-12 sm:px-8 sm:pb-16 lg:px-16 xl:px-24 2xl:px-32">
+        <a matButton class="mb-6 text-white" routerLink="/activities">
+          <mat-icon svgIcon="arrow-left" />
+          Retour aux activités
+        </a>
+        <p class="text-sm font-semibold text-primary-200">{{ activity.program.name }}</p>
+        <h1 class="mt-3 max-w-5xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          {{ activity.name }}
+        </h1>
+        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-white/90 sm:text-base">
+          <span class="inline-flex items-center gap-2">
+            <mat-icon class="size-5 text-primary-200" svgIcon="calendar-days" />
+            {{ activity.startDate | date: 'dd MMMM yyyy' }}
+            @if (activity.endDate && activity.endDate !== activity.startDate) {
+              – {{ activity.endDate | date: 'dd MMMM yyyy' }}
+            }
+          </span>
+          <span class="inline-flex items-center gap-2">
+            <mat-icon class="size-5 text-primary-200" svgIcon="blocks" />
+            {{ activity.program.name }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-screen-2xl px-5 py-12 sm:px-8 lg:px-16 lg:py-20 xl:px-24 2xl:px-32">
+      <div class="mx-auto my-12 h-px max-w-5xl bg-gray-200 lg:my-16"></div>
+
+      <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
+        <article>
+          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Présentation</p>
+          <h2 id="about-activity-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            À propos de cette activité
+          </h2>
+          <p class="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-gray-700">
+            {{ activity.description || 'Aucune description détaillée n’est disponible pour cette activité.' }}
+          </p>
+
+          @if (activity.types.length || activity.categories.length) {
+            <div class="mt-8 flex flex-col gap-5 border-t border-gray-200 pt-7 sm:flex-row sm:gap-10">
+              @if (activity.types.length) {
+                <div>
+                  <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Types</h3>
+                  <mat-chip-set aria-label="Types d'activité">
+                    @for (type of activity.types; track type.id) {
+                      <mat-chip>{{ type.name }}</mat-chip>
+                    }
+                  </mat-chip-set>
+                </div>
+              }
+              @if (activity.categories.length) {
+                <div>
+                  <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Catégories</h3>
+                  <mat-chip-set aria-label="Catégories de l'activité">
+                    @for (category of activity.categories; track category.id) {
+                      <mat-chip>{{ category.name }}</mat-chip>
+                    }
+                  </mat-chip-set>
+                </div>
+              }
+            </div>
+          }
+        </article>
+
+        <aside aria-label="Dates et programme">
+          <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-gray-50">
+            <mat-card-content class="p-5 sm:p-6">
+              <p class="text-xs font-bold tracking-widest text-gray-600 uppercase">En bref</p>
+              <div class="mt-5 divide-y divide-gray-200">
+                <div class="flex gap-3 pb-5">
+                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
+                    <mat-icon class="size-5" svgIcon="calendar-check" />
+                  </span>
+                  <div>
+                    <p class="text-sm font-bold text-gray-900">Date de début</p>
+                    <p class="mt-1 text-sm text-gray-600">{{ activity.startDate | date: 'dd MMMM yyyy' }}</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 py-5">
+                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
+                    <mat-icon class="size-5" svgIcon="calendar-days" />
+                  </span>
+                  <div>
+                    <p class="text-sm font-bold text-gray-900">Date de fin</p>
+                    <p class="mt-1 text-sm text-gray-600">{{ activity.endDate | date: 'dd MMMM yyyy' }}</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 pt-5">
+                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
+                    <mat-icon class="size-5" svgIcon="blocks" />
+                  </span>
+                  <div>
+                    <p class="text-sm font-bold text-gray-900">Programme</p>
+                    <p class="mt-1 text-sm text-gray-600">{{ activity.program.name }}</p>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </aside>
+      </section>
+
+      @if (activity.mentors.length) {
+        <section
+          class="mt-14 border-t border-gray-200 pt-10 lg:mt-20 lg:pt-14"
+          aria-labelledby="activity-mentors-title">
+          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Accompagnement</p>
+          <h2 id="activity-mentors-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            Intervenants
+          </h2>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @for (mentor of activity.mentors; track mentor.id) {
+              <mat-card
+                appearance="outlined"
+                class="rounded-md border-gray-200 bg-white transition-colors hover:border-primary-300">
+                <mat-card-content class="flex items-center gap-4 p-4 sm:p-5">
+                  <div
+                    class="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                    @if (mentor.avatar) {
+                      <img
+                        [src]="avatarUrl(mentor.avatar)"
+                        [alt]="mentor.name"
+                        class="size-full object-cover"
+                        loading="lazy" />
+                    } @else {
+                      <mat-icon class="text-gray-500" svgIcon="user" />
+                    }
+                  </div>
+                  <div class="min-w-0">
+                    <p class="truncate font-bold text-gray-900">{{ mentor.name }}</p>
+                    @if (mentor.jobTitle) {
+                      <p class="mt-0.5 truncate text-sm text-gray-600">{{ mentor.jobTitle }}</p>
+                    }
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        </section>
+      }
+
+      <section class="max-w-5xl mt-12" aria-labelledby="participation-title">
+        <div class="mb-7">
+          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Inscription</p>
+          <h2 id="about-activity-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            Participer à cette activité
+          </h2>
+        </div>
+
+        <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
+          <mat-card-content class="p-5 sm:p-8 lg:p-10">
+            @if (!authStore.user()) {
+              <div class="py-4 text-center">
+                <span
+                  class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                  <mat-icon svgIcon="log-in" />
+                </span>
+                <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
+                <p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-600">
+                  Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de
+                  bord.
+                </p>
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                  <a matButton="filled" routerLink="/auth/sign-in">Se connecter</a>
+                  <a matButton="outlined" routerLink="/auth/sign-up">Créer un compte</a>
+                </div>
+              </div>
+            } @else if (participationsStore.createdParticipationId()) {
+              <message
+                type="success"
+                title="Participation envoyée"
+                message="Votre demande a bien été transmise. Vous pouvez maintenant suivre son statut depuis votre tableau de bord."
+                [dismissible]="false" />
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a
+                  matButton="filled"
+                  [routerLink]="['/user/participations', participationsStore.createdParticipationId()]">
+                  Voir ma participation
+                </a>
+                <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
+              </div>
+            } @else {
+              @if (participationsStore.error()) {
+                <message
+                  class="mb-6"
+                  type="error"
+                  title="Envoi impossible"
+                  [message]="participationsStore.error()"
+                  (dismissed)="participationsStore.clearFeedback()" />
+              }
+              <form (submit)="submitParticipation($event)">
+                <form-renderer [sections]="participationForm()" />
+                <div class="mt-7 flex justify-end border-t border-gray-200 pt-5">
+                  <button matButton="filled" type="submit" [disabled]="participationsStore.isSaving()">
+                    <mat-icon svgIcon="send" />
+                    {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
+                  </button>
+                </div>
+              </form>
+            }
+          </mat-card-content>
+        </mat-card>
+      </section>
+    </main>
+  }
+</div>
