@@ -26,9 +26,11 @@
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-2">
           <h2 class="truncate text-xl font-semibold">{{ authStore.user()?.name }}</h2>
-          <span class="rounded-full bg-primary-100 px-2.5 py-1 text-xs font-medium text-primary-700">
-            Administrateur
-          </span>
+          <mat-chip-set aria-label="Rôles du compte">
+            @for (role of authStore.user()?.roles ?? []; track role) {
+              <mat-chip>{{ role }}</mat-chip>
+            }
+          </mat-chip-set>
         </div>
         <input
           #profileImageInput
@@ -38,7 +40,6 @@
           (change)="onProfileImageSelected($event)" />
         <button
           matButton="outlined"
-          class="mt-3"
           type="button"
           [disabled]="store.isUpdatingProfileImage()"
           (click)="profileImageInput.click()">
@@ -67,7 +68,7 @@
     <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(20rem,0.65fr)]">
       <mat-card appearance="outlined" class="overflow-hidden rounded-md border-neutral-200 shadow-sm">
         <div class="flex items-start gap-3 border-b border-neutral-200 p-6">
-          <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-neutral-700">
             <mat-icon svgIcon="user-round-pen" />
           </span>
           <div>
@@ -110,13 +111,98 @@
                   <mat-error>{{ profileForm.email().errors()[0].message }}</mat-error>
                 }
               </mat-form-field>
+
+              <mat-form-field appearance="outline" class="sm:col-span-2">
+                <mat-label>Fonction</mat-label>
+                <input
+                  matInput
+                  [formField]="profileForm.jobTitle"
+                  autocomplete="organization-title"
+                  placeholder="Ex. Responsable de programme" />
+              </mat-form-field>
             </div>
+
+            <fieldset class="rounded-md border border-neutral-200 p-4 mt-2">
+              <legend class="px-1 text-sm font-medium">Liens sociaux</legend>
+              <div class="mt-2 grid gap-x-4 gap-y-5 sm:grid-cols-2">
+                <mat-form-field appearance="outline">
+                  <mat-label>Facebook</mat-label>
+                  <input
+                    matInput
+                    type="url"
+                    [formField]="profileForm.socialLinks.facebook"
+                    autocomplete="url"
+                    placeholder="https://facebook.com/…" />
+                  @if (
+                    profileForm.socialLinks.facebook().touched() && profileForm.socialLinks.facebook().errors().length
+                  ) {
+                    <mat-error>{{ profileForm.socialLinks.facebook().errors()[0].message }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>LinkedIn</mat-label>
+                  <input
+                    matInput
+                    type="url"
+                    [formField]="profileForm.socialLinks.linkedin"
+                    autocomplete="url"
+                    placeholder="https://linkedin.com/in/…" />
+                  @if (
+                    profileForm.socialLinks.linkedin().touched() && profileForm.socialLinks.linkedin().errors().length
+                  ) {
+                    <mat-error>{{ profileForm.socialLinks.linkedin().errors()[0].message }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="sm:col-span-2">
+                  <mat-label>X (Twitter)</mat-label>
+                  <input
+                    matInput
+                    type="url"
+                    [formField]="profileForm.socialLinks.twitter"
+                    autocomplete="url"
+                    placeholder="https://x.com/…" />
+                  @if (
+                    profileForm.socialLinks.twitter().touched() && profileForm.socialLinks.twitter().errors().length
+                  ) {
+                    <mat-error>{{ profileForm.socialLinks.twitter().errors()[0].message }}</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </fieldset>
+
+            @if (authStore.isAdmin()) {
+              <fieldset class="rounded-md border border-neutral-200 p-4">
+                <legend class="px-1 text-sm font-medium">Rôles</legend>
+                @if (rolesResource.isLoading()) {
+                  <p class="mt-2 text-sm text-neutral-500" aria-live="polite">Chargement des rôles…</p>
+                } @else if (rolesResource.error()) {
+                  <p class="mt-2 text-sm text-error-600" role="alert">Impossible de charger les rôles.</p>
+                } @else {
+                  <div class="mt-2 grid gap-2 sm:grid-cols-2">
+                    @for (role of availableRoles(); track role.id) {
+                      <mat-checkbox [checked]="isRoleSelected(role.id)" (change)="onRoleChanged(role.id, $event)">
+                        {{ role.name }}
+                      </mat-checkbox>
+                    } @empty {
+                      <p class="text-sm text-neutral-500">Aucun rôle disponible.</p>
+                    }
+                  </div>
+                }
+              </fieldset>
+            }
+
             <div class="flex justify-end border-t border-neutral-200 pt-5">
               <button
                 class="w-full sm:w-auto"
                 matButton="filled"
                 type="submit"
-                [disabled]="store.isUpdatingProfile() || profileForm().invalid()">
+                [disabled]="
+                  store.isUpdatingProfile() ||
+                  profileForm().invalid() ||
+                  (authStore.isAdmin() && rolesResource.isLoading())
+                ">
                 <mat-icon svgIcon="save" />
                 {{ store.isUpdatingProfile() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
               </button>

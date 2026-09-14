@@ -35,9 +35,9 @@ export const ProfileStore = signalStore(
       pipe(
         concatMap((payload) => {
           patchState(store, { isUpdatingProfile: true, profileUpdated: false, profileError: '' });
-          return _http.patch<IProfileResponse>('/auth/profile', payload).pipe(
-            tap(({ data }) => {
-              _authStore.setUser(data);
+          return _http.patch<IProfileResponse>('/auth/me/update', payload).pipe(
+            tap((user) => {
+              _authStore.setUser(user);
               patchState(store, { profileUpdated: true });
             }),
             catchError(() => {
@@ -56,11 +56,11 @@ export const ProfileStore = signalStore(
         concatMap((image) => {
           patchState(store, { isUpdatingProfileImage: true, profileImageUpdated: false, profileImageError: '' });
           const body = new FormData();
-          body.append('thumb', image);
+          body.append('avatar', image);
 
-          return _http.post<IProfileImageResponse>('/users/me/profile-image', body).pipe(
-            tap(({ data }) => {
-              _authStore.setUser(data);
+          return _http.post<IProfileImageResponse>('/users/profile/avatar', body).pipe(
+            tap((user) => {
+              _authStore.setUser(user);
               patchState(store, { profileImageUpdated: true });
             }),
             catchError(() => {
@@ -78,8 +78,11 @@ export const ProfileStore = signalStore(
       pipe(
         concatMap((payload) => {
           patchState(store, { isUpdatingPassword: true, passwordUpdated: false, passwordError: '' });
-          return _http.patch<void>('/auth/update-password', payload).pipe(
-            tap(() => patchState(store, { passwordUpdated: true })),
+          return _http.patch<IProfileResponse>('/auth/password/update', payload).pipe(
+            tap((user) => {
+              _authStore.setUser(user);
+              patchState(store, { passwordUpdated: true });
+            }),
             catchError(() => {
               patchState(store, {
                 passwordError: 'Impossible de mettre à jour le mot de passe. Veuillez réessayer.'

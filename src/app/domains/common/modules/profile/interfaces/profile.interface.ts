@@ -1,8 +1,17 @@
-import { IUser } from '@/app/shared/interfaces';
+import { IRole, IUser } from '@/app/shared/interfaces';
+
+export interface IProfileSocialLinksFormModel {
+  facebook: string;
+  linkedin: string;
+  twitter: string;
+}
 
 export interface IProfileFormModel {
   name: string;
   email: string;
+  jobTitle: string;
+  socialLinks: IProfileSocialLinksFormModel;
+  roles: string[];
 }
 
 export interface IUpdatePasswordFormModel {
@@ -14,15 +23,21 @@ export interface IUpdatePasswordPayload {
   password: string;
 }
 
-export type IUpdateProfilePayload = Partial<IUser>;
-
-export interface IProfileResponse {
-  data: IUser;
+export interface IUpdateProfilePayload {
+  email?: string;
+  name?: string;
+  password?: string;
+  avatar?: string;
+  jobTitle?: string;
+  socialLinks?: Record<string, string>;
+  roles?: string[];
 }
 
-export interface IProfileImageResponse {
-  data: IUser;
-}
+export type IProfileResponse = IUser;
+
+export type IProfileImageResponse = IUser;
+
+export type IProfileRolesResponse = [IRole[], number];
 
 export interface IProfileState {
   isUpdatingProfile: boolean;
