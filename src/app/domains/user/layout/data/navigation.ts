@@ -8,7 +8,7 @@ export const NAVIGATION: INavigationItem[] = [
     children: [
       {
         id: 'profile',
-        label: 'My profile',
+        label: 'Mon profil',
         icon: 'user-round',
         route: '/user/profile',
         activeOptions: { exact: true }
