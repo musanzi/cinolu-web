@@ -21,6 +21,7 @@ import {
 } from '../../interfaces';
 import { SectorFormDialog } from '../../ui/sector-form-dialog/sector-form-dialog';
 import { RemoveSectorDialog } from '../../ui/remove-sector-dialog/remove-sector-dialog';
+import { Message } from '@/app/shared/ui';
 
 @Component({
   imports: [
@@ -31,7 +32,8 @@ import { RemoveSectorDialog } from '../../ui/remove-sector-dialog/remove-sector-
     MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    Message
   ],
   templateUrl: './list-sectors.html',
   providers: [SectorsStore]
