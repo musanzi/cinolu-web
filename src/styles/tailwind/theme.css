@@ -61,10 +61,10 @@
   --text-xs--font-weight: var(--font-weight-normal);
   --text-xs--letter-spacing: var(--tracking-normal);
 
-  --text-sm: 0.75rem; /* 12px */
-  --text-sm--line-height: var(--leading-4);
-  --text-sm--font-weight: var(--font-weight-normal);
-  --text-sm--letter-spacing: var(--tracking-normal);
+  --text-sm: 0.85rem; /* 12px */
+  ----line-height: var(--leading-4);
+  ----font-weight: var(--font-weight-normal);
+  ----letter-spacing: var(--tracking-normal);
 
   --text-base: 0.8125rem; /* 13px */
   --text-base--line-height: var(--leading-5);

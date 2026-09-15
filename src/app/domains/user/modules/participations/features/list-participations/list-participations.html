@@ -2,7 +2,7 @@
   <div class="w-full max-w-6xl">
     <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-sm font-medium text-primary-600">Mon parcours</p>
+        <p class="font-medium text-primary-600">Mon parcours</p>
         <h1 class="mt-1 text-3xl font-semibold tracking-tight">Mes participations</h1>
       </div>
 
@@ -55,7 +55,7 @@
                 </mat-chip-set>
               </div>
               <h2 class="mt-3 text-lg font-semibold leading-snug">{{ participation.activity.name }}</h2>
-              <div class="mt-4 space-y-2 text-sm text-neutral-600">
+              <div class="mt-4 space-y-2 text-neutral-600">
                 <p class="flex items-center gap-2">
                   <mat-icon class="size-4" svgIcon="calendar-days" />
                   Activité du {{ participation.activity.startDate | date: 'dd MMM yyyy' }}
@@ -80,7 +80,7 @@
                 <mat-icon svgIcon="clipboard-list" />
               </span>
               <h2 class="mt-4 text-lg font-semibold">Aucune participation</h2>
-              <p class="mx-auto mt-2 max-w-md text-sm text-neutral-500">
+              <p class="mx-auto mt-2 max-w-md text-neutral-500">
                 {{
                   status()
                     ? 'Aucune demande ne correspond à ce statut.'

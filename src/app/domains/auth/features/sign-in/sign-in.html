@@ -1,4 +1,4 @@
-<div class="mb-8 flex items-baseline text-sm font-medium">
+<div class="mb-8 flex items-baseline font-medium">
   <div class="text-neutral-500">Pas encore de compte ?</div>
   <a class="ml-1 underline underline-offset-4 hover:underline text-primary-600" routerLink="/auth/sign-up">
     S'inscrire
@@ -39,14 +39,14 @@
     </mat-form-field>
   </div>
 
-  <div class="mt-4 text-right text-sm font-medium">
+  <div class="mt-4 text-right font-medium">
     <a class="underline underline-offset-4 hover:underline text-primary-600" routerLink="/auth/forgot-password">
       Mot de passe oublié ?
     </a>
   </div>
 
   @if (successMessage(); as message) {
-    <div class="mt-4 rounded border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+    <div class="mt-4 rounded border border-green-200 bg-green-50 px-3 py-2 text-green-700">
       {{ message }}
     </div>
   }

@@ -19,7 +19,7 @@
             <mat-icon class="text-red-600" svgIcon="triangle-alert" />
           </span>
           <h1 class="mt-5 text-2xl font-bold text-gray-900">Activité introuvable</h1>
-          <p class="mt-2 text-sm leading-6 text-gray-600">
+          <p class="mt-2 leading-6 text-gray-600">
             Cette activité n'existe pas, n'est plus publiée ou ne peut pas être chargée actuellement.
           </p>
           <div class="mt-6 flex flex-wrap justify-center gap-3">
@@ -58,11 +58,11 @@
             Partager
           </button>
         </div>
-        <p class="text-sm font-semibold text-primary-200">{{ activity.program.name }}</p>
+        <p class="font-semibold text-primary-200">{{ activity.program.name }}</p>
         <h1 class="mt-3 max-w-5xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           {{ activity.name }}
         </h1>
-        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-white/90 sm:text-base">
+        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-semibold text-white/90 sm:text-base">
           <span class="inline-flex items-center gap-2">
             <mat-icon class="size-5 text-primary-200" svgIcon="calendar-days" />
             {{ activity.startDate | date: 'dd MMMM yyyy' }}
@@ -125,8 +125,8 @@
                     <mat-icon class="size-5" svgIcon="calendar-check" />
                   </span>
                   <div>
-                    <p class="text-sm font-bold text-gray-900">Date de début</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ activity.startDate | date: 'dd MMMM yyyy' }}</p>
+                    <p class="font-bold text-gray-900">Date de début</p>
+                    <p class="mt-1 text-gray-600">{{ activity.startDate | date: 'dd MMMM yyyy' }}</p>
                   </div>
                 </div>
                 <div class="flex gap-3 py-5">
@@ -134,8 +134,8 @@
                     <mat-icon class="size-5" svgIcon="calendar-days" />
                   </span>
                   <div>
-                    <p class="text-sm font-bold text-gray-900">Date de fin</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ activity.endDate | date: 'dd MMMM yyyy' }}</p>
+                    <p class="font-bold text-gray-900">Date de fin</p>
+                    <p class="mt-1 text-gray-600">{{ activity.endDate | date: 'dd MMMM yyyy' }}</p>
                   </div>
                 </div>
                 <div class="flex gap-3 pt-5">
@@ -143,8 +143,8 @@
                     <mat-icon class="size-5" svgIcon="blocks" />
                   </span>
                   <div>
-                    <p class="text-sm font-bold text-gray-900">Programme</p>
-                    <p class="mt-1 text-sm text-gray-600">{{ activity.program.name }}</p>
+                    <p class="font-bold text-gray-900">Programme</p>
+                    <p class="mt-1 text-gray-600">{{ activity.program.name }}</p>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@
                   <div class="min-w-0">
                     <p class="truncate font-bold text-gray-900">{{ mentor.name }}</p>
                     @if (mentor.jobTitle) {
-                      <p class="mt-0.5 truncate text-sm text-gray-600">{{ mentor.jobTitle }}</p>
+                      <p class="mt-0.5 truncate text-gray-600">{{ mentor.jobTitle }}</p>
                     }
                   </div>
                 </mat-card-content>
@@ -221,7 +221,7 @@
                   <mat-icon svgIcon="log-in" />
                 </span>
                 <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
-                <p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-600">
+                <p class="mx-auto mt-2 max-w-lg leading-6 text-gray-600">
                   Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de
                   bord.
                 </p>
@@ -245,7 +245,7 @@
                 <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
               </div>
             } @else if (existingParticipationResource.isLoading()) {
-              <div class="flex items-center justify-center gap-3 py-5 text-sm text-gray-600" role="status">
+              <div class="flex items-center justify-center gap-3 py-5 text-gray-600" role="status">
                 <mat-spinner diameter="28" />
                 Vérification de votre participation…
               </div>

@@ -27,9 +27,9 @@
         <div class="w-full max-w-6xl">
           <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p class="text-sm font-medium text-primary-600">Entrepreneuriat</p>
+              <p class="font-medium text-primary-600">Entrepreneuriat</p>
               <h1 class="mt-1 text-3xl font-semibold tracking-tight">Mes projets</h1>
-              <p class="mt-2 max-w-2xl text-sm text-on-surface-variant">
+              <p class="mt-2 max-w-2xl text-on-surface-variant">
                 Créez vos projets, présentez leur évolution et suivez leur validation.
               </p>
             </div>
@@ -146,7 +146,7 @@
                         }}</mat-chip>
                       </mat-chip-set>
                     </div>
-                    <p class="mt-4 line-clamp-3 min-h-15 text-sm leading-5 text-on-surface-variant">
+                    <p class="mt-4 line-clamp-3 min-h-15 leading-5 text-on-surface-variant">
                       {{ venture.description }}
                     </p>
                     <div class="mt-4 flex flex-wrap gap-2">
@@ -184,7 +184,7 @@
                       ><mat-icon svgIcon="building-2"
                     /></span>
                     <h2 class="mt-4 text-lg font-semibold">Aucun projet</h2>
-                    <p class="mx-auto mt-2 max-w-md text-sm text-on-surface-variant">
+                    <p class="mx-auto mt-2 max-w-md text-on-surface-variant">
                       {{
                         q() || sectorId() || stage() || status()
                           ? 'Aucun projet ne correspond à vos filtres.'

@@ -2,7 +2,7 @@
   <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
     <div>
       <h2 class="text-xl font-semibold">{{ heading() }}</h2>
-      <p class="text-sm text-on-surface-variant">Manage profile details and platform access.</p>
+      <p class="text-on-surface-variant">Manage profile details and platform access.</p>
     </div>
     <button matIconButton type="button" aria-label="Close user editor" (click)="cancelled.emit()">
       <mat-icon svgIcon="x" />
@@ -53,7 +53,7 @@
       </mat-form-field>
 
       <fieldset class="flex flex-col gap-5 rounded-md border border-outline-variant p-4">
-        <legend class="px-1 text-sm font-medium">Social links</legend>
+        <legend class="px-1 font-medium">Social links</legend>
 
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Facebook</mat-label>

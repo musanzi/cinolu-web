@@ -1,7 +1,7 @@
 <section class="flex flex-col px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
   <div class="mb-6">
     <h1 class="text-2xl font-semibold tracking-tight">Ventures</h1>
-    <p class="mt-1 text-sm text-on-surface-variant">Browse all ventures and their review status.</p>
+    <p class="mt-1 text-on-surface-variant">Browse all ventures and their review status.</p>
   </div>
 
   <div class="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_repeat(3,13rem)_auto]">
@@ -49,7 +49,7 @@
     <message type="error" [message]="'Unable to load ventures.'" />
   } @else if (venturesResource.isLoading()) {
     <div class="flex min-h-64 items-center justify-center" aria-label="Loading ventures">
-      <span class="text-sm text-on-surface-variant">Loading...</span>
+      <span class="text-on-surface-variant">Loading...</span>
     </div>
   } @else {
     <div class="flex flex-col overflow-hidden rounded-md border border-outline-variant">
@@ -121,7 +121,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           <tr class="h-32" *matNoDataRow>
-            <td class="text-center text-sm text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+            <td class="text-center text-on-surface-variant" [attr.colspan]="displayedColumns.length">
               No ventures found.
             </td>
           </tr>

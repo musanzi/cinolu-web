@@ -31,7 +31,7 @@
           }
           @case ('radio') {
             <fieldset>
-              <legend class="mb-3 text-sm font-semibold text-gray-800">
+              <legend class="mb-3 font-semibold text-gray-800">
                 {{ question.field.label }}
                 @if (question.field.required) {
                   <span class="text-red-600" aria-label="required">*</span>
@@ -43,13 +43,13 @@
                 }
               </mat-radio-group>
               @if (answer.value().touched() && answer.value().errors().length) {
-                <p class="mt-2 text-sm text-error" role="alert">{{ answer.value().errors()[0].message }}</p>
+                <p class="mt-2 text-error" role="alert">{{ answer.value().errors()[0].message }}</p>
               }
             </fieldset>
           }
           @case ('checkbox') {
             <fieldset [id]="question.field.name">
-              <legend class="mb-3 text-sm font-semibold text-gray-800">
+              <legend class="mb-3 font-semibold text-gray-800">
                 {{ question.field.label }}
                 @if (question.field.required) {
                   <span class="text-red-600" aria-label="required">*</span>
@@ -63,7 +63,7 @@
                 }
               </div>
               @if (answer.options().touched() && answer.options().errors().length) {
-                <p class="mt-2 text-sm text-error" role="alert">{{ answer.options().errors()[0].message }}</p>
+                <p class="mt-2 text-error" role="alert">{{ answer.options().errors()[0].message }}</p>
               }
             </fieldset>
           }
@@ -85,7 +85,5 @@
     }
   </fieldset>
 } @empty {
-  <p class="rounded-md bg-gray-50 px-4 py-5 text-sm text-gray-600">
-    This application contains no additional questions.
-  </p>
+  <p class="rounded-md bg-gray-50 px-4 py-5 text-gray-600">This application contains no additional questions.</p>
 }

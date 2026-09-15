@@ -1,9 +1,9 @@
 <section class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
   <div class="w-full max-w-6xl">
     <div class="mb-7">
-      <p class="text-sm font-medium text-primary-600">Paramètres du compte</p>
+      <p class="font-medium text-primary-600">Paramètres du compte</p>
       <h1 class="mt-1 text-3xl font-semibold tracking-tight">Mon profil</h1>
-      <p class="mt-2 max-w-2xl text-sm text-neutral-500">
+      <p class="mt-2 max-w-2xl text-neutral-500">
         Gérez vos informations personnelles et les paramètres de sécurité de votre compte.
       </p>
     </div>
@@ -73,7 +73,7 @@
           </span>
           <div>
             <h2 class="text-lg font-semibold">Informations personnelles</h2>
-            <p class="mt-1 text-sm text-neutral-500">Mettez à jour les informations associées à votre compte.</p>
+            <p class="mt-1 text-neutral-500">Mettez à jour les informations associées à votre compte.</p>
           </div>
         </div>
 
@@ -123,7 +123,7 @@
             </div>
 
             <fieldset class="rounded-md border border-neutral-200 p-4 mt-2">
-              <legend class="px-1 text-sm font-medium">Liens sociaux</legend>
+              <legend class="px-1 font-medium">Liens sociaux</legend>
               <div class="mt-2 grid gap-x-4 gap-y-5 sm:grid-cols-2">
                 <mat-form-field appearance="outline">
                   <mat-label>Facebook</mat-label>
@@ -174,11 +174,11 @@
 
             @if (authStore.isAdmin()) {
               <fieldset class="rounded-md border border-neutral-200 p-4">
-                <legend class="px-1 text-sm font-medium">Rôles</legend>
+                <legend class="px-1 font-medium">Rôles</legend>
                 @if (rolesResource.isLoading()) {
-                  <p class="mt-2 text-sm text-neutral-500" aria-live="polite">Chargement des rôles…</p>
+                  <p class="mt-2 text-neutral-500" aria-live="polite">Chargement des rôles…</p>
                 } @else if (rolesResource.error()) {
-                  <p class="mt-2 text-sm text-error-600" role="alert">Impossible de charger les rôles.</p>
+                  <p class="mt-2 text-error-600" role="alert">Impossible de charger les rôles.</p>
                 } @else {
                   <div class="mt-2 grid gap-2 sm:grid-cols-2">
                     @for (role of availableRoles(); track role.id) {
@@ -186,7 +186,7 @@
                         {{ role.name }}
                       </mat-checkbox>
                     } @empty {
-                      <p class="text-sm text-neutral-500">Aucun rôle disponible.</p>
+                      <p class="text-neutral-500">Aucun rôle disponible.</p>
                     }
                   </div>
                 }
@@ -220,7 +220,7 @@
           </span>
           <div>
             <h2 class="text-lg font-semibold">Sécurité</h2>
-            <p class="mt-1 text-sm text-neutral-500">Choisissez un nouveau mot de passe sécurisé.</p>
+            <p class="mt-1 text-neutral-500">Choisissez un nouveau mot de passe sécurisé.</p>
           </div>
         </div>
 

@@ -4,14 +4,14 @@
       <div class="space-y-6">
         <a
           matButton="outlined"
-          class="group rounded-lg! border-gray-200! bg-white! px-4! py-2! text-sm! font-medium! text-gray-700! shadow-theme-xs!"
+          class="group rounded-lg! border-gray-200! bg-white! px-4! py-2! ! font-medium! text-gray-700! shadow-theme-xs!"
           routerLink="/">
           <mat-icon class="size-4 transition-transform duration-300 group-hover:-translate-x-1" svgIcon="arrow-left" />
           Retour à l'accueil
         </a>
         <div class="space-y-2">
           <h1 class="text-title-sm font-semibold text-gray-900 sm:text-title-md">{{ title() }}</h1>
-          <p class="text-sm leading-relaxed text-gray-500">{{ description() }}</p>
+          <p class="leading-relaxed text-gray-500">{{ description() }}</p>
         </div>
       </div>
       <ng-content />
@@ -53,7 +53,7 @@
             </div>
             <div class="text-white/90">
               <p class="font-semibold text-white">Une communauté engagée</p>
-              <p class="text-sm text-primary-200">Des talents qui transforment la région</p>
+              <p class="text-primary-200">Des talents qui transforment la région</p>
             </div>
           </div>
           <div class="space-y-3 pt-4">
@@ -70,7 +70,7 @@
                   class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
                   <mat-icon class="size-4 text-white" svgIcon="check" />
                 </div>
-                <span class="text-sm font-medium">{{ feature }}</span>
+                <span class="font-medium">{{ feature }}</span>
               </div>
             }
           </div>

@@ -10,7 +10,7 @@
         <mat-card-content class="px-6 py-12 text-center">
           <mat-icon class="text-red-600" svgIcon="triangle-alert" />
           <h1 class="mt-4 text-2xl font-semibold">Participation introuvable</h1>
-          <p class="mt-2 text-sm text-neutral-500">Cette participation n’existe pas ou ne vous appartient pas.</p>
+          <p class="mt-2 text-neutral-500">Cette participation n’existe pas ou ne vous appartient pas.</p>
           <button matButton="outlined" class="mt-5" type="button" (click)="participationResource.reload()">
             Réessayer
           </button>
@@ -32,7 +32,7 @@
             [alt]="participation.activity.name" />
           <mat-card-content class="p-6 sm:p-8">
             <div class="flex flex-wrap items-start justify-between gap-3">
-              <p class="text-sm font-medium text-primary-700">{{ participation.activity.program.name }}</p>
+              <p class="font-medium text-primary-700">{{ participation.activity.program.name }}</p>
               <mat-chip-set aria-label="Statut de la participation">
                 <mat-chip class="border!" [class]="statusClasses(participation.status)">
                   {{ statusLabel(participation.status) }}
@@ -40,7 +40,7 @@
               </mat-chip-set>
             </div>
             <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{{ participation.activity.name }}</h1>
-            <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-600">
+            <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-neutral-600">
               <span class="inline-flex items-center gap-2">
                 <mat-icon class="size-4" svgIcon="calendar-days" />
                 {{ participation.activity.startDate | date: 'dd MMMM yyyy' }}
@@ -79,9 +79,9 @@
           <mat-card appearance="outlined" class="rounded-md border-neutral-200 shadow-sm">
             <mat-card-content class="p-5 sm:p-8">
               <div class="mb-7">
-                <p class="text-sm font-medium text-primary-700">Réponses envoyées</p>
+                <p class="font-medium text-primary-700">Réponses envoyées</p>
                 <h2 class="mt-1 text-xl font-semibold">Modifier ma participation</h2>
-                <p class="mt-2 text-sm text-neutral-500">
+                <p class="mt-2 text-neutral-500">
                   Vous pouvez modifier vos réponses tant que la demande est en attente.
                 </p>
               </div>
@@ -102,22 +102,20 @@
           <mat-card appearance="outlined" class="rounded-md border-neutral-200 shadow-sm">
             <mat-card-content class="p-5 sm:p-8">
               <div class="mb-6">
-                <p class="text-sm font-medium text-primary-700">Réponses envoyées</p>
+                <p class="font-medium text-primary-700">Réponses envoyées</p>
                 <h2 class="mt-1 text-xl font-semibold">Détails de ma participation</h2>
-                <p class="mt-2 text-sm text-neutral-500">
+                <p class="mt-2 text-neutral-500">
                   Une demande déjà traitée est consultable, mais ne peut plus être modifiée.
                 </p>
               </div>
               <dl class="divide-y divide-neutral-200">
                 @for (row of responseRows(); track row.label) {
                   <div class="grid gap-1 py-4 sm:grid-cols-[minmax(12rem,0.7fr)_minmax(0,1.3fr)] sm:gap-6">
-                    <dt class="text-sm font-medium text-neutral-700">{{ row.label }}</dt>
-                    <dd class="whitespace-pre-line text-sm text-neutral-950">{{ row.value }}</dd>
+                    <dt class="font-medium text-neutral-700">{{ row.label }}</dt>
+                    <dd class="whitespace-pre-line text-neutral-950">{{ row.value }}</dd>
                   </div>
                 } @empty {
-                  <p class="py-5 text-sm text-neutral-500">
-                    Cette participation ne contient aucune réponse supplémentaire.
-                  </p>
+                  <p class="py-5 text-neutral-500">Cette participation ne contient aucune réponse supplémentaire.</p>
                 }
               </dl>
             </mat-card-content>

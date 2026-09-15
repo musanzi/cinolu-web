@@ -27,7 +27,7 @@
         <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <h1 class="text-2xl font-semibold tracking-tight">Activities</h1>
-            <p class="mt-1 text-sm text-on-surface-variant">Create, publish and manage activities and their forms.</p>
+            <p class="mt-1 text-on-surface-variant">Create, publish and manage activities and their forms.</p>
           </div>
 
           <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -93,7 +93,7 @@
 
         @if (activitiesResource.isLoading()) {
           <div class="flex min-h-64 items-center justify-center" aria-label="Loading activities">
-            <span class="text-sm text-on-surface-variant">Loading...</span>
+            <span class="text-on-surface-variant">Loading...</span>
           </div>
         } @else if (activitiesResource.error()) {
           <div
@@ -196,7 +196,7 @@
                   *matRowDef="let row; columns: displayedColumns"></tr>
 
                 <tr class="h-32" *matNoDataRow>
-                  <td class="text-center text-sm text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+                  <td class="text-center text-on-surface-variant" [attr.colspan]="displayedColumns.length">
                     No activities match these filters.
                   </td>
                 </tr>
