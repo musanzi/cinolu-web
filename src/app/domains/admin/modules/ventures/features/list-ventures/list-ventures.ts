@@ -85,7 +85,7 @@ export default class ListVentures {
     if (query.status) params.set('status', query.status);
     return `/ventures/staff?${params.toString()}`;
   });
-  protected readonly sectorsResource = httpResource<ISectorsLookupResponse>(() => '/sectors?take=1000');
+  protected readonly sectorsResource = httpResource<ISectorsLookupResponse>(() => '/sectors?take=100');
   protected readonly ventures = computed(() =>
     this.venturesResource.hasValue() ? this.venturesResource.value()[0] : []
   );
