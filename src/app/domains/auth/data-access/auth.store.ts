@@ -17,10 +17,10 @@ export const AuthStore = signalStore(
   })),
   withComputed(({ user }) => ({
     isAdmin: computed(() => {
-      return user()?.roles?.some((role) => role === Roles.STAFF);
+      return user()?.roles?.some((role) => role === Roles.STAFF || role === Roles.ADMIN);
     }),
     isUser: computed(() => {
-      return user()?.roles?.some((r) => r === 'user');
+      return user()?.roles?.some((r) => r === Roles.USER);
     })
   })),
   withMethods(({ _http, _router, ...store }) => ({
