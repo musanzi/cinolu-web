@@ -12,7 +12,7 @@
     </main>
   } @else if (activityResource.error()) {
     <main
-      class="mx-auto flex min-h-[60vh] w-full max-w-screen-2xl items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+      class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
       <mat-card appearance="outlined" class="mx-auto w-full max-w-2xl rounded-md border-red-200 bg-white">
         <mat-card-content class="px-6 py-12 text-center sm:px-10">
           <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-red-200">
@@ -38,7 +38,7 @@
   } @else if (activityResource.hasValue()) {
     @let activity = activityResource.value();
 
-    <header class="relative isolate flex min-h-[60vh] items-end overflow-hidden sm:min-h-[56vh]">
+    <header class="relative isolate flex min-h-[70vh] items-end overflow-hidden">
       <img
         [src]="coverUrl()"
         [alt]="activity.name"
