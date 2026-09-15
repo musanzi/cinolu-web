@@ -78,7 +78,7 @@ export class ActivityForm {
       const startDate = valueOf(schemaPath.startDate);
       const endDate = value();
       if (!(startDate instanceof Date) || !(endDate instanceof Date)) return undefined;
-      if (endDate.getTime() <= startDate.getTime()) {
+      if (endDate.getTime() < startDate.getTime()) {
         return { kind: 'dateOrder', message: 'End date must be after the start date.' };
       }
       return undefined;
