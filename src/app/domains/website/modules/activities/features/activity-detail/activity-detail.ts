@@ -5,16 +5,28 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { ParticipationsStore } from '@/app/domains/user/modules/participations/data-access';
+import type { IParticipationsResponse } from '@/app/domains/user/modules/participations/interfaces';
 import { FormRenderer, Message } from '@/app/shared/ui';
 import type { IActivity } from '@/app/shared/interfaces';
 import { environment } from '@/environments/environment';
 
 @Component({
   selector: 'website-activity-detail',
-  imports: [DatePipe, FormRenderer, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule, Message, RouterLink],
+  imports: [
+    DatePipe,
+    FormRenderer,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    Message,
+    RouterLink
+  ],
   templateUrl: './activity-detail.html',
   providers: [ParticipationsStore]
 })
@@ -28,6 +40,16 @@ export default class ActivityDetail {
   protected readonly activityResource = httpResource<IActivity>(() => {
     const slug = this.slug().trim();
     return slug ? `/activities/${encodeURIComponent(slug)}` : undefined;
+  });
+  protected readonly existingParticipationResource = httpResource<IParticipationsResponse>(() => {
+    if (!this.authStore.user() || !this.activityResource.hasValue()) return undefined;
+
+    const params = new URLSearchParams({
+      page: '1',
+      limit: '1',
+      activityId: this.activityResource.value().id
+    });
+    return `/participations/mine?${params.toString()}`;
   });
 
   protected readonly coverUrl = computed(() => {
@@ -56,11 +78,22 @@ export default class ActivityDetail {
     endDate.setHours(23, 59, 59, 999);
     return endDate.getTime() < Date.now();
   });
+  protected readonly existingParticipation = computed(() =>
+    this.existingParticipationResource.hasValue() ? this.existingParticipationResource.value()[0][0] : undefined
+  );
 
   protected submitParticipation(event: Event): void {
     event.preventDefault();
     const renderer = this.participationRenderer();
-    if (!renderer || !this.activityResource.hasValue() || !this.hasParticipationForm() || this.hasActivityEnded()) {
+    if (
+      !renderer ||
+      !this.activityResource.hasValue() ||
+      !this.hasParticipationForm() ||
+      this.hasActivityEnded() ||
+      this.existingParticipationResource.isLoading() ||
+      this.existingParticipationResource.error() ||
+      this.existingParticipation()
+    ) {
       return;
     }
     const activityId = this.activityResource.value().id;

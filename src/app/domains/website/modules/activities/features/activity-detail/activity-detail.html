@@ -238,6 +238,29 @@
                 </a>
                 <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
               </div>
+            } @else if (existingParticipationResource.isLoading()) {
+              <div class="flex items-center justify-center gap-3 py-5 text-sm text-gray-600" role="status">
+                <mat-spinner diameter="28" />
+                Vérification de votre participation…
+              </div>
+            } @else if (existingParticipationResource.error()) {
+              <message
+                type="error"
+                title="Vérification impossible"
+                message="Nous ne pouvons pas vérifier votre participation pour le moment. Veuillez réessayer."
+                [dismissible]="false" />
+              <div class="mt-5 flex justify-end">
+                <button matButton="outlined" type="button" (click)="existingParticipationResource.reload()">
+                  <mat-icon svgIcon="refresh-cw" />
+                  Réessayer
+                </button>
+              </div>
+            } @else if (existingParticipation()) {
+              <message
+                type="warning"
+                title="Déjà participant"
+                message="Vous êtes déjà participant à cette activité. Une seule participation est autorisée par personne."
+                [dismissible]="false" />
             } @else {
               @if (participationsStore.error()) {
                 <message
@@ -253,7 +276,14 @@
                   <button
                     matButton="filled"
                     type="submit"
-                    [disabled]="participationsStore.isSaving() || !hasParticipationForm() || hasActivityEnded()">
+                    [disabled]="
+                      participationsStore.isSaving() ||
+                      !hasParticipationForm() ||
+                      hasActivityEnded() ||
+                      existingParticipationResource.isLoading() ||
+                      !!existingParticipationResource.error() ||
+                      !!existingParticipation()
+                    ">
                     <mat-icon svgIcon="send" />
                     {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
                   </button>
