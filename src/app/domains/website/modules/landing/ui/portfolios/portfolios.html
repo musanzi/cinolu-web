@@ -17,12 +17,7 @@
             (click)="moveCarousel(false)">
             <mat-icon svgIcon="arrow-left" />
           </button>
-          <button
-            matIconButton
-            type="button"
-            aria-label="Portefeuille suivant"
-            [disabled]="!canMoveNext()"
-            (click)="moveCarousel(true)">
+          <button matIconButton type="button" [disabled]="!canMoveNext()" (click)="moveCarousel(true)">
             <mat-icon svgIcon="arrow-right" />
           </button>
         </div>

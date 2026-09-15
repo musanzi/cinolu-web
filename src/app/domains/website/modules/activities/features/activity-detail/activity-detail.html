@@ -238,7 +238,10 @@
               <form (submit)="submitParticipation($event)">
                 <form-renderer [sections]="participationForm()" />
                 <div class="mt-7 flex justify-end border-t border-gray-200 pt-5">
-                  <button matButton="filled" type="submit" [disabled]="participationsStore.isSaving()">
+                  <button
+                    matButton="filled"
+                    type="submit"
+                    [disabled]="participationsStore.isSaving() || !hasParticipationForm()">
                     <mat-icon svgIcon="send" />
                     {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
                   </button>

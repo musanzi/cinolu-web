@@ -44,11 +44,14 @@ export default class ActivityDetail {
     const form = this.activityResource.value().participationForm;
     return Array.isArray(form) ? form : [];
   });
+  protected readonly hasParticipationForm = computed(() =>
+    this.participationForm().some((section) => section.fields.length > 0)
+  );
 
   protected submitParticipation(event: Event): void {
     event.preventDefault();
     const renderer = this.participationRenderer();
-    if (!renderer || !this.activityResource.hasValue()) return;
+    if (!renderer || !this.activityResource.hasValue() || !this.hasParticipationForm()) return;
     const activityId = this.activityResource.value().id;
 
     renderer.submit(async (responses) => {

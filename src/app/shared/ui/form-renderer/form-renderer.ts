@@ -14,6 +14,7 @@ import { IField, IForm, IFormAnswer, IFormAnswersModel, IFormResponses } from '@
 export class FormRenderer {
   sections = input.required<IForm[]>();
   initialResponses = input<IFormResponses>({});
+  readonly isEmpty = computed(() => !this.sections().some((section) => section.fields.length > 0));
 
   private answersModel = linkedSignal<IFormAnswersModel>(() => ({
     answers: this.sections().flatMap((section) => section.fields.map((field) => this.buildAnswer(field)))
@@ -55,6 +56,8 @@ export class FormRenderer {
   }
 
   submit(handler: (responses: IFormResponses) => void | Promise<void>): void {
+    if (this.isEmpty()) return;
+
     submit(this.answerForm, async () => handler(this.responses()));
   }
 
