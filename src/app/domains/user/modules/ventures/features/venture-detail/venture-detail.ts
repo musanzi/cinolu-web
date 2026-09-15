@@ -59,7 +59,7 @@ export default class VentureDetail {
   ];
 
   protected readonly ventureResource = httpResource<IVenture>(() =>
-    this.ventureId ? `/ventures/mine/${encodeURIComponent(this.ventureId)}` : undefined
+    this.ventureId ? `/ventures/${encodeURIComponent(this.ventureId)}` : undefined
   );
   protected readonly sectorsResource = httpResource<ISectorsResponse>(() => '/sectors?take=100');
   protected readonly venture = computed(() =>

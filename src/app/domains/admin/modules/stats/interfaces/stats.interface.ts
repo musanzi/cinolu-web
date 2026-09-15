@@ -1,5 +1,4 @@
-import { ParticipationStatus, VentureStatus } from '@/app/shared/interfaces';
-import { INamedCount, IMonthlyCount } from './statistics.interface';
+import { IMonthlyCount, INamedCount, ParticipationStatus, VentureStatus } from '@/app/shared/interfaces';
 
 export interface ICountRow {
   total: string;

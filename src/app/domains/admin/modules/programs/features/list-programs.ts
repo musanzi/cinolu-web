@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { Component, computed, debounced, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, debounced, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { environment } from '@/environments/environment';
 import { IProgram } from '@/app/shared/interfaces';
@@ -16,15 +17,16 @@ import { filter } from 'rxjs';
 import { ProgramsStore } from '../data-access/programs.store';
 import {
   IPortfoliosLookupResponse,
-  IProgramDialogData,
-  IProgramDialogResult,
+  IProgramFormResult,
+  IProgramLookups,
   IProgramsQuery,
   IProgramsResponse,
   IRemoveProgramDialogData,
   IStaffLookupResponse
 } from '../interfaces';
-import { ProgramFormDialog } from '../ui/program-form-dialog';
+import { AddProgramSidebar } from '../ui/add-program-sidebar/add-program-sidebar';
 import { RemoveProgramDialog } from '../ui/remove-program-dialog';
+import { UpdateProgramSidebar } from '../ui/update-program-sidebar/update-program-sidebar';
 import { Message } from '@/app/shared/ui';
 
 @Component({
@@ -38,7 +40,12 @@ import { Message } from '@/app/shared/ui';
     MatIconModule,
     MatPaginatorModule,
     MatSelectModule,
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
     MatTableModule,
+    AddProgramSidebar,
+    UpdateProgramSidebar,
     Message
   ],
   templateUrl: './list-programs.html',
@@ -55,6 +62,8 @@ export default class Programs {
   protected readonly portfolioId = signal('');
   protected readonly debouncedQuery = debounced(this.q, 300);
   protected readonly displayedColumns = ['program', 'portfolio', 'managers', 'updatedAt', 'actions'];
+  protected readonly selectedProgram = signal<IProgram | undefined>(undefined);
+  protected readonly isCreating = signal(false);
 
   private readonly query = computed<IProgramsQuery>(() => ({
     page: this.page(),
@@ -87,9 +96,22 @@ export default class Programs {
     this.portfoliosResource.hasValue() ? this.portfoliosResource.value()[0] : []
   );
   protected readonly staff = computed(() => (this.staffResource.hasValue() ? this.staffResource.value() : []));
+  protected readonly lookups = computed<IProgramLookups>(() => ({
+    portfolios: this.portfolios(),
+    staff: this.staff()
+  }));
   protected readonly areLookupsLoading = computed(
     () => this.portfoliosResource.isLoading() || this.staffResource.isLoading()
   );
+  protected readonly lookupsError = computed(() => this.portfoliosResource.error() || this.staffResource.error());
+  protected readonly isSidebarOpen = computed(() => this.isCreating() || this.selectedProgram() !== undefined);
+
+  constructor() {
+    effect(() => {
+      if (this.store.mutationVersion() === 0) return;
+      this.closeSidebar();
+    });
+  }
 
   protected onSearchChange(value: string): void {
     this.page.set(1);
@@ -113,34 +135,27 @@ export default class Programs {
     (event.target as HTMLImageElement).hidden = true;
   }
 
-  protected openCreateDialog(): void {
-    this.dialog
-      .open<ProgramFormDialog, IProgramDialogData, IProgramDialogResult>(ProgramFormDialog, {
-        data: { portfolios: this.portfolios(), staff: this.staff() },
-        width: '34rem',
-        maxWidth: 'calc(100vw - 2rem)'
-      })
-      .afterClosed()
-      .pipe(
-        filter((result): result is IProgramDialogResult => result !== undefined),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((command) => this.store.createProgram(command));
+  protected openCreateSidebar(): void {
+    this.selectedProgram.set(undefined);
+    this.isCreating.set(true);
   }
 
-  protected openUpdateDialog(program: IProgram): void {
-    this.dialog
-      .open<ProgramFormDialog, IProgramDialogData, IProgramDialogResult>(ProgramFormDialog, {
-        data: { portfolios: this.portfolios(), staff: this.staff(), program },
-        width: '34rem',
-        maxWidth: 'calc(100vw - 2rem)'
-      })
-      .afterClosed()
-      .pipe(
-        filter((result): result is IProgramDialogResult => result !== undefined),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((command) => this.store.updateProgram({ id: program.id, ...command }));
+  protected openUpdateSidebar(program: IProgram): void {
+    this.isCreating.set(false);
+    this.selectedProgram.set(program);
+  }
+
+  protected closeSidebar(): void {
+    this.isCreating.set(false);
+    this.selectedProgram.set(undefined);
+  }
+
+  protected createProgram(result: IProgramFormResult): void {
+    this.store.createProgram(result);
+  }
+
+  protected updateProgram(program: IProgram, result: IProgramFormResult): void {
+    this.store.updateProgram({ id: program.id, ...result });
   }
 
   protected openRemoveDialog(program: IProgram): void {

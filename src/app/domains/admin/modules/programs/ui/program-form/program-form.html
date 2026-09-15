@@ -1,0 +1,79 @@
+<div class="relative flex h-full min-h-0 w-full flex-col border-none bg-white sm:w-xl">
+  <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
+    <div>
+      <h2 class="text-xl font-semibold">{{ heading() }}</h2>
+      <p class="text-sm text-on-surface-variant">Set the program details, portfolio and managers.</p>
+    </div>
+    <button matIconButton type="button" aria-label="Close program editor" (click)="cancelled.emit()">
+      <mat-icon svgIcon="x" />
+    </button>
+  </header>
+
+  <form class="flex min-h-0 flex-1 flex-col" (submit)="onSubmit(); $event.preventDefault()">
+    <div class="flex flex-1 flex-col gap-5 overflow-auto p-5 sm:p-7">
+      <div class="rounded-md border border-outline-variant p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-sm font-medium">Program logo</p>
+            <p class="truncate text-xs text-on-surface-variant">
+              {{ selectedLogo()?.name ?? (program()?.logo ? 'Keep current logo' : 'No file selected') }}
+            </p>
+          </div>
+          <div class="flex shrink-0 items-center gap-1">
+            <input #logoInput class="sr-only" type="file" accept="image/*" (change)="onLogoSelected($event)" />
+            @if (selectedLogo()) {
+              <button matIconButton type="button" aria-label="Clear selected logo" (click)="clearLogo(logoInput)">
+                <mat-icon svgIcon="x" />
+              </button>
+            }
+            <button matButton="outlined" type="button" (click)="logoInput.click()">
+              <mat-icon svgIcon="image-plus" />
+              Choose image
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Name</mat-label>
+        <input matInput [formField]="programForm.name" autocomplete="off" />
+        @if (programForm.name().touched() && programForm.name().errors().length) {
+          <mat-error>{{ programForm.name().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="6" [formField]="programForm.description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Portfolio</mat-label>
+        <mat-select [formField]="programForm.portfolioId">
+          @for (portfolio of lookups().portfolios; track portfolio.id) {
+            <mat-option [value]="portfolio.id">{{ portfolio.name }}</mat-option>
+          }
+        </mat-select>
+        @if (programForm.portfolioId().touched() && programForm.portfolioId().errors().length) {
+          <mat-error>{{ programForm.portfolioId().errors()[0].message }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Managers</mat-label>
+        <mat-select multiple [formField]="programForm.managers">
+          @for (member of lookups().staff; track member.id) {
+            <mat-option [value]="member.id">{{ member.name }} — {{ member.email }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <footer class="flex items-center justify-end gap-2 border-t border-outline-variant bg-surface px-5 py-4 sm:px-7">
+      <button matButton type="button" [disabled]="isSaving()" (click)="cancelled.emit()">Cancel</button>
+      <button matButton="filled" type="submit" [disabled]="programForm().invalid() || isSaving()">
+        {{ isSaving() ? 'Saving…' : submitLabel() }}
+      </button>
+    </footer>
+  </form>
+</div>

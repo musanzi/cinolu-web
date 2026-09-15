@@ -38,13 +38,12 @@ export interface IRemoveProgramCommand {
   id: string;
 }
 
-export interface IProgramDialogData {
+export interface IProgramLookups {
   portfolios: IPortfolio[];
   staff: IUser[];
-  program?: IProgram;
 }
 
-export type IProgramDialogResult = ICreateProgramCommand;
+export type IProgramFormResult = ICreateProgramCommand;
 
 export interface IRemoveProgramDialogData {
   program: IProgram;

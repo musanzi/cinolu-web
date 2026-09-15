@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { ApexOptions, ApexXAxis } from 'ng-apexcharts';
 import { StatsChart } from '../ui/stats-chart';
-import { IStatsDashboard, IChartPoint, IChartSeries } from '../interfaces/stats-dashboard.interface';
+import { IChartPoint, IChartSeries, IStatsDashboard } from '@/app/shared/interfaces';
 
 @Component({
   templateUrl: './stats.html',

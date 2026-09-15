@@ -77,14 +77,10 @@
       class="fixed top-0 right-0 z-50 h-dvh w-[92vw] max-w-md border-l border-gray-200 bg-white text-gray-900 shadow-[-8px_0_30px_rgba(15,23,42,0.08)] lg:hidden">
       <div class="flex h-full flex-col">
         <div class="flex items-center justify-between border-b border-gray-200/70 px-7 py-6">
-          <a routerLink="/" (click)="closeMenu()"
-            ><img
-              src="/images/logo/logo-g.png"
-              width="64"
-              height="68"
-              alt="Cinolu"
-              class="h-9 w-auto object-contain" /></a
-          ><button matIconButton type="button" (click)="closeMenu()" aria-label="Fermer le menu">
+          <a routerLink="/" (click)="closeMenu()">
+            <img src="/images/logo/logo-g.png" width="64" height="68" alt="Cinolu" class="h-9 w-auto object-contain" />
+          </a>
+          <button matIconButton type="button" (click)="closeMenu()" aria-label="Fermer le menu">
             <mat-icon svgIcon="x" />
           </button>
         </div>

@@ -2,6 +2,20 @@ import { INavigationItem } from '@/app/shared/ui/navigation/interfaces';
 
 export const NAVIGATION: INavigationItem[] = [
   {
+    id: 'overview',
+    label: "Vue d'ensemble",
+    description: 'Suivre mes indicateurs clés',
+    children: [
+      {
+        id: 'stats',
+        label: 'Mes statistiques',
+        icon: 'chart-no-axes-combined',
+        route: '/user/stats',
+        activeOptions: { exact: true }
+      }
+    ]
+  },
+  {
     id: 'account',
     label: 'My account',
     description: 'Manage your personal information',

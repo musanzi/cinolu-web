@@ -1,0 +1,27 @@
+<mat-card appearance="outlined" class="h-full overflow-hidden rounded-md border-outline-variant">
+  <mat-card-header class="border-b border-outline-variant pb-4">
+    <div
+      mat-card-avatar
+      class="flex size-10 items-center justify-center rounded-md bg-primary-container text-on-primary-container">
+      <mat-icon class="size-5" [svgIcon]="icon()" />
+    </div>
+    <mat-card-title class="text-base font-semibold tracking-tight">{{ title() }}</mat-card-title>
+    <mat-card-subtitle class="mt-0.5 text-sm leading-5">{{ description() }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="px-2 pt-4 sm:px-4">
+    <apx-chart
+      class="block w-full"
+      [chart]="options().chart!"
+      [colors]="options().colors!"
+      [dataLabels]="options().dataLabels!"
+      [grid]="options().grid!"
+      [legend]="options().legend!"
+      [markers]="options().markers!"
+      [noData]="options().noData!"
+      [series]="options().series!"
+      [stroke]="options().stroke!"
+      [tooltip]="options().tooltip!"
+      [xaxis]="options().xaxis!"
+      [yaxis]="options().yaxis!" />
+  </mat-card-content>
+</mat-card>

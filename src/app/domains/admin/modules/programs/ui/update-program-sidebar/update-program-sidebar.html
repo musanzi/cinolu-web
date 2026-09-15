@@ -1,0 +1,8 @@
+<program-form
+  heading="Edit program"
+  submitLabel="Save changes"
+  [program]="program()"
+  [lookups]="lookups()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />

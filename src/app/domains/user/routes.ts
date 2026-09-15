@@ -9,12 +9,17 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'profile'
+        redirectTo: 'stats'
       },
       {
         path: 'profile',
         title: 'My profile',
         loadComponent: () => import('../common/modules/profile/features/profile/profile')
+      },
+      {
+        path: 'stats',
+        title: 'Mes statistiques',
+        loadComponent: () => import('./modules/stats/features/stats')
       },
       {
         path: 'participations',

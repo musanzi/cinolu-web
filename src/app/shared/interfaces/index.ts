@@ -12,3 +12,4 @@ export * from './user.interface';
 export * from './venture.interface';
 export * from './message.interface';
 export * from './form.interface';
+export * from './statistics.interface';

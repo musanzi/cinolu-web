@@ -1,0 +1,7 @@
+<program-form
+  heading="Create program"
+  submitLabel="Create program"
+  [lookups]="lookups()"
+  [isSaving]="isSaving()"
+  (cancelled)="cancelled.emit()"
+  (submitted)="submitted.emit($event)" />
