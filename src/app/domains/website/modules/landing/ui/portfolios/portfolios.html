@@ -6,7 +6,7 @@
       </h2>
     </div>
     @if (portfoliosResource.isLoading()) {
-      <div class="grid grid-cols-1 gap-x-3 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div class="grid grid-cols-1 gap-x-3 gap-y-16 sm:grid-cols-2 lg:grid-cols-5">
         @for (skeleton of skeletons; track skeleton) {
           <mat-card appearance="outlined" class="relative h-64 rounded-md border-gray-200 bg-white px-6 pt-16 pb-6">
             <div
