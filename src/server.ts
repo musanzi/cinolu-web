@@ -12,7 +12,7 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine({
-  allowedHosts: ['*.localhost', 'localhost', 'onestop.co', '*.onestop.co']
+  allowedHosts: ['*.localhost', 'localhost', 'cinolu.org', '*.cinolu.org']
 });
 
 /**
