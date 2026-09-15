@@ -48,10 +48,16 @@
       <div class="absolute inset-0 -z-10 bg-black/65"></div>
 
       <div class="mx-auto w-full max-w-screen-2xl px-5 pt-28 pb-12 sm:px-8 sm:pb-16 lg:px-16 xl:px-24 2xl:px-32">
-        <a matButton class="mb-6 text-white" routerLink="/activities">
-          <mat-icon svgIcon="arrow-left" />
-          Retour aux activités
-        </a>
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <a matButton class="text-white" routerLink="/activities">
+            <mat-icon svgIcon="arrow-left" />
+            Retour aux activités
+          </a>
+          <button matButton class="text-white" type="button" (click)="shareActivity()">
+            <mat-icon svgIcon="share-2" />
+            Partager
+          </button>
+        </div>
         <p class="text-sm font-semibold text-primary-200">{{ activity.program.name }}</p>
         <h1 class="mt-3 max-w-5xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           {{ activity.name }}

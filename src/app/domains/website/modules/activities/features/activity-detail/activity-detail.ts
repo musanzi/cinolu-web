@@ -1,4 +1,5 @@
-import { DatePipe } from '@angular/common';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { DatePipe, DOCUMENT } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject, input, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { ParticipationsStore } from '@/app/domains/user/modules/participations/data-access';
@@ -24,6 +26,7 @@ import { environment } from '@/environments/environment';
     MatChipsModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
     Message,
     RouterLink
   ],
@@ -35,7 +38,10 @@ export default class ActivityDetail {
 
   protected readonly authStore = inject(AuthStore);
   protected readonly participationsStore = inject(ParticipationsStore);
+  private readonly clipboard = inject(Clipboard);
+  private readonly document = inject(DOCUMENT);
   private readonly participationRenderer = viewChild(FormRenderer);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly activityResource = httpResource<IActivity>(() => {
     const slug = this.slug().trim();
@@ -106,7 +112,42 @@ export default class ActivityDetail {
     });
   }
 
+  protected async shareActivity(): Promise<void> {
+    if (!this.activityResource.hasValue()) return;
+
+    const browserWindow = this.document.defaultView;
+    if (!browserWindow) return;
+
+    const activity = this.activityResource.value();
+    const url = browserWindow.location.href;
+
+    try {
+      if (browserWindow.navigator.share) {
+        await browserWindow.navigator.share({
+          title: activity.name,
+          text: `Découvrez l’activité ${activity.name}.`,
+          url
+        });
+        return;
+      }
+
+      this.copyActivityUrl(url);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      this.copyActivityUrl(url);
+    }
+  }
+
   protected avatarUrl(avatar: string): string {
     return avatar.startsWith('http') ? avatar : `${environment.apiUrl}/uploads/profiles/${encodeURIComponent(avatar)}`;
+  }
+
+  private copyActivityUrl(url: string): void {
+    const copied = this.clipboard.copy(url);
+    this.snackBar.open(
+      copied ? 'Lien de l’activité copié.' : 'Impossible de copier le lien de l’activité.',
+      'Fermer',
+      { duration: 3500 }
+    );
   }
 }
