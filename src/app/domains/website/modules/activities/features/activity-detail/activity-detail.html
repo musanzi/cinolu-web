@@ -38,7 +38,7 @@
   } @else if (activityResource.hasValue()) {
     @let activity = activityResource.value();
 
-    <header class="relative isolate flex min-h-[48vh] items-end overflow-hidden sm:min-h-[56vh]">
+    <header class="relative isolate flex min-h-[60vh] items-end overflow-hidden sm:min-h-[56vh]">
       <img
         [src]="coverUrl()"
         [alt]="activity.name"
@@ -196,7 +196,19 @@
 
         <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
           <mat-card-content class="p-5 sm:p-8 lg:p-10">
-            @if (!authStore.user()) {
+            @if (hasActivityEnded()) {
+              <message
+                type="warning"
+                title="Participations closes"
+                message="Cette activité est terminée. Il n’est plus possible d’envoyer une participation."
+                [dismissible]="false" />
+            } @else if (!hasParticipationForm()) {
+              <message
+                type="warning"
+                title="Participation indisponible"
+                message="Aucun formulaire de participation n’est disponible pour cette activité."
+                [dismissible]="false" />
+            } @else if (!authStore.user()) {
               <div class="py-4 text-center">
                 <span
                   class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
@@ -241,7 +253,7 @@
                   <button
                     matButton="filled"
                     type="submit"
-                    [disabled]="participationsStore.isSaving() || !hasParticipationForm()">
+                    [disabled]="participationsStore.isSaving() || !hasParticipationForm() || hasActivityEnded()">
                     <mat-icon svgIcon="send" />
                     {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
                   </button>

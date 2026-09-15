@@ -47,11 +47,22 @@ export default class ActivityDetail {
   protected readonly hasParticipationForm = computed(() =>
     this.participationForm().some((section) => section.fields.length > 0)
   );
+  protected readonly hasActivityEnded = computed(() => {
+    if (!this.activityResource.hasValue()) return false;
+
+    const endDate = new Date(this.activityResource.value().endDate);
+    if (Number.isNaN(endDate.getTime())) return false;
+
+    endDate.setHours(23, 59, 59, 999);
+    return endDate.getTime() < Date.now();
+  });
 
   protected submitParticipation(event: Event): void {
     event.preventDefault();
     const renderer = this.participationRenderer();
-    if (!renderer || !this.activityResource.hasValue() || !this.hasParticipationForm()) return;
+    if (!renderer || !this.activityResource.hasValue() || !this.hasParticipationForm() || this.hasActivityEnded()) {
+      return;
+    }
     const activityId = this.activityResource.value().id;
 
     renderer.submit(async (responses) => {
