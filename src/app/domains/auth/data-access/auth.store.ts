@@ -17,11 +17,12 @@ export const AuthStore = signalStore(
   })),
   withComputed(({ user }) => ({
     isAdmin: computed(() => {
-      return user()?.roles?.some((role) => role === Roles.STAFF || role === Roles.ADMIN);
+      const roles = user()?.roles ?? [];
+
+      return roles.includes(Roles.ADMIN) || roles.includes(Roles.STAFF);
     }),
-    isUser: computed(() => {
-      return user()?.roles?.some((r) => r === Roles.USER);
-    })
+
+    isUser: computed(() => user()?.roles?.includes(Roles.USER))
   })),
   withMethods(({ _http, _router, ...store }) => ({
     initialize: () => {
