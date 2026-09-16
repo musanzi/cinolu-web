@@ -76,7 +76,6 @@ export default class ListVentures {
   }));
 
   protected readonly venturesResource = httpResource<IVenturesResponse>(() => {
-    this.store.mutationVersion();
     const query = this.query();
     const params = new URLSearchParams({ page: String(query.page), limit: String(query.limit) });
     if (query.q) params.set('q', query.q);

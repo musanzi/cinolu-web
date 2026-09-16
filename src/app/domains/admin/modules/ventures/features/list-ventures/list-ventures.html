@@ -1,8 +1,4 @@
 <section class="flex flex-col px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
-  <div class="mb-6">
-    <h1 class="text-2xl font-semibold tracking-tight">Ventures</h1>
-  </div>
-
   <div class="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_repeat(3,13rem)_auto]">
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-icon matPrefix svgIcon="search" />
@@ -97,12 +93,8 @@
           <ng-container matColumnDef="actions">
             <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
             <td class="text-right" mat-cell *matCellDef="let venture">
-              <button
-                matButton
-                type="button"
-                [matMenuTriggerFor]="statusMenu"
-                [disabled]="store.changingVentureId() !== ''">
-                {{ store.changingVentureId() === venture.id ? 'Changing...' : 'Change status' }}
+              <button matButton type="button" [matMenuTriggerFor]="statusMenu" [disabled]="store.ventureId() !== ''">
+                {{ store.ventureId() === venture.id ? 'Changing...' : 'Change status' }}
               </button>
               <mat-menu #statusMenu="matMenu">
                 @for (option of statusOptions; track option.value) {

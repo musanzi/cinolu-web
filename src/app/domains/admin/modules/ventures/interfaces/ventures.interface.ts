@@ -26,8 +26,7 @@ export interface IChangeVentureStatusCommand {
 }
 
 export interface IVenturesState {
-  changingVentureId: string;
-  mutationVersion: number;
+  ventureId: string;
   error: string;
 }
 
