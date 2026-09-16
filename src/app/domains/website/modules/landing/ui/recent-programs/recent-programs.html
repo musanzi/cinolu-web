@@ -8,9 +8,12 @@
       </div>
 
       <div class="flex shrink-0 items-center gap-2">
-        <a matButton="outlined" routerLink="/programs">
+        <a matButton="outlined" class="group" routerLink="/programs">
           Voir tous les programmes
-          <mat-icon svgIcon="arrow-right" />
+          <mat-icon
+            iconPositionEnd
+            class="ml-2 size-4 transition-transform duration-200 -rotate-45 group-hover:translate-x-0.5"
+            svgIcon="arrow-right" />
         </a>
 
         @if (programsResource.hasValue() && programsResource.value().length > 1) {

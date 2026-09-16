@@ -9,18 +9,6 @@ import { AboutStory } from '../ui/story/story';
 import { AboutTeam } from '../ui/team/team';
 import { AboutVision } from '../ui/vision/vision';
 
-const ABOUT_SECTION_IDS = [
-  'story',
-  'vision',
-  'history',
-  'impact',
-  'team'
-] as const satisfies readonly IAboutSectionId[];
-
-function isAboutSectionId(value: string): value is IAboutSectionId {
-  return ABOUT_SECTION_IDS.some((sectionId) => sectionId === value);
-}
-
 @Component({
   imports: [AboutHero, AboutStory, AboutManifesto, AboutVision, AboutHistory, AboutImpact, AboutTeam],
   templateUrl: './about.html'
@@ -28,6 +16,7 @@ function isAboutSectionId(value: string): value is IAboutSectionId {
 export class AboutUs implements OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly document = inject(DOCUMENT);
+  private readonly sectionIds = ['story', 'vision', 'history', 'impact', 'team'] as const satisfies readonly IAboutSectionId[];
   private sectionObserver?: IntersectionObserver;
 
   protected readonly activeSection = signal<IAboutSectionId>('story');
@@ -61,7 +50,7 @@ export class AboutUs implements OnDestroy {
       return;
     }
 
-    const sections = ABOUT_SECTION_IDS.map((id) => this.document.getElementById(id)).filter(
+    const sections = this.sectionIds.map((id) => this.document.getElementById(id)).filter(
       (el): el is HTMLElement => !!el
     );
 
@@ -75,8 +64,8 @@ export class AboutUs implements OnDestroy {
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-        const id = visible[0]?.target.id;
-        if (id && isAboutSectionId(id)) {
+        const id = this.sectionIds.find((sectionId) => sectionId === visible[0]?.target.id);
+        if (id) {
           this.activeSection.set(id);
         }
       },
