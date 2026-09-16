@@ -80,13 +80,6 @@
             <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
             <mat-datepicker #endPicker />
           </mat-form-field>
-
-          @if (hasActiveFilters()) {
-            <button matButton="outlined" class="self-stretch" type="button" (click)="clearFilters()">
-              <mat-icon svgIcon="x" />
-              Réinitialiser
-            </button>
-          }
         </div>
       </div>
 
