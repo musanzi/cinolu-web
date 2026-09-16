@@ -7,9 +7,6 @@ import { User } from '../user/user';
 @Component({
   selector: 'sidebar',
   imports: [Navigation, User, RouterLink],
-  host: {
-    class: 'flex w-full flex-auto flex-col'
-  },
   templateUrl: './sidebar.html'
 })
 export class Sidebar {
