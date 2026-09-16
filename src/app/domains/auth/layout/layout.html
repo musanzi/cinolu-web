@@ -1,5 +1,5 @@
 @defer (on immediate) {
-  <app-auth-card [description]="content().asideDescription">
+  <app-auth-card>
     <router-outlet (activate)="updateContent()" />
   </app-auth-card>
 } @placeholder {

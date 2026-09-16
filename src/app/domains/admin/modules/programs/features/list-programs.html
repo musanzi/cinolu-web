@@ -27,7 +27,6 @@
         <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <h1 class="text-2xl font-semibold tracking-tight">Programs</h1>
-            <p class="mt-1 text-on-surface-variant">Create and manage programs, their portfolios and managers.</p>
           </div>
 
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -60,7 +59,7 @@
               [disabled]="store.isSaving() || areLookupsLoading() || !!lookupsError()"
               (click)="openCreateSidebar()">
               <mat-icon svgIcon="plus" />
-              Create program
+              Create new
             </button>
           </div>
         </div>
