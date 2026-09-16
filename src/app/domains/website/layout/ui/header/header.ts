@@ -32,8 +32,8 @@ export class WebsiteHeader {
   protected navLinkClasses(active: boolean): string {
     if (!this.solidHeader()) {
       return active
-        ? 'border-white text-primary-300 font-extrabold'
-        : 'border-transparent text-white/80 hover:border-white/40 hover:text-primary-300';
+        ? 'border-white text-primary-200 font-extrabold'
+        : 'border-transparent text-white/80 hover:border-white/40 hover:text-primary-200';
     }
 
     return active

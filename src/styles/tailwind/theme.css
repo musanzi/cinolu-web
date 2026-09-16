@@ -5,16 +5,18 @@
 
 @theme {
   /* Font family */
-  --font-sans: 'Inter', sans-serif;
-  --font-sans--font-feature-settings: 'salt';
+  --font-sans: 'DM Sans', sans-serif;
+  --font-sans--font-feature-settings: 'ss01';
 
-  --font-display: 'Inter', sans-serif;
-  --font-display--font-feature-settings: 'salt';
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-display--font-feature-settings: 'ss01';
 
-  --font-mono: 'Inter', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
   --font-mono--font-feature-settings: 'ss01', 'ss02', 'cv02', 'cv06';
 
-  --font-outfit: Outfit, sans-serif;
+  /* Keep existing public-site classes aligned with the shared typography. */
+  --font-outfit: var(--font-sans);
+  --font-satoshi: var(--font-display);
 
   /* Font configuration */
   --font-smoothing: antialiased;
@@ -56,58 +58,60 @@
   --text-2xs--font-weight: var(--font-weight-normal);
   --text-2xs--letter-spacing: var(--tracking-normal);
 
-  --text-xs: 0.6875rem; /* 11px */
+  --text-xs: 0.75rem; /* 12px */
   --text-xs--line-height: var(--leading-4);
   --text-xs--font-weight: var(--font-weight-normal);
   --text-xs--letter-spacing: var(--tracking-normal);
 
-  --text-sm: 0.85rem; /* 12px */
-  ----line-height: var(--leading-4);
-  ----font-weight: var(--font-weight-normal);
-  ----letter-spacing: var(--tracking-normal);
+  --text-sm: 0.875rem; /* 14px */
+  --text-sm--line-height: var(--leading-5);
+  --text-sm--font-weight: var(--font-weight-normal);
+  --text-sm--letter-spacing: var(--tracking-normal);
 
-  --text-base: 0.8125rem; /* 13px */
-  --text-base--line-height: var(--leading-5);
+  --text-base: 1rem; /* 16px */
+  --text-base--line-height: var(--leading-6);
   --text-base--font-weight: var(--font-weight-normal);
   --text-base--letter-spacing: var(--tracking-normal);
 
-  --text-md: 0.875rem; /* 14px */
-  --text-md--line-height: var(--leading-5);
+  --text-md: 1rem; /* 16px */
+  --text-md--line-height: var(--leading-6);
   --text-md--font-weight: var(--font-weight-normal);
   --text-md--letter-spacing: var(--tracking-normal);
 
-  --text-lg: 1rem; /* 16px */
-  --text-lg--line-height: var(--leading-5);
+  --text-lg: 1.125rem; /* 18px */
+  --text-lg--line-height: var(--leading-7);
   --text-lg--font-weight: var(--font-weight-normal);
   --text-lg--letter-spacing: var(--tracking-normal);
 
-  --text-xl: 1.125rem; /* 18px */
-  --text-xl--line-height: var(--leading-6);
+  --text-xl: 1.25rem; /* 20px */
+  --text-xl--line-height: var(--leading-8);
   --text-xl--font-weight: var(--font-weight-normal);
   --text-xl--letter-spacing: var(--tracking-normal);
 
-  --text-2xl: 1.25rem; /* 20px */
-  --text-2xl--line-height: var(--leading-6);
+  --text-2xl: 1.5rem; /* 24px */
+  --text-2xl--line-height: var(--leading-8);
   --text-2xl--font-weight: var(--font-weight-normal);
   --text-2xl--letter-spacing: var(--tracking-normal);
 
-  --text-3xl: 1.5rem; /* 24px */
-  --text-3xl--line-height: var(--leading-8);
+  --text-3xl: 1.875rem; /* 30px */
+  --text-3xl--line-height: var(--leading-9);
   --text-3xl--font-weight: var(--font-weight-normal);
   --text-3xl--letter-spacing: var(--tracking-normal);
 
-  --text-4xl: 1.875rem; /* 30px */
-  --text-4xl--line-height: var(--leading-10);
+  --text-4xl: 2.25rem; /* 36px */
+  --text-4xl--line-height: 1.15;
   --text-4xl--font-weight: var(--font-weight-normal);
   --text-4xl--letter-spacing: var(--tracking-normal);
 
-  --text-5xl: 2.5rem; /* 40px */
-  --text-5xl--line-height: var(--leading-10);
+  --text-5xl: 3rem; /* 48px */
+  --text-5xl--line-height: 1.12;
   --text-5xl--font-weight: var(--font-weight-normal);
   --text-5xl--letter-spacing: var(--tracking-normal);
 
-  --text-title-sm: 30px;
-  --text-title-sm--line-height: 38px;
+  --text-title-sm: 2rem;
+  --text-title-sm--line-height: 1.2;
+  --text-title-md: 2.25rem;
+  --text-title-md--line-height: 1.2;
   --text-theme-xl: 20px;
   --text-theme-xl--line-height: 30px;
   --text-theme-sm: 14px;

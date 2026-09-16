@@ -89,7 +89,7 @@
             <a
               [routerLink]="link.path"
               [fragment]="link.fragment"
-              [routerLinkActiveOptions]="{ exact: false }"
+              [routerLinkActiveOptions]="{ paths: 'exact', fragment: 'exact' }"
               routerLinkActive="bg-primary-50 text-primary-700"
               (click)="closeMenu()"
               class="flex items-center px-7 py-4 text-base font-semibold leading-[1.2] text-gray-800 transition-colors duration-200 hover:bg-gray-50">

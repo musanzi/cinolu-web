@@ -6,8 +6,25 @@
   }
 
   body {
+    font-family: var(--font-sans);
     font-size: var(--text-base);
-    line-height: var(--leading-5);
+    line-height: var(--leading-6);
     font-weight: var(--font-weight-normal);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }

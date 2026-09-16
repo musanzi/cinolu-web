@@ -12,7 +12,6 @@ export class AuthLayout {
   private readonly route = inject(ActivatedRoute);
 
   protected readonly content = signal({
-    asideTitle: 'Bienvenue sur Cinolu OneStop',
     asideDescription: "Connectez-vous aux programmes, aux activités et à la communauté d'innovation.",
     asideFootnote: 'Votre parcours commence ici.'
   });
