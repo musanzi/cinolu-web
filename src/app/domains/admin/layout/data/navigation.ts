@@ -42,6 +42,13 @@ export const NAVIGATION: INavigationItem[] = [
         activeOptions: { exact: false }
       },
       {
+        id: 'participations',
+        label: 'Participations',
+        icon: 'clipboard-list',
+        route: 'participations',
+        activeOptions: { exact: false }
+      },
+      {
         id: 'ventures',
         label: 'Ventures',
         icon: 'rocket',

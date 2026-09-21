@@ -1,0 +1,159 @@
+<div class="@container mx-auto flex h-full w-full flex-auto flex-col overflow-hidden">
+  <section class="flex min-h-full flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-end">
+      <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-icon matPrefix svgIcon="search" />
+          <input
+            matInput
+            type="search"
+            placeholder="Search participations"
+            class="w-full md:w-80"
+            [ngModel]="q()"
+            (ngModelChange)="onSearchChange($event)" />
+        </mat-form-field>
+
+        <mat-form-field class="w-full sm:w-52" appearance="outline" subscriptSizing="dynamic">
+          <mat-select [ngModel]="status()" (ngModelChange)="onStatusChange($event)">
+            <mat-option value="">All statuses</mat-option>
+            @for (option of statusOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="w-full sm:w-64" appearance="outline" subscriptSizing="dynamic">
+          <mat-select
+            [ngModel]="activityId()"
+            (ngModelChange)="onActivityChange($event)"
+            aria-label="Filter by activity">
+            <mat-option value="">All activities</mat-option>
+            @for (activity of activities(); track activity.id) {
+              <mat-option [value]="activity.id">{{ activity.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    @if (store.error()) {
+      <message
+        type="error"
+        title="Action failed"
+        [message]="store.error()"
+        (dismissed)="store.clearFeedback()" />
+    } @else if (store.updateSucceeded()) {
+      <message
+        type="success"
+        title="Status updated"
+        message="The participation status has been updated."
+        (dismissed)="store.clearFeedback()" />
+    }
+
+    @if (participationsResource.error()) {
+      <message type="error" message="Unable to load participations." />
+    } @else if (participationsResource.isLoading()) {
+      <div class="flex min-h-64 items-center justify-center" aria-label="Loading participations">
+        <span class="text-on-surface-variant">Loading...</span>
+      </div>
+    } @else {
+      <div class="flex flex-col overflow-hidden rounded-md border border-outline-variant">
+        <div class="relative isolate overflow-x-auto">
+          <table class="w-full whitespace-nowrap" mat-table [dataSource]="participations()">
+            <ng-container matColumnDef="participant">
+              <th mat-header-cell *matHeaderCellDef>Participant</th>
+              <td class="font-medium" mat-cell *matCellDef="let participation">
+                <div class="flex flex-col py-2">
+                  <span>{{ participation.participant.name }}</span>
+                  <span class="text-xs font-normal text-on-surface-variant">{{
+                    participation.participant.email
+                  }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="activity">
+              <th mat-header-cell *matHeaderCellDef>Activity</th>
+              <td mat-cell *matCellDef="let participation">{{ participation.activity.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let participation">
+                <span
+                  class="rounded-full border px-2 py-1 text-xs font-medium"
+                  [class]="statusClasses(participation.status)">
+                  {{ statusLabel(participation.status) }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="submitted">
+              <th mat-header-cell *matHeaderCellDef>Submitted</th>
+              <td mat-cell *matCellDef="let participation">
+                {{ participation.createdAt | date: 'dd/MM/yyyy' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+              <td class="text-right" mat-cell *matCellDef="let participation">
+                @if (participation.status !== statuses.APPROVED) {
+                  <button
+                    matIconButton
+                    type="button"
+                    aria-label="Approve participation"
+                    [disabled]="store.isSaving() || store.removingParticipationId() !== ''"
+                    (click)="updateStatus(participation, statuses.APPROVED); $event.stopPropagation()">
+                    <mat-icon class="text-emerald-600" svgIcon="check" />
+                  </button>
+                }
+                @if (participation.status !== statuses.DECLINED) {
+                  <button
+                    matIconButton
+                    type="button"
+                    aria-label="Decline participation"
+                    [disabled]="store.isSaving() || store.removingParticipationId() !== ''"
+                    (click)="updateStatus(participation, statuses.DECLINED); $event.stopPropagation()">
+                    <mat-icon class="text-red-600" svgIcon="x" />
+                  </button>
+                }
+                <button
+                  matIconButton
+                  type="button"
+                  aria-label="Delete participation"
+                  [disabled]="store.isSaving() || store.removingParticipationId() !== ''"
+                  (click)="openRemoveDialog(participation); $event.stopPropagation()">
+                  <mat-icon svgIcon="trash-2" />
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              class="group relative cursor-pointer hover:bg-on-surface-variant/4"
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              (click)="openParticipation(row)"></tr>
+
+            <tr class="h-32" *matNoDataRow>
+              <td class="text-center text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+                No participations found.
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        @if (participationsCount() > pageSize) {
+          <mat-paginator
+            aria-label="Select a page of participations"
+            [length]="participationsCount()"
+            [pageIndex]="page() - 1"
+            [pageSize]="pageSize"
+            [hidePageSize]="true"
+            (page)="onPageChange($event)" />
+        }
+      </div>
+    }
+  </section>
+</div>

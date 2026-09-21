@@ -1,0 +1,134 @@
+<section class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div class="w-full max-w-5xl">
+    <a matButton routerLink="/admin/participations">
+      <mat-icon svgIcon="arrow-left" />
+      Participations
+    </a>
+
+    @if (participationResource.error()) {
+      <mat-card appearance="outlined" class="mt-6 rounded-md border-red-200">
+        <mat-card-content class="px-6 py-12 text-center">
+          <mat-icon class="text-red-600" svgIcon="triangle-alert" />
+          <h1 class="mt-4 text-2xl font-semibold">Participation not found</h1>
+          <p class="mt-2 text-neutral-500">This participation does not exist.</p>
+          <button matButton="outlined" class="mt-5" type="button" (click)="participationResource.reload()">
+            Retry
+          </button>
+        </mat-card-content>
+      </mat-card>
+    } @else if (participationResource.isLoading()) {
+      <div class="mt-6 space-y-5" aria-label="Loading participation" aria-busy="true">
+        <div class="h-56 animate-pulse rounded-md bg-neutral-100 motion-reduce:animate-none"></div>
+        <div class="h-80 animate-pulse rounded-md bg-neutral-100 motion-reduce:animate-none"></div>
+      </div>
+    } @else if (participationResource.hasValue()) {
+      @let participation = participationResource.value();
+
+      @if (store.error()) {
+        <message
+          class="mt-6"
+          type="error"
+          title="Status update failed"
+          [message]="store.error()"
+          (dismissed)="store.clearFeedback()" />
+      } @else if (store.updateSucceeded()) {
+        <message
+          class="mt-6"
+          type="success"
+          title="Status updated"
+          message="The participation status has been updated."
+          (dismissed)="store.clearFeedback()" />
+      }
+
+      <mat-card appearance="outlined" class="mt-5 overflow-hidden rounded-md border-neutral-200 shadow-sm">
+        <div class="grid md:grid-cols-[15rem_minmax(0,1fr)]">
+          <img
+            class="h-full min-h-48 w-full object-cover"
+            [src]="coverUrl(participation)"
+            [alt]="participation.activity.name" />
+          <mat-card-content class="p-6 sm:p-8">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <p class="font-medium text-primary-700">{{ participation.activity.program.name }}</p>
+              <mat-chip-set aria-label="Participation status">
+                <mat-chip class="border!" [class]="statusClasses(participation.status)">
+                  {{ statusLabel(participation.status) }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+            <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+              {{ participation.activity.name }}
+            </h1>
+            <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-neutral-600">
+              <span class="inline-flex items-center gap-2">
+                <mat-icon class="size-4" svgIcon="calendar-days" />
+                {{ participation.activity.startDate | date: 'dd MMMM yyyy' }}
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <mat-icon class="size-4" svgIcon="send" />
+                Submitted on {{ participation.createdAt | date: 'dd MMMM yyyy' }}
+              </span>
+            </div>
+            @if (participation.status !== statuses.APPROVED) {
+              <button
+                matButton="filled"
+                class="mt-6"
+                type="button"
+                [disabled]="store.isSaving()"
+                (click)="updateStatus(statuses.APPROVED)">
+                <mat-icon svgIcon="check" />
+                Approve
+              </button>
+            }
+            @if (participation.status !== statuses.DECLINED) {
+              <button
+                matButton="outlined"
+                class="mt-6 ml-3"
+                type="button"
+                [disabled]="store.isSaving()"
+                (click)="updateStatus(statuses.DECLINED)">
+                <mat-icon svgIcon="x" />
+                Decline
+              </button>
+            }
+          </mat-card-content>
+        </div>
+      </mat-card>
+
+      <mat-card appearance="outlined" class="mt-6 rounded-md border-neutral-200 shadow-sm">
+        <mat-card-content class="p-5 sm:p-8">
+          <div class="mb-6">
+            <p class="font-medium text-primary-700">Participant</p>
+            <h2 class="mt-1 text-xl font-semibold">{{ participation.participant.name }}</h2>
+            <p class="mt-2 text-neutral-500">
+              <a class="text-primary hover:underline" [href]="'mailto:' + participation.participant.email">
+                {{ participation.participant.email }}
+              </a>
+              @if (participation.participant.jobTitle) {
+                <span class="text-on-surface-variant"> · {{ participation.participant.jobTitle }}</span>
+              }
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined" class="mt-6 rounded-md border-neutral-200 shadow-sm">
+        <mat-card-content class="p-5 sm:p-8">
+          <div class="mb-6">
+            <p class="font-medium text-primary-700">Submitted responses</p>
+            <h2 class="mt-1 text-xl font-semibold">Application details</h2>
+          </div>
+          <dl class="divide-y divide-neutral-200">
+            @for (row of responseRows(); track row.label) {
+              <div class="grid gap-1 py-4 sm:grid-cols-[minmax(12rem,0.7fr)_minmax(0,1.3fr)] sm:gap-6">
+                <dt class="font-medium text-neutral-700">{{ row.label }}</dt>
+                <dd class="whitespace-pre-line text-neutral-950">{{ row.value }}</dd>
+              </div>
+            } @empty {
+              <p class="py-5 text-neutral-500">This participation has no additional responses.</p>
+            }
+          </dl>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</section>

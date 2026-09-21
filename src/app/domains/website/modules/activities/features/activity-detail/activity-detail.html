@@ -200,74 +200,70 @@
           </h2>
         </div>
 
-        <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
-          <mat-card-content class="p-5 sm:p-8 lg:p-10">
-            @if (hasActivityEnded()) {
-              <message
-                type="warning"
-                title="Participations closes"
-                message="Cette activité est terminée. Il n’est plus possible d’envoyer une participation."
-                [dismissible]="false" />
-            } @else if (!hasParticipationForm()) {
-              <message
-                type="warning"
-                title="Participation indisponible"
-                message="Aucun formulaire de participation n’est disponible pour cette activité."
-                [dismissible]="false" />
-            } @else if (!authStore.user()) {
-              <div class="py-4 text-center">
-                <span
-                  class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
-                  <mat-icon svgIcon="log-in" />
-                </span>
-                <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
-                <p class="mx-auto mt-2 max-w-lg leading-6 text-gray-600">
-                  Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de
-                  bord.
-                </p>
-                <div class="mt-6 flex flex-wrap justify-center gap-3">
-                  <a matButton="filled" routerLink="/auth/sign-in">Se connecter</a>
-                  <a matButton="outlined" routerLink="/auth/sign-up">Créer un compte</a>
-                </div>
-              </div>
-            } @else if (participationsStore.createdParticipationId()) {
-              <message
-                type="success"
-                title="Participation envoyée"
-                message="Votre demande a bien été transmise. Vous pouvez maintenant suivre son statut depuis votre tableau de bord."
-                [dismissible]="false" />
-              <div class="mt-6 flex flex-wrap gap-3">
-                <a
-                  matButton="filled"
-                  [routerLink]="['/user/participations', participationsStore.createdParticipationId()]">
-                  Voir ma participation
-                </a>
-                <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
-              </div>
-            } @else if (existingParticipationResource.isLoading()) {
-              <div class="flex items-center justify-center gap-3 py-5 text-gray-600" role="status">
-                <mat-spinner diameter="28" />
-                Vérification de votre participation…
-              </div>
-            } @else if (existingParticipationResource.error()) {
-              <message
-                type="error"
-                title="Vérification impossible"
-                message="Nous ne pouvons pas vérifier votre participation pour le moment. Veuillez réessayer."
-                [dismissible]="false" />
-              <div class="mt-5 flex justify-end">
-                <button matButton="outlined" type="button" (click)="existingParticipationResource.reload()">
-                  <mat-icon svgIcon="refresh-cw" />
-                  Réessayer
-                </button>
-              </div>
-            } @else if (existingParticipation()) {
-              <message
-                type="warning"
-                title="Déjà participant"
-                message="Vous êtes déjà participant à cette activité. Une seule participation est autorisée par personne."
-                [dismissible]="false" />
-            } @else {
+        @if (hasActivityEnded()) {
+          <message
+            type="warning"
+            title="Participations closes"
+            message="Cette activité est terminée. Il n’est plus possible d’envoyer une participation."
+            [dismissible]="false" />
+        } @else if (!hasParticipationForm()) {
+          <message
+            type="warning"
+            title="Participation indisponible"
+            message="Aucun formulaire de participation n’est disponible pour cette activité."
+            [dismissible]="false" />
+        } @else if (!authStore.user()) {
+          <div class="py-4 text-center">
+            <span class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+              <mat-icon svgIcon="log-in" />
+            </span>
+            <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
+            <p class="mx-auto mt-2 max-w-lg leading-6 text-gray-600">
+              Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de bord.
+            </p>
+            <div class="mt-6 flex flex-wrap justify-center gap-3">
+              <a matButton="filled" routerLink="/auth/sign-in">Se connecter</a>
+              <a matButton="outlined" routerLink="/auth/sign-up">Créer un compte</a>
+            </div>
+          </div>
+        } @else if (participationsStore.createdParticipationId()) {
+          <message
+            type="success"
+            title="Participation envoyée"
+            message="Votre demande a bien été transmise. Vous pouvez maintenant suivre son statut depuis votre tableau de bord."
+            [dismissible]="false" />
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a matButton="filled" [routerLink]="['/user/participations', participationsStore.createdParticipationId()]">
+              Voir ma participation
+            </a>
+            <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
+          </div>
+        } @else if (existingParticipationResource.isLoading()) {
+          <div class="flex items-center justify-center gap-3 py-5 text-gray-600" role="status">
+            <mat-spinner diameter="28" />
+            Vérification de votre participation…
+          </div>
+        } @else if (existingParticipationResource.error()) {
+          <message
+            type="error"
+            title="Vérification impossible"
+            message="Nous ne pouvons pas vérifier votre participation pour le moment. Veuillez réessayer."
+            [dismissible]="false" />
+          <div class="mt-5 flex justify-end">
+            <button matButton="outlined" type="button" (click)="existingParticipationResource.reload()">
+              <mat-icon svgIcon="refresh-cw" />
+              Réessayer
+            </button>
+          </div>
+        } @else if (existingParticipation()) {
+          <message
+            type="warning"
+            title="Déjà participant"
+            message="Vous êtes déjà participant à cette activité. Une seule participation est autorisée par personne."
+            [dismissible]="false" />
+        } @else {
+          <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
+            <mat-card-content class="p-5 sm:p-8 lg:p-10">
               @if (participationsStore.error()) {
                 <message
                   class="mb-6"
@@ -295,9 +291,9 @@
                   </button>
                 </div>
               </form>
-            }
-          </mat-card-content>
-        </mat-card>
+            </mat-card-content>
+          </mat-card>
+        }
       </section>
     </main>
   }

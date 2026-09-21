@@ -57,6 +57,18 @@ const routes: Routes = [
         loadComponent: () => import('./modules/ventures/features/list-ventures/list-ventures')
       },
       {
+        path: 'participations',
+        title: 'Participations',
+        loadComponent: () =>
+          import('./modules/participations/features/list-participations/list-participations')
+      },
+      {
+        path: 'participations/:id',
+        title: 'Participation',
+        loadComponent: () =>
+          import('./modules/participations/features/participation-detail/participation-detail')
+      },
+      {
         path: 'profile',
         title: 'My profile',
         loadComponent: () => import('../common/modules/profile/features/profile/profile')
