@@ -26,6 +26,11 @@ const routes: Routes = [
         title: 'Activités',
         loadChildren: () => import('./modules/activities/routes')
       },
+      {
+        path: 'portfolios',
+        title: 'Portefeuilles',
+        loadChildren: () => import('./modules/portfolios/routes')
+      },
       { path: '**', redirectTo: '' }
     ]
   }
