@@ -8,6 +8,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, concatMap, EMPTY, finalize, pipe, tap } from 'rxjs';
 import { ISignInPayload } from '../interfaces';
 import { AuthStore } from './auth.store';
+import { ReturnUrl } from '@/app/core/return-url';
 
 export const SignInStore = signalStore(
   withState({ isLoading: false, error: '' }),
@@ -16,9 +17,10 @@ export const SignInStore = signalStore(
     _router: inject(Router),
     _route: inject(ActivatedRoute),
     _authStore: inject(AuthStore),
+    _returnUrl: inject(ReturnUrl),
     googleSignInUrl: `${environment.apiUrl}/auth/signin/google`
   })),
-  withMethods(({ _http, _authStore, _route, _router, ...store }) => ({
+  withMethods(({ _http, _authStore, _route, _router, _returnUrl, ...store }) => ({
     signIn: rxMethod<ISignInPayload>(
       pipe(
         concatMap((payload) => {
@@ -26,6 +28,12 @@ export const SignInStore = signalStore(
           return _http.post<IUser>('/auth/signin', payload).pipe(
             tap((user) => {
               _authStore.setUser(user);
+              const returnUrl = _returnUrl.pop();
+              if (returnUrl) {
+                void _router.navigateByUrl(returnUrl);
+                return;
+              }
+
               return _authStore.isAdmin() ? _router.navigate(['/admin']) : _router.navigate(['/user']);
             }),
             catchError(() => {

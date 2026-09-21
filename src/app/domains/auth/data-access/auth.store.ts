@@ -6,6 +6,7 @@ import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IUser } from '@/app/shared/interfaces';
 import { Roles } from '@/app/shared/enums';
+import { ReturnUrl } from '@/app/core/return-url';
 import { IAuthState } from '../interfaces';
 
 export const AuthStore = signalStore(
@@ -13,7 +14,8 @@ export const AuthStore = signalStore(
   withState<IAuthState>({ user: null }),
   withProps(() => ({
     _http: inject(HttpClient),
-    _router: inject(Router)
+    _router: inject(Router),
+    _returnUrl: inject(ReturnUrl)
   })),
   withComputed(({ user }) => ({
     isAdmin: computed(() => {
@@ -24,7 +26,7 @@ export const AuthStore = signalStore(
 
     isUser: computed(() => user()?.roles?.includes(Roles.USER))
   })),
-  withMethods(({ _http, _router, ...store }) => ({
+  withMethods(({ _http, _router, _returnUrl, ...store }) => ({
     initialize: () => {
       return _http.get<IUser>('/auth/me').pipe(
         map((user) => {
@@ -42,6 +44,7 @@ export const AuthStore = signalStore(
         exhaustMap(() =>
           _http.post<void>('/auth/signout', {}).pipe(
             tap(() => {
+              _returnUrl.clear();
               _router.navigate(['/']);
               patchState(store, { user: null });
             }),

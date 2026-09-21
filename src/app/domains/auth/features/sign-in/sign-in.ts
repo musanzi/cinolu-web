@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { Message } from '@/app/shared/ui/message/message';
+import { ReturnUrl } from '@/app/core/return-url';
 import { SignInStore } from '../../data-access';
 
 @Component({
@@ -29,8 +30,13 @@ import { SignInStore } from '../../data-access';
 export class AuthSignIn {
   protected readonly authStore = inject(SignInStore);
   private readonly router = inject(Router);
+  private readonly returnUrl = inject(ReturnUrl);
   protected readonly googleSignInUrl = this.authStore.googleSignInUrl;
   protected successMessage = signal<string | null>(this.getSuccessMessage());
+
+  constructor() {
+    this.returnUrl.saveOriginIfMissing();
+  }
 
   protected signInFormModel = signal({
     email: '',

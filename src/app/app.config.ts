@@ -6,6 +6,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideRouter, TitleStrategy, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { provideIcons } from '@/app/core/icons/provider';
 import { provideTheming } from '@/app/core/theming';
+import { provideReturnUrl } from '@/app/core/return-url';
 import { routes } from './app.routes';
 import { httpInterceptor } from './core/interceptors';
 import { PageTitleStrategy } from './core/strategies';
@@ -39,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideNativeDateAdapter(),
     provideIcons(),
+    provideReturnUrl(),
     provideTheming({
       primary: '#385f2c',
       error: '#dc2626'
