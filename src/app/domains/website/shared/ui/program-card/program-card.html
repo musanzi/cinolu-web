@@ -32,8 +32,8 @@
   </mat-card-content>
 
   <mat-card-actions class="px-6 pb-6 md:px-7 md:pb-7">
-    <a matButton="outlined" routerLink="/activities" [queryParams]="{ programId: program().id }">
-      Voir les activités
+    <a matButton="outlined" [routerLink]="['/programs', program().slug]">
+      Découvrir le programme
       <mat-icon
         iconPositionEnd
         class="ml-2 size-4 transition-transform duration-200 -rotate-45 group-hover:translate-x-0.5"
