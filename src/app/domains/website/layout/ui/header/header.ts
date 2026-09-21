@@ -1,7 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { NAVIGATION_LINKS } from '../../data/navigation';
 
@@ -14,12 +16,25 @@ import { NAVIGATION_LINKS } from '../../data/navigation';
   templateUrl: './header.html'
 })
 export class WebsiteHeader {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   protected readonly authStore = inject(AuthStore);
   protected isScrolled = signal(false);
   protected isMenuOpen = signal(false);
 
+  private readonly navigationEnd = toSignal(
+    this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)),
+    { initialValue: undefined }
+  );
+
   protected links = NAVIGATION_LINKS;
-  protected solidHeader = computed(() => this.isScrolled());
+  protected readonly hasHero = computed(() => {
+    this.navigationEnd();
+    let current: ActivatedRoute = this.route.root;
+    while (current.firstChild) current = current.firstChild;
+    return current.snapshot.data['hasHero'] === true;
+  });
+  protected readonly solidHeader = computed(() => this.isScrolled() || !this.hasHero());
 
   protected toggleMenu(): void {
     this.isMenuOpen.update((isOpen) => !isOpen);
