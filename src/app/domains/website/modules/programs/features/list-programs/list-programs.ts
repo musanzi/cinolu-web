@@ -10,8 +10,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramCard } from '@/app/domains/website/shared/ui';
-import { IPortfoliosResponse, IProgramsQuery, IProgramsResponse } from '../interfaces';
-import { ProgramsHero } from '../ui/hero/hero';
+import { IProgramsQuery, IProgramsResponse, IPortfoliosResponse } from '../../interfaces';
+import { ProgramsHero } from '../../ui/hero/hero';
 
 @Component({
   selector: 'website-programs',
@@ -27,9 +27,9 @@ import { ProgramsHero } from '../ui/hero/hero';
     ProgramCard,
     ProgramsHero
   ],
-  templateUrl: './programs.html'
+  templateUrl: './list-programs.html'
 })
-export class Programs {
+export default class ListPrograms {
   private readonly route = inject(ActivatedRoute);
   private readonly initialQueryParams = this.route.snapshot.queryParamMap;
   protected readonly pageSize = 12;

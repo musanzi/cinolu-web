@@ -1,1 +1,6 @@
-export type { IPortfoliosResponse, IProgramsQuery, IProgramsResponse } from './programs.interface';
+export type {
+  IPortfoliosResponse,
+  IProgramActivitiesResponse,
+  IProgramsQuery,
+  IProgramsResponse
+} from './programs.interface';

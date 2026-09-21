@@ -4,7 +4,13 @@ const routes: Routes = [
   {
     path: '',
     title: 'Programmes',
-    loadComponent: () => import('./features/programs').then((component) => component.Programs)
+    data: { hasHero: true },
+    loadComponent: () => import('./features/list-programs/list-programs')
+  },
+  {
+    path: ':slug',
+    title: 'Programme',
+    loadComponent: () => import('./features/program-detail/program-detail')
   }
 ];
 

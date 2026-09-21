@@ -1,0 +1,148 @@
+<div class="min-h-screen font-outfit text-gray-950">
+  @if (programResource.isLoading()) {
+    <main class="mx-auto w-full max-w-screen-2xl px-5 py-10 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
+      <div aria-label="Chargement du programme" aria-busy="true">
+        <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+          <div class="size-24 animate-pulse rounded-full bg-gray-200 motion-reduce:animate-none"></div>
+          <div class="space-y-3">
+            <div class="h-9 w-72 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+            <div class="h-5 w-96 max-w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  } @else if (programResource.error()) {
+    <main
+      class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+      <mat-card appearance="outlined" class="mx-auto w-full max-w-2xl rounded-md border-red-200 bg-white">
+        <mat-card-content class="px-6 py-12 text-center sm:px-10">
+          <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-red-200">
+            <mat-icon class="text-red-600" svgIcon="triangle-alert" />
+          </span>
+          <h1 class="mt-5 text-2xl font-bold text-gray-900">Programme introuvable</h1>
+          <p class="mt-2 leading-6 text-gray-600">
+            Ce programme n'existe pas, n'est plus publié ou ne peut pas être chargé actuellement.
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <a matButton="outlined" routerLink="/programs">
+              <mat-icon svgIcon="arrow-left" />
+              Tous les programmes
+            </a>
+            <button matButton="filled" type="button" (click)="programResource.reload()">
+              <mat-icon svgIcon="refresh-cw" />
+              Réessayer
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </main>
+  } @else if (programResource.hasValue()) {
+    @let program = programResource.value();
+
+    <header class="border-b border-gray-200 bg-gray-50">
+      <div class="mx-auto w-full max-w-screen-2xl px-5 py-12 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
+        <a matButton routerLink="/programs">
+          <mat-icon svgIcon="arrow-left" />
+          Tous les programmes
+        </a>
+        <div class="mt-8 flex flex-col items-start gap-6">
+          <div
+            class="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-primary-400 bg-white p-4">
+            @if (logoUrl(); as logo) {
+              <img
+                [src]="logo"
+                [alt]="'Logo du programme ' + program.name"
+                [title]="program.name"
+                class="size-full object-contain"
+                loading="lazy"
+                decoding="async" />
+            } @else {
+              <span class="text-3xl font-bold text-primary-600" aria-hidden="true">
+                {{ program.name.charAt(0) }}
+              </span>
+            }
+          </div>
+          <div>
+            <a
+              class="text-xs font-bold tracking-widest text-primary-700 uppercase hover:underline"
+              [routerLink]="['/portfolios', program.portfolio.slug]">
+              {{ program.portfolio.name }}
+            </a>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+              {{ program.name }}
+            </h1>
+            @if (program.description) {
+              <p class="mt-3 max-w-6xl text-base leading-7 text-gray-600">{{ program.description }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-screen-2xl px-5 py-12 sm:px-8 lg:py-16 xl:px-24 2xl:px-32">
+      <section aria-labelledby="program-activities-title">
+        <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Activités</p>
+        <h2 id="program-activities-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          Les activités de ce programme
+        </h2>
+
+        @if (activitiesResource.isLoading()) {
+          <div
+            class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label="Chargement des activités"
+            aria-busy="true">
+            @for (skeleton of skeletons; track skeleton) {
+              <div class="overflow-hidden rounded-md border border-gray-200 bg-white">
+                <div class="aspect-video animate-pulse bg-gray-200 motion-reduce:animate-none"></div>
+                <div class="space-y-3 p-6">
+                  <div class="h-6 w-3/4 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                  <div class="h-4 w-2/3 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else if (activitiesResource.error()) {
+          <mat-card appearance="outlined" class="mt-8 rounded-md border-red-200 bg-white">
+            <mat-card-content class="flex flex-col items-center px-6 py-10 text-center sm:px-10">
+              <mat-icon class="text-red-600" svgIcon="triangle-alert" />
+              <p class="mt-3 font-bold text-gray-900">Les activités n'ont pas pu être chargées</p>
+              <p class="mt-1 text-gray-600">Veuillez réessayer dans un instant.</p>
+              <button matButton="outlined" class="mt-5" type="button" (click)="activitiesResource.reload()">
+                <mat-icon svgIcon="refresh-cw" />
+                Réessayer
+              </button>
+            </mat-card-content>
+          </mat-card>
+        } @else if (activities().length) {
+          <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            @for (activity of activities(); track activity.id) {
+              <activity-card [activity]="activity" />
+            }
+          </div>
+
+          @if (activitiesCount() > pageSize) {
+            <mat-paginator
+              class="mt-10 border-t border-gray-200 bg-white pt-4"
+              aria-label="Choisir une page d'activités"
+              [length]="activitiesCount()"
+              [pageIndex]="page() - 1"
+              [pageSize]="pageSize"
+              [hidePageSize]="true"
+              (page)="onPageChange($event)" />
+          }
+        } @else {
+          <mat-card appearance="outlined" class="mt-8 rounded-md border-gray-200 bg-white">
+            <mat-card-content class="flex flex-col items-center px-6 py-10 text-center sm:px-10">
+              <span class="flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                <mat-icon svgIcon="calendar-days" />
+              </span>
+              <p class="mt-4 font-bold text-gray-900">Aucune activité pour le moment</p>
+              <p class="mt-1 text-gray-600">Ce programme n'a pas encore d'activité publiée.</p>
+            </mat-card-content>
+          </mat-card>
+        }
+      </section>
+    </main>
+  }
+</div>
