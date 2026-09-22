@@ -214,16 +214,12 @@
             [dismissible]="false" />
         } @else if (!authStore.user()) {
           <div class="py-4 text-center">
-            <span class="flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
-              <mat-icon svgIcon="log-in" />
-            </span>
             <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
             <p class="mx-auto mt-2 max-w-lg leading-6 text-gray-600">
               Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de bord.
             </p>
             <div class="mt-6 flex flex-wrap justify-center gap-3">
               <a matButton="filled" routerLink="/auth/sign-in">Se connecter</a>
-              <a matButton="outlined" routerLink="/auth/sign-up">Créer un compte</a>
             </div>
           </div>
         } @else if (participationsStore.createdParticipationId()) {
