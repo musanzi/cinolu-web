@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, DestroyRef, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Component, computed, DestroyRef, effect, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { FormField, form, maxLength, required, submit, validate } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -18,7 +19,8 @@ import type {
   IActivityFormResult,
   IActivityLookups,
   IActivityPayload,
-  IActivityResource
+  IActivityResource,
+  ICohortsLookupResponse
 } from '../../interfaces';
 
 @Component({
@@ -91,8 +93,25 @@ export class ActivityForm {
     });
   });
 
+  protected readonly cohortsResource = httpResource<ICohortsLookupResponse>(() => {
+    const programId = this.activityForm.programId().value();
+    if (!programId) return undefined;
+    return `/cohorts?programId=${programId}&page=1&limit=100`;
+  });
+  protected readonly cohorts = computed(() =>
+    this.cohortsResource.hasValue() ? this.cohortsResource.value()[0] : []
+  );
+  private previousProgramId = this.activityModel().programId;
+
   constructor() {
     this.destroyRef.onDestroy(() => this.revokeObjectUrl());
+
+    effect(() => {
+      const programId = this.activityForm.programId().value();
+      if (programId === this.previousProgramId) return;
+      this.previousProgramId = programId;
+      this.activityForm.cohortId().value.set('');
+    });
   }
 
   protected onCoverSelected(event: Event): void {
@@ -148,6 +167,7 @@ export class ActivityForm {
       startDate,
       endDate,
       programId: activity?.program.id ?? '',
+      cohortId: activity?.cohorts?.[0]?.id ?? '',
       mentorIds: activity?.mentors.map((mentor) => mentor.id) ?? [],
       typeIds: activity?.types.map((type) => type.id) ?? [],
       categoryIds: activity?.categories.map((category) => category.id) ?? []

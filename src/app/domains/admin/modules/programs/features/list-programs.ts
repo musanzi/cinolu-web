@@ -25,7 +25,8 @@ import {
   IStaffLookupResponse
 } from '../interfaces';
 import { AddProgramSidebar } from '../ui/add-program-sidebar/add-program-sidebar';
-import { RemoveProgramDialog } from '../ui/remove-program-dialog';
+import { CohortsSidebar } from '../ui/cohorts-sidebar/cohorts-sidebar';
+import { RemoveProgramDialog } from '../ui/remove-program-dialog/remove-program-dialog';
 import { UpdateProgramSidebar } from '../ui/update-program-sidebar/update-program-sidebar';
 import { Message } from '@/app/shared/ui';
 
@@ -45,6 +46,7 @@ import { Message } from '@/app/shared/ui';
     MatSidenavContent,
     MatTableModule,
     AddProgramSidebar,
+    CohortsSidebar,
     UpdateProgramSidebar,
     Message
   ],
@@ -64,6 +66,7 @@ export default class Programs {
   protected readonly displayedColumns = ['program', 'portfolio', 'managers', 'updatedAt', 'actions'];
   protected readonly selectedProgram = signal<IProgram | undefined>(undefined);
   protected readonly isCreating = signal(false);
+  protected readonly cohortsProgram = signal<IProgram | undefined>(undefined);
 
   private readonly query = computed<IProgramsQuery>(() => ({
     page: this.page(),
@@ -104,7 +107,9 @@ export default class Programs {
     () => this.portfoliosResource.isLoading() || this.staffResource.isLoading()
   );
   protected readonly lookupsError = computed(() => this.portfoliosResource.error() || this.staffResource.error());
-  protected readonly isSidebarOpen = computed(() => this.isCreating() || this.selectedProgram() !== undefined);
+  protected readonly isSidebarOpen = computed(
+    () => this.isCreating() || this.selectedProgram() !== undefined || this.cohortsProgram() !== undefined
+  );
 
   constructor() {
     effect(() => {
@@ -137,17 +142,26 @@ export default class Programs {
 
   protected openCreateSidebar(): void {
     this.selectedProgram.set(undefined);
+    this.cohortsProgram.set(undefined);
     this.isCreating.set(true);
   }
 
   protected openUpdateSidebar(program: IProgram): void {
     this.isCreating.set(false);
+    this.cohortsProgram.set(undefined);
     this.selectedProgram.set(program);
+  }
+
+  protected openCohortsSidebar(program: IProgram): void {
+    this.isCreating.set(false);
+    this.selectedProgram.set(undefined);
+    this.cohortsProgram.set(program);
   }
 
   protected closeSidebar(): void {
     this.isCreating.set(false);
     this.selectedProgram.set(undefined);
+    this.cohortsProgram.set(undefined);
   }
 
   protected createProgram(result: IProgramFormResult): void {

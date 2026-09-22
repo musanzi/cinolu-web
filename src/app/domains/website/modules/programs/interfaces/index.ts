@@ -1,4 +1,5 @@
 export type {
+  ICohortsResponse,
   IPortfoliosResponse,
   IProgramActivitiesResponse,
   IProgramsQuery,

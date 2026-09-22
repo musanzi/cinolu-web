@@ -1,4 +1,4 @@
-import type { IActivity, IPortfolio, IProgram } from '@/app/shared/interfaces';
+import type { IActivity, ICohort, IPortfolio, IProgram } from '@/app/shared/interfaces';
 
 export interface IProgramsQuery {
   q: string;
@@ -11,3 +11,4 @@ export interface IProgramsQuery {
 export type IProgramsResponse = [IProgram[], number];
 export type IPortfoliosResponse = [IPortfolio[], number];
 export type IProgramActivitiesResponse = [IActivity[], number];
+export type ICohortsResponse = [ICohort[], number];

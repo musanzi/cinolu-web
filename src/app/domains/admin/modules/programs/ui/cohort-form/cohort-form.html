@@ -1,0 +1,16 @@
+<form class="flex flex-col gap-5" (submit)="onSubmit(); $event.preventDefault()">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Name</mat-label>
+    <input matInput autocomplete="off" [formField]="cohortForm.name" />
+    @if (cohortForm.name().touched() && cohortForm.name().errors().length) {
+      <mat-error>{{ cohortForm.name().errors()[0].message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="flex justify-end gap-2">
+    <button matButton type="button" [disabled]="isSaving()" (click)="cancelled.emit()">Cancel</button>
+    <button matButton="filled" type="submit" [disabled]="cohortForm().invalid() || isSaving()">
+      {{ isSaving() ? 'Saving…' : submitLabel() }}
+    </button>
+  </div>
+</form>

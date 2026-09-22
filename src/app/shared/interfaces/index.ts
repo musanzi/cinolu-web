@@ -1,6 +1,7 @@
 export * from './abstract-entity.interface';
 export * from './activity.interface';
 export * from './category.interface';
+export * from './cohort.interface';
 export * from './participation.interface';
 export * from './portfolio.interface';
 export * from './program.interface';

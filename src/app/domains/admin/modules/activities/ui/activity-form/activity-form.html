@@ -93,6 +93,20 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Cohort</mat-label>
+            <mat-select [formField]="activityForm.cohortId">
+              @for (cohort of cohorts(); track cohort.id) {
+                <mat-option [value]="cohort.id">{{ cohort.name }}</mat-option>
+              }
+            </mat-select>
+            @if (!activityForm.programId().value()) {
+              <mat-hint>Select a program first</mat-hint>
+            } @else if (!cohortsResource.isLoading() && !cohorts().length) {
+              <mat-hint>This program has no cohorts yet</mat-hint>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Mentors</mat-label>
             <mat-select multiple [formField]="activityForm.mentorIds">
               @for (mentor of lookups().mentors; track mentor.id) {

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { IRemoveProgramDialogData } from '../interfaces';
+import { IRemoveProgramDialogData } from '../../interfaces';
 
 @Component({
   selector: 'app-remove-program-dialog',

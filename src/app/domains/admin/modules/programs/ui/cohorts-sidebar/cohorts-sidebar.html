@@ -1,0 +1,105 @@
+<div class="relative flex h-full min-h-0 w-full flex-col border-none bg-white sm:w-xl">
+  <header class="flex items-center justify-between gap-4 border-b border-outline-variant px-5 py-4 sm:px-7">
+    <div>
+      <h2 class="text-xl font-semibold">Cohorts</h2>
+      <p class="text-on-surface-variant">Manage cohorts for {{ program().name }}.</p>
+    </div>
+    <button matIconButton type="button" aria-label="Close cohorts panel" (click)="closeSidebar()">
+      <mat-icon svgIcon="x" />
+    </button>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-col gap-6 overflow-auto p-5 sm:p-7">
+    @if (isAdding() || selectedCohort()) {
+      <div class="rounded-xl border border-outline-variant p-5">
+        <h3 class="mb-4 text-lg font-semibold">
+          {{ isAdding() ? 'Create cohort' : 'Edit cohort' }}
+        </h3>
+        <cohort-form
+          [cohort]="selectedCohort()"
+          [isSaving]="store.isSaving()"
+          [submitLabel]="isAdding() ? 'Create cohort' : 'Save changes'"
+          (cancelled)="closeForm()"
+          (submitted)="submitForm($event)" />
+      </div>
+    } @else {
+      <div class="flex justify-end">
+        <button
+          matButton="filled"
+          type="button"
+          [disabled]="store.isSaving() || store.removingCohortId() !== ''"
+          (click)="openCreateForm()">
+          <mat-icon svgIcon="plus" />
+          Create cohort
+        </button>
+      </div>
+    }
+
+    @if (store.error()) {
+      <message type="error" [message]="store.error()" />
+    }
+
+    @if (cohortsResource.error()) {
+      <message type="error" message="Unable to load cohorts." />
+    } @else if (cohortsResource.isLoading()) {
+      <div class="flex min-h-64 items-center justify-center" aria-label="Loading cohorts">
+        <span class="text-on-surface-variant">Loading...</span>
+      </div>
+    } @else {
+      <div class="flex flex-col overflow-hidden rounded-xl border border-outline-variant">
+        <div class="relative isolate overflow-x-auto">
+          <table class="w-full whitespace-nowrap" mat-table [dataSource]="cohorts()">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let cohort">{{ cohort.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+              <td class="text-right" mat-cell *matCellDef="let cohort">
+                <button
+                  matIconButton
+                  type="button"
+                  aria-label="Edit cohort"
+                  [disabled]="store.isSaving() || store.removingCohortId() !== ''"
+                  (click)="openUpdateForm(cohort)">
+                  <mat-icon svgIcon="pencil" />
+                </button>
+                <button
+                  matIconButton
+                  type="button"
+                  aria-label="Delete cohort"
+                  [disabled]="store.isSaving() || store.removingCohortId() !== ''"
+                  (click)="openRemoveDialog(cohort)">
+                  <mat-icon svgIcon="trash-2" />
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              class="group relative hover:bg-on-surface-variant/4"
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"></tr>
+
+            <tr class="h-32" *matNoDataRow>
+              <td class="text-center text-on-surface-variant" [attr.colspan]="displayedColumns.length">
+                No cohorts found for this program.
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        @if (cohortsCount() > pageSize) {
+          <mat-paginator
+            aria-label="Select a page of cohorts"
+            [length]="cohortsCount()"
+            [pageIndex]="page() - 1"
+            [pageSize]="pageSize"
+            [hidePageSize]="true"
+            (page)="onPageChange($event)" />
+        }
+      </div>
+    }
+  </div>
+</div>

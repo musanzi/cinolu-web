@@ -1,4 +1,4 @@
-import type { IActivity, ICategory, IForm, IProgram, IType, IUser } from '@/app/shared/interfaces';
+import type { IActivity, ICategory, ICohort, IForm, IProgram, IType, IUser } from '@/app/shared/interfaces';
 
 export interface IActivityResource {
   title: string;
@@ -15,6 +15,7 @@ export interface IActivityPayload {
   reviewForm: IForm[];
   resources: IActivityResource[];
   programId: string;
+  cohortId: string;
   mentorIds: string[];
   typeIds: string[];
   categoryIds: string[];
@@ -26,6 +27,7 @@ export interface IActivityDetailsFormModel {
   startDate: Date;
   endDate: Date;
   programId: string;
+  cohortId: string;
   mentorIds: string[];
   typeIds: string[];
   categoryIds: string[];
@@ -39,6 +41,7 @@ export interface IActivityLookups {
 }
 
 export type IProgramsLookupResponse = [IProgram[], number];
+export type ICohortsLookupResponse = [ICohort[], number];
 export type ITypesLookupResponse = [IType[], number];
 export type ICategoriesLookupResponse = [ICategory[], number];
 export type IMentorsLookupResponse = IUser[];

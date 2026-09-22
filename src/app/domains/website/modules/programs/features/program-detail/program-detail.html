@@ -115,21 +115,54 @@
             </mat-card-content>
           </mat-card>
         } @else if (activities().length) {
-          <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            @for (activity of activities(); track activity.id) {
-              <activity-card [activity]="activity" />
-            }
-          </div>
+          @if (cohorts().length) {
+            <div class="mt-6 flex w-full sm:w-72" aria-label="Filtrer les activités par cohorte">
+              <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-icon matPrefix svgIcon="layers" />
+                <mat-select
+                  [ngModel]="cohortId()"
+                  [disabled]="cohortsResource.isLoading()"
+                  (ngModelChange)="onCohortChange($event)">
+                  <mat-option value="">Toutes les cohortes</mat-option>
+                  @for (cohort of cohorts(); track cohort.id) {
+                    <mat-option [value]="cohort.id">{{ cohort.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          }
 
-          @if (activitiesCount() > pageSize) {
-            <mat-paginator
-              class="mt-10 border-t border-gray-200 bg-white pt-4"
-              aria-label="Choisir une page d'activités"
-              [length]="activitiesCount()"
-              [pageIndex]="page() - 1"
-              [pageSize]="pageSize"
-              [hidePageSize]="true"
-              (page)="onPageChange($event)" />
+          @if (visibleActivities().length) {
+            <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              @for (activity of visibleActivities(); track activity.id) {
+                <activity-card [activity]="activity" />
+              }
+            </div>
+
+            @if (activitiesCount() > pageSize) {
+              <mat-paginator
+                class="mt-10 border-t border-gray-200 bg-white pt-4"
+                aria-label="Choisir une page d'activités"
+                [length]="activitiesCount()"
+                [pageIndex]="page() - 1"
+                [pageSize]="pageSize"
+                [hidePageSize]="true"
+                (page)="onPageChange($event)" />
+            }
+          } @else {
+            <mat-card appearance="outlined" class="mt-8 rounded-md border-gray-200 bg-white">
+              <mat-card-content class="flex flex-col items-center px-6 py-10 text-center sm:px-10">
+                <span class="flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                  <mat-icon svgIcon="calendar-days" />
+                </span>
+                <p class="mt-4 font-bold text-gray-900">Aucune activité pour cette cohorte</p>
+                <p class="mt-1 text-gray-600">Essayez une autre cohorte ou affichez toutes les activités.</p>
+                <button matButton="outlined" class="mt-5" type="button" (click)="onCohortChange('')">
+                  <mat-icon svgIcon="x" />
+                  Effacer le filtre
+                </button>
+              </mat-card-content>
+            </mat-card>
           }
         } @else {
           <mat-card appearance="outlined" class="mt-8 rounded-md border-gray-200 bg-white">

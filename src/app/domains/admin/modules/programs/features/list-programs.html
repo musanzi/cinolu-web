@@ -19,6 +19,8 @@
           [isSaving]="store.isSaving()"
           (cancelled)="closeSidebar()"
           (submitted)="updateProgram(program, $event)" />
+      } @else if (cohortsProgram(); as program) {
+        <cohorts-sidebar [program]="program" (cancelled)="closeSidebar()" />
       }
     </mat-sidenav>
 
@@ -136,6 +138,14 @@
                       "
                       (click)="openUpdateSidebar(program)">
                       <mat-icon svgIcon="pencil" />
+                    </button>
+                    <button
+                      matIconButton
+                      type="button"
+                      aria-label="Manage cohorts"
+                      [disabled]="store.isSaving() || store.removingProgramId() !== ''"
+                      (click)="openCohortsSidebar(program)">
+                      <mat-icon svgIcon="users" />
                     </button>
                     <button
                       matIconButton
