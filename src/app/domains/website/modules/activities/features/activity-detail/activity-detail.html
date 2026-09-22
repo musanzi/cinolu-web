@@ -1,9 +1,9 @@
 <div class="min-h-screen font-outfit text-gray-950">
   @if (activityResource.isLoading()) {
-    <main class="mx-auto w-full max-w-screen-2xl px-5 py-10 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
+    <main class="w-full max-w-screen-2xl px-5 py-10 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
       <div aria-label="Chargement de l'activité" aria-busy="true">
         <div class="aspect-16/7 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
-        <div class="mx-auto mt-8 max-w-5xl space-y-5">
+        <div class="mt-8 max-w-5xl space-y-5">
           <div class="h-4 w-40 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
           <div class="h-10 w-4/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
           <div class="h-5 w-3/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
@@ -204,17 +204,17 @@
           <message
             type="warning"
             title="Participations closes"
-            message="Cette activité est terminée. Il n’est plus possible d’envoyer une participation."
+            message="Cette activité est terminée. Il n'est plus possible d'envoyer une participation."
             [dismissible]="false" />
         } @else if (!hasParticipationForm()) {
           <message
             type="warning"
             title="Participation indisponible"
-            message="Aucun formulaire de participation n’est disponible pour cette activité."
+            message="Aucun formulaire de participation n'est disponible pour cette activité."
             [dismissible]="false" />
         } @else if (!authStore.user()) {
           <div class="py-4 text-center">
-            <span class="mx-auto flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+            <span class="flex size-12 items-center justify-center rounded-md bg-primary-50 text-primary-700">
               <mat-icon svgIcon="log-in" />
             </span>
             <h3 class="mt-4 text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
