@@ -16,6 +16,7 @@ export interface IActivity extends IAbstractEntity {
   participationForm: IForm[];
   isPublished: boolean;
   reviewForm: IForm[];
+  resources: { title: string; value: string }[];
   cover?: string;
   program: IProgram;
   mentors: IUser[];

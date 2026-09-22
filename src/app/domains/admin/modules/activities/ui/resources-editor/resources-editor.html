@@ -1,0 +1,42 @@
+<div class="flex flex-col gap-4">
+  @for (resource of value(); track $index) {
+    <div class="flex items-start gap-3 rounded-md border border-outline-variant p-4">
+      <div class="grid min-w-0 flex-1 gap-4 sm:grid-cols-2">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            [value]="resource.title"
+            autocomplete="off"
+            (input)="updateResource($index, { title: $any($event.target).value })" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Link or value</mat-label>
+          <input
+            matInput
+            [value]="resource.value"
+            autocomplete="off"
+            (input)="updateResource($index, { value: $any($event.target).value })" />
+        </mat-form-field>
+      </div>
+      <button
+        matIconButton
+        type="button"
+        class="mt-2"
+        aria-label="Remove resource"
+        (click)="removeResource($index)">
+        <mat-icon svgIcon="trash" />
+      </button>
+    </div>
+  } @empty {
+    <div class="flex flex-col items-center gap-2 rounded-md border border-dashed border-outline-variant p-8">
+      <mat-icon class="text-on-surface-variant" svgIcon="paperclip" />
+      <p class="text-sm text-on-surface-variant">No resources yet. Add links or documents for participants.</p>
+    </div>
+  }
+
+  <button matButton="outlined" type="button" (click)="addResource()">
+    <mat-icon svgIcon="plus" />
+    Add resource
+  </button>
+</div>

@@ -12,11 +12,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { environment } from '@/environments/environment';
 import type { IActivity, IForm } from '@/app/shared/interfaces';
 import { FormBuilder } from '@/app/shared/ui/form-builder/form-builder';
+import { ResourcesEditor } from '../resources-editor/resources-editor';
 import type {
   IActivityDetailsFormModel,
   IActivityFormResult,
   IActivityLookups,
-  IActivityPayload
+  IActivityPayload,
+  IActivityResource
 } from '../../interfaces';
 
 @Component({
@@ -31,7 +33,8 @@ import type {
     MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatTabsModule
+    MatTabsModule,
+    ResourcesEditor
   ],
   templateUrl: './activity-form.html'
 })
@@ -62,6 +65,9 @@ export class ActivityForm {
     this.cloneForm(this.activity()?.participationForm, 'Application')
   );
   protected readonly reviewForm = linkedSignal(() => this.cloneForm(this.activity()?.reviewForm, 'Review'));
+  protected readonly resources = linkedSignal<IActivityResource[]>(() =>
+    (this.activity()?.resources ?? []).map((resource) => ({ ...resource }))
+  );
   protected readonly isPublished = linkedSignal(() => this.activity()?.isPublished ?? false);
 
   protected readonly activityForm = form(this.activityModel, (schemaPath) => {
@@ -119,7 +125,8 @@ export class ActivityForm {
         endDate: value.endDate.toISOString(),
         participationForm: this.participationForm(),
         isPublished: this.isPublished(),
-        reviewForm: this.reviewForm()
+        reviewForm: this.reviewForm(),
+        resources: this.resources()
       };
       this.submitted.emit({ payload, cover: this.selectedCover() });
     });

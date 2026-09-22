@@ -90,12 +90,7 @@
             <span class="text-on-surface-variant">Loading...</span>
           </div>
         } @else if (activitiesResource.error()) {
-          <div
-            class="flex items-center justify-between gap-4 rounded-md bg-error-container p-4 text-on-error-container"
-            role="alert">
-            <span>Activities could not be loaded.</span>
-            <button matButton type="button" (click)="activitiesResource.reload()">Retry</button>
-          </div>
+          <message type="error" message="Activities could not be loaded." />
         } @else {
           <div class="flex flex-col overflow-hidden rounded-xl border border-outline-variant">
             <div class="relative isolate overflow-x-auto">

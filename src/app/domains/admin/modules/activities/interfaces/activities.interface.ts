@@ -1,5 +1,10 @@
 import type { IActivity, ICategory, IForm, IProgram, IType, IUser } from '@/app/shared/interfaces';
 
+export interface IActivityResource {
+  title: string;
+  value: string;
+}
+
 export interface IActivityPayload {
   name: string;
   description?: string;
@@ -8,6 +13,7 @@ export interface IActivityPayload {
   participationForm: IForm[];
   isPublished?: boolean;
   reviewForm: IForm[];
+  resources: IActivityResource[];
   programId: string;
   mentorIds: string[];
   typeIds: string[];

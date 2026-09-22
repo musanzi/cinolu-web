@@ -141,6 +141,12 @@
           <form-builder [(value)]="reviewForm" />
         </div>
       </mat-tab>
+
+      <mat-tab label="Resources">
+        <div class="p-5 sm:p-7">
+          <resources-editor [(value)]="resources" />
+        </div>
+      </mat-tab>
     </mat-tab-group>
 
     <footer class="flex items-center justify-end gap-2 border-t border-outline-variant bg-surface px-5 py-4 sm:px-7">
