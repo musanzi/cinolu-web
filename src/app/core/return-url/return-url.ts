@@ -29,6 +29,10 @@ export class ReturnUrl {
     this.localStorage.setItem(AUTH_RETURN_URL_KEY, url);
   }
 
+  peek(): string | null {
+    return this.localStorage.getItem(AUTH_RETURN_URL_KEY);
+  }
+
   saveOriginIfMissing(): void {
     if (this.localStorage.getItem(AUTH_RETURN_URL_KEY) || !this.previousUrl) return;
     if (this.previousUrl.startsWith('/auth')) return;

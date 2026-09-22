@@ -12,14 +12,22 @@ import { ReturnUrl } from '@/app/core/return-url';
 
 export const SignInStore = signalStore(
   withState({ isLoading: false, error: '' }),
-  withProps(() => ({
-    _http: inject(HttpClient),
-    _router: inject(Router),
-    _route: inject(ActivatedRoute),
-    _authStore: inject(AuthStore),
-    _returnUrl: inject(ReturnUrl),
-    googleSignInUrl: `${environment.apiUrl}/auth/signin/google`
-  })),
+  withProps(() => {
+    const _returnUrl = inject(ReturnUrl);
+
+    return {
+      _http: inject(HttpClient),
+      _router: inject(Router),
+      _route: inject(ActivatedRoute),
+      _authStore: inject(AuthStore),
+      _returnUrl,
+      get googleSignInUrl(): string {
+        const base = `${environment.apiUrl}/auth/signin/google`;
+        const returnUrl = _returnUrl.peek();
+        return returnUrl ? `${base}?returnUrl=${encodeURIComponent(returnUrl)}` : base;
+      }
+    };
+  }),
   withMethods(({ _http, _authStore, _route, _router, _returnUrl, ...store }) => ({
     signIn: rxMethod<ISignInPayload>(
       pipe(

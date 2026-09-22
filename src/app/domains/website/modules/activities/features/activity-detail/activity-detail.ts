@@ -8,7 +8,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { ReturnUrl } from '@/app/core/return-url';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { ParticipationsStore } from '@/app/domains/user/modules/participations/data-access';
 import type { IParticipationsResponse } from '@/app/domains/user/modules/participations/interfaces';
@@ -41,6 +42,8 @@ export default class ActivityDetail {
   private readonly clipboard = inject(Clipboard);
   private readonly document = inject(DOCUMENT);
   private readonly participationRenderer = viewChild(FormRenderer);
+  private readonly returnUrl = inject(ReturnUrl);
+  private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly activityResource = httpResource<IActivity>(() => {
@@ -87,6 +90,10 @@ export default class ActivityDetail {
   protected readonly existingParticipation = computed(() =>
     this.existingParticipationResource.hasValue() ? this.existingParticipationResource.value()[0][0] : undefined
   );
+
+  protected saveReturnUrl(): void {
+    this.returnUrl.saveAttemptedUrl(this.router.url);
+  }
 
   protected submitParticipation(event: Event): void {
     event.preventDefault();

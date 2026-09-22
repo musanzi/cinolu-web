@@ -31,7 +31,9 @@ export class AuthSignIn {
   protected readonly authStore = inject(SignInStore);
   private readonly router = inject(Router);
   private readonly returnUrl = inject(ReturnUrl);
-  protected readonly googleSignInUrl = this.authStore.googleSignInUrl;
+  protected get googleSignInUrl(): string {
+    return this.authStore.googleSignInUrl;
+  }
   protected successMessage = signal<string | null>(this.getSuccessMessage());
 
   constructor() {
