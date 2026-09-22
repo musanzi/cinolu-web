@@ -32,7 +32,7 @@ import { ProgramsHero } from '../../ui/hero/hero';
 export default class ListPrograms {
   private readonly route = inject(ActivatedRoute);
   private readonly initialQueryParams = this.route.snapshot.queryParamMap;
-  protected readonly pageSize = 12;
+  protected readonly pageSize = 9;
   protected readonly page = signal(1);
   protected readonly q = signal('');
   protected readonly portfolioId = signal(this.initialQueryParams.get('portfolioId') ?? '');
