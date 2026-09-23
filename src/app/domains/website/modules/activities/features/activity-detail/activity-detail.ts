@@ -12,9 +12,9 @@ import { Router, RouterLink } from '@angular/router';
 import { ReturnUrl } from '@/app/core/return-url';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { ParticipationsStore } from '@/app/domains/user/modules/participations/data-access';
-import type { IParticipationsResponse } from '@/app/domains/user/modules/participations/interfaces';
+import { IParticipationsResponse } from '@/app/domains/user/modules/participations/interfaces';
 import { FormRenderer, Message } from '@/app/shared/ui';
-import type { IActivity } from '@/app/shared/interfaces';
+import { IActivity } from '@/app/shared/interfaces';
 import { environment } from '@/environments/environment';
 
 @Component({
@@ -151,10 +151,8 @@ export default class ActivityDetail {
 
   private copyActivityUrl(url: string): void {
     const copied = this.clipboard.copy(url);
-    this.snackBar.open(
-      copied ? 'Lien de l’activité copié.' : 'Impossible de copier le lien de l’activité.',
-      'Fermer',
-      { duration: 3500 }
-    );
+    this.snackBar.open(copied ? 'Lien de l’activité copié.' : 'Impossible de copier le lien de l’activité.', 'Fermer', {
+      duration: 3500
+    });
   }
 }
