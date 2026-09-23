@@ -40,11 +40,11 @@ export default class Profile {
   protected readonly authStore = inject(AuthStore);
   protected readonly store = inject(ProfileStore);
 
-  private readonly user = this.authStore.user();
+  private readonly user = computed(() => this.authStore.user());
   private rolesInitialized = false;
 
   protected readonly rolesResource = httpResource<IProfileRolesResponse>(() =>
-    this.authStore.isAdmin() ? '/roles?take=1000' : undefined
+    this.authStore.isAdmin() ? '/roles?take=100' : undefined
   );
 
   protected readonly availableRoles = computed(() =>
@@ -60,13 +60,14 @@ export default class Profile {
   });
 
   protected readonly profileModel = signal<IProfileFormModel>({
-    name: this.user?.name ?? '',
-    email: this.user?.email ?? '',
-    jobTitle: this.user?.jobTitle ?? '',
+    name: this.user()?.name ?? '',
+    email: this.user()?.email ?? '',
+    jobTitle: this.user()?.jobTitle ?? '',
+    biography: this.user()?.biography ?? '',
     socialLinks: {
-      facebook: this.user?.socialLinks?.['facebook'] ?? '',
-      linkedin: this.user?.socialLinks?.['linkedin'] ?? '',
-      twitter: this.user?.socialLinks?.['twitter'] ?? ''
+      facebook: this.user()?.socialLinks?.['facebook'] ?? '',
+      linkedin: this.user()?.socialLinks?.['linkedin'] ?? '',
+      twitter: this.user()?.socialLinks?.['twitter'] ?? ''
     },
     roles: []
   });
@@ -75,6 +76,8 @@ export default class Profile {
     required(schemaPath.name, { message: 'Le nom est requis.' });
     required(schemaPath.email, { message: "L'adresse e-mail est requise." });
     email(schemaPath.email, { message: "L'adresse e-mail est invalide." });
+    required(schemaPath.biography, { message: 'La bio est requise.' });
+    minLength(schemaPath.biography, 50, { message: 'La bio est doit avoir minimum 50 caractères' });
     pattern(schemaPath.socialLinks.facebook, WEB_URL_PATTERN, { message: "L'adresse Facebook est invalide." });
     pattern(schemaPath.socialLinks.linkedin, WEB_URL_PATTERN, { message: "L'adresse LinkedIn est invalide." });
     pattern(schemaPath.socialLinks.twitter, WEB_URL_PATTERN, { message: "L'adresse X est invalide." });
@@ -108,7 +111,7 @@ export default class Profile {
       untracked(() => {
         this.profileModel.update((model) => ({
           ...model,
-          roles: roles.filter((role) => this.user?.roles.includes(role.name)).map((role) => role.id)
+          roles: roles.filter((role) => this.user()?.roles.includes(role.name)).map((role) => role.id)
         }));
       });
     });

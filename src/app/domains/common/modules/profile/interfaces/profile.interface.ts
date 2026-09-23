@@ -10,6 +10,7 @@ export interface IProfileFormModel {
   name: string;
   email: string;
   jobTitle: string;
+  biography: string;
   socialLinks: IProfileSocialLinksFormModel;
   roles: string[];
 }

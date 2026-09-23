@@ -24,13 +24,8 @@
         }
       </div>
       <div class="min-w-0 flex-1">
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
           <h2 class="truncate text-xl font-semibold">{{ authStore.user()?.name }}</h2>
-          <mat-chip-set aria-label="Rôles du compte">
-            @for (role of authStore.user()?.roles ?? []; track role) {
-              <mat-chip>{{ role }}</mat-chip>
-            }
-          </mat-chip-set>
         </div>
         <input
           #profileImageInput
@@ -65,7 +60,7 @@
         (dismissed)="store.clearProfileImageMessage()" />
     }
 
-    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(20rem,0.65fr)]">
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(25rem,0.65fr)]">
       <mat-card appearance="outlined" class="overflow-hidden rounded-md border-neutral-200 shadow-sm">
         <div class="flex items-start gap-3 border-b border-neutral-200 p-6">
           <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-neutral-700">
@@ -119,6 +114,18 @@
                   [formField]="profileForm.jobTitle"
                   autocomplete="organization-title"
                   placeholder="Ex. Responsable de programme" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="sm:col-span-2">
+                <mat-label>Biography</mat-label>
+
+                <textarea
+                  matInput
+                  [formField]="profileForm.biography"
+                  autocomplete="user-biography"
+                  rows="5"
+                  placeholder="Ex. Je suis développeur au Centre d'Innovation de Lubumbashi et je m'occupe de tous les projets de développement logiciel.">
+                </textarea>
               </mat-form-field>
             </div>
 
