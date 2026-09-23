@@ -11,7 +11,7 @@
               <mat-label>{{ question.field.label }}</mat-label>
               <textarea matInput rows="5" [id]="question.field.name" [formField]="answer.value"></textarea>
               @if (answer.value().touched() && answer.value().errors().length) {
-                <mat-error>{{ answer.value().errors()[0].message }}</mat-error>
+                <mat-error class="mt-2 text-sm">{{ answer.value().errors()[0].message }}</mat-error>
               }
             </mat-form-field>
           }
@@ -25,7 +25,7 @@
                 }
               </mat-select>
               @if (answer.value().touched() && answer.value().errors().length) {
-                <mat-error>{{ answer.value().errors()[0].message }}</mat-error>
+                <mat-error class="mt-2 text-sm">{{ answer.value().errors()[0].message }}</mat-error>
               }
             </mat-form-field>
           }
@@ -43,7 +43,7 @@
                 }
               </mat-radio-group>
               @if (answer.value().touched() && answer.value().errors().length) {
-                <p class="mt-2 text-error" role="alert">{{ answer.value().errors()[0].message }}</p>
+                <mat-error class="mt-2 text-sm">{{ answer.value().errors()[0].message }}</mat-error>
               }
             </fieldset>
           }
@@ -63,7 +63,7 @@
                 }
               </div>
               @if (answer.options().touched() && answer.options().errors().length) {
-                <p class="mt-2 text-error" role="alert">{{ answer.options().errors()[0].message }}</p>
+                <mat-error class="mt-2 text-sm">{{ answer.options().errors()[0].message }}</mat-error>
               }
             </fieldset>
           }
@@ -76,7 +76,7 @@
                 [type]="fieldInputType(question.field.type)"
                 [formField]="answer.value" />
               @if (answer.value().touched() && answer.value().errors().length) {
-                <mat-error>{{ answer.value().errors()[0].message }}</mat-error>
+                <mat-error class="mt-2 text-sm">{{ answer.value().errors()[0].message }}</mat-error>
               }
             </mat-form-field>
           }
