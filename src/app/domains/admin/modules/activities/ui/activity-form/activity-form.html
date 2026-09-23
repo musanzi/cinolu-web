@@ -70,12 +70,34 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Starts at</mat-label>
+              <input matInput [matTimepicker]="startTimePicker" [formField]="activityForm.startTime" />
+              <mat-timepicker-toggle matIconSuffix [for]="startTimePicker" />
+              <mat-timepicker #startTimePicker />
+              @if (activityForm.startTime().touched() && activityForm.startTime().errors().length) {
+                <mat-error>{{ activityForm.startTime().errors()[0].message }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Ends</mat-label>
               <input matInput [matDatepicker]="endPicker" [formField]="activityForm.endDate" />
               <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
               <mat-datepicker #endPicker />
               @if (activityForm.endDate().touched() && activityForm.endDate().errors().length) {
                 <mat-error>{{ activityForm.endDate().errors()[0].message }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Ends at</mat-label>
+              <input matInput [matTimepicker]="endTimePicker" [formField]="activityForm.endTime" />
+              <mat-timepicker-toggle matIconSuffix [for]="endTimePicker" />
+              <mat-timepicker #endTimePicker />
+              @if (activityForm.endTime().touched() && activityForm.endTime().errors().length) {
+                <mat-error>{{ activityForm.endTime().errors()[0].message }}</mat-error>
               }
             </mat-form-field>
           </div>

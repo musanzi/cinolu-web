@@ -25,7 +25,9 @@ export interface IActivityDetailsFormModel {
   name: string;
   description: string;
   startDate: Date;
+  startTime: Date;
   endDate: Date;
+  endTime: Date;
   programId: string;
   cohortId: string;
   mentorIds: string[];
