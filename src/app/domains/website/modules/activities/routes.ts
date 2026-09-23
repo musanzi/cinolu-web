@@ -10,7 +10,6 @@ const routes: Routes = [
   {
     path: ':slug',
     title: "Détail de l'activité",
-    data: { hasHero: true },
     loadComponent: () => import('./features/activity-detail/activity-detail')
   }
 ];

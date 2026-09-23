@@ -1,18 +1,18 @@
-<div class="min-h-screen font-outfit text-gray-950">
+<div class="min-h-screen font-outfit text-gray-950 w-full max-w-7xl mx-auto">
   @if (activityResource.isLoading()) {
-    <main class="w-full max-w-screen-2xl px-5 py-10 sm:px-8 lg:px-16 lg:py-16 xl:px-24 2xl:px-32">
-      <div aria-label="Chargement de l'activité" aria-busy="true">
-        <div class="aspect-16/7 w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
-        <div class="mt-8 max-w-5xl space-y-5">
+    <div aria-label="Chargement de l'activité" aria-busy="true">
+      <div class="mx-auto max-w-5xl px-5 sm:px-8">
+        <div
+          class="mt-6 aspect-video w-full animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none sm:aspect-21/9"></div>
+        <div class="mt-8 max-w-3xl space-y-5">
           <div class="h-4 w-40 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
           <div class="h-10 w-4/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
           <div class="h-5 w-3/5 animate-pulse rounded-md bg-gray-200 motion-reduce:animate-none"></div>
         </div>
       </div>
-    </main>
+    </div>
   } @else if (activityResource.error()) {
-    <main
-      class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <main class="flex min-h-[70vh] items-center px-5 py-16 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
       <mat-card appearance="outlined" class="mx-auto w-full max-w-2xl rounded-md border-red-200 bg-white">
         <mat-card-content class="px-6 py-12 text-center sm:px-10">
           <span class="mx-auto flex size-14 items-center justify-center rounded-full border border-red-200">
@@ -38,259 +38,289 @@
   } @else if (activityResource.hasValue()) {
     @let activity = activityResource.value();
 
-    <header class="relative isolate flex min-h-[70vh] items-end overflow-hidden">
-      <img
-        [src]="coverUrl()"
-        [alt]="activity.name"
-        class="absolute inset-0 -z-20 size-full object-cover object-center"
-        loading="eager"
-        fetchpriority="high" />
-      <div class="absolute inset-0 -z-10 bg-black/65"></div>
-
-      <div class="mx-auto w-full max-w-screen-2xl px-5 pt-28 pb-12 sm:px-8 sm:pb-16 lg:px-16 xl:px-24 2xl:px-32">
-        <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <a matButton class="text-white" routerLink="/activities">
-            <mat-icon svgIcon="arrow-left" />
-            Retour aux activités
-          </a>
-          <button matButton class="text-white" type="button" (click)="shareActivity()">
-            <mat-icon svgIcon="share-2" />
-            Partager
-          </button>
-        </div>
-        <p class="font-semibold text-primary-200">{{ activity.program.name }}</p>
-        <h1 class="mt-3 max-w-5xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-          {{ activity.name }}
-        </h1>
-        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-semibold text-white/90 sm:text-base">
-          <span class="inline-flex items-center gap-2">
-            <mat-icon class="size-5 text-primary-200" svgIcon="calendar-days" />
-            {{ activity.startDate | date: 'dd MMMM yyyy' }}
-            @if (activity.endDate && activity.endDate !== activity.startDate) {
-              – {{ activity.endDate | date: 'dd MMMM yyyy' }}
-            }
-          </span>
-          <span class="inline-flex items-center gap-2">
-            <mat-icon class="size-5 text-primary-200" svgIcon="blocks" />
-            {{ activity.program.name }}
-          </span>
-        </div>
+    <div class="px-5 sm:px-8">
+      <div
+        class="relative isolate mt-10 aspect-video overflow-hidden rounded-md border border-gray-200 bg-gray-100 sm:aspect-21/9"
+        role="img">
+        <img
+          [src]="coverUrl()"
+          [alt]="activity.name"
+          class="absolute inset-0 size-full object-cover"
+          loading="eager"
+          fetchpriority="high" />
       </div>
-    </header>
 
-    <main class="mx-auto w-full max-w-screen-2xl px-5 py-12 sm:px-8 lg:py-20 xl:px-24 2xl:px-32">
-      <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
-        <article>
-          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Présentation</p>
-          <h2 id="about-activity-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            À propos de cette activité
-          </h2>
-          <p class="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-gray-700">
-            {{ activity.description || 'Aucune description détaillée n’est disponible pour cette activité.' }}
-          </p>
+      <div class="flex items-center justify-between gap-3 pt-10">
+        <a matButton="outlined" routerLink="/activities" aria-label="Retour aux activités">
+          <mat-icon svgIcon="arrow-left" />
+          <span class="hidden sm:inline">Retour aux activités</span>
+        </a>
+        <button matButton="outlined" type="button" (click)="shareActivity()" aria-label="Partager l'activité">
+          <mat-icon svgIcon="share-2" />
+          <span class="hidden sm:inline">Partager</span>
+        </button>
+      </div>
 
-          @if (activity.types.length || activity.categories.length) {
-            <div class="mt-8 flex flex-col gap-5 border-t border-gray-200 pt-7 sm:flex-row sm:gap-10">
-              @if (activity.types.length) {
-                <div>
-                  <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Types</h3>
-                  <mat-chip-set aria-label="Types d'activité">
-                    @for (type of activity.types; track type.id) {
-                      <mat-chip>{{ type.name }}</mat-chip>
-                    }
-                  </mat-chip-set>
-                </div>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <span
+          class="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-1.5 text-sm font-semibold text-primary-700">
+          <mat-icon class="size-4" svgIcon="blocks" />
+          {{ activity.program.name }}
+        </span>
+        @if (hasActivityEnded()) {
+          <span
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-4 py-1.5 text-sm font-semibold text-gray-600">
+            <mat-icon class="size-4" svgIcon="calendar-check" />
+            Activité terminée
+          </span>
+        } @else {
+          <span
+            class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-1.5 text-sm font-semibold text-white">
+            <mat-icon class="size-4" svgIcon="calendar-clock" />
+            À venir
+          </span>
+        }
+      </div>
+
+      <h1 class="my-10 text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">
+        {{ activity.name }}
+      </h1>
+    </div>
+
+    <div class="mt-8 px-5 sm:px-8">
+      <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm w-full sm:w-3/6">
+        <mat-card-content class="grid grid-cols-2 gap-6 p-6 sm:p-7">
+          <div class="flex items-center gap-3">
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+              <mat-icon class="size-5" svgIcon="calendar-days" />
+            </span>
+            <div class="min-w-0">
+              <p class="mt-0.5 truncate font-bold text-gray-900">{{ activity.startDate | date: 'dd MMMM yyyy' }}</p>
+              @if (activity.endDate && activity.endDate !== activity.startDate) {
+                <p class="truncate text-xs font-semibold text-gray-500">
+                  au {{ activity.endDate | date: 'dd MMMM yyyy' }}
+                </p>
               }
-              @if (activity.categories.length) {
-                <div>
-                  <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Catégories</h3>
-                  <mat-chip-set aria-label="Catégories de l'activité">
-                    @for (category of activity.categories; track category.id) {
-                      <mat-chip>{{ category.name }}</mat-chip>
-                    }
-                  </mat-chip-set>
-                </div>
-              }
+            </div>
+          </div>
+          @if (isSameDay()) {
+            <div class="flex items-center gap-3">
+              <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                <mat-icon class="size-5" svgIcon="clock" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold tracking-widest text-gray-500 uppercase">Horaire</p>
+                <p class="mt-0.5 truncate font-bold text-gray-900">{{ timeRangeLabel() }}</p>
+              </div>
             </div>
           }
-        </article>
-
-        <aside aria-label="Dates et programme">
-          <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-gray-50">
-            <mat-card-content class="p-5 sm:p-6">
-              <p class="text-xs font-bold tracking-widest text-gray-600 uppercase">En bref</p>
-              <div class="mt-5 divide-y divide-gray-200">
-                <div class="flex gap-3 pb-5">
-                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
-                    <mat-icon class="size-5" svgIcon="calendar-check" />
-                  </span>
-                  <div>
-                    <p class="font-bold text-gray-900">Date de début</p>
-                    <p class="mt-1 text-gray-600">{{ activity.startDate | date: 'dd MMMM yyyy' }}</p>
-                  </div>
-                </div>
-                <div class="flex gap-3 py-5">
-                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
-                    <mat-icon class="size-5" svgIcon="calendar-days" />
-                  </span>
-                  <div>
-                    <p class="font-bold text-gray-900">Date de fin</p>
-                    <p class="mt-1 text-gray-600">{{ activity.endDate | date: 'dd MMMM yyyy' }}</p>
-                  </div>
-                </div>
-                <div class="flex gap-3 pt-5">
-                  <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-primary-700">
-                    <mat-icon class="size-5" svgIcon="blocks" />
-                  </span>
-                  <div>
-                    <p class="font-bold text-gray-900">Programme</p>
-                    <p class="mt-1 text-gray-600">{{ activity.program.name }}</p>
-                  </div>
-                </div>
+          @if (durationLabel()) {
+            <div class="flex items-center gap-3">
+              <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-700">
+                <mat-icon class="size-5" svgIcon="hourglass" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold tracking-widest text-gray-500 uppercase">Durée</p>
+                <p class="mt-0.5 truncate font-bold text-gray-900">{{ durationLabel() }}</p>
               </div>
-            </mat-card-content>
-          </mat-card>
-        </aside>
-      </section>
-
-      @if (activity.mentors.length) {
-        <section
-          class="mt-14 border-t border-gray-200 pt-10 lg:mt-20 lg:pt-14"
-          aria-labelledby="activity-mentors-title">
-          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Accompagnement</p>
-          <h2 id="activity-mentors-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Intervenants
-          </h2>
-          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @for (mentor of activity.mentors; track mentor.id) {
-              <mat-card
-                appearance="outlined"
-                class="rounded-md border-gray-200 bg-white transition-colors hover:border-primary-300">
-                <mat-card-content class="flex items-center gap-4 p-4 sm:p-5">
-                  <div
-                    class="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                    @if (mentor.avatar) {
-                      <img
-                        [src]="avatarUrl(mentor.avatar)"
-                        [alt]="mentor.name"
-                        class="size-full object-cover"
-                        loading="lazy" />
-                    } @else {
-                      <mat-icon class="text-gray-500" svgIcon="user" />
-                    }
-                  </div>
-                  <div class="min-w-0">
-                    <p class="truncate font-bold text-gray-900">{{ mentor.name }}</p>
-                    @if (mentor.jobTitle) {
-                      <p class="mt-0.5 truncate text-gray-600">{{ mentor.jobTitle }}</p>
-                    }
-                  </div>
-                </mat-card-content>
-              </mat-card>
-            }
-          </div>
-        </section>
-      }
-
-      <section class="max-w-5xl mt-12" aria-labelledby="participation-title">
-        <div class="mb-7">
-          <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Inscription</p>
-          <h2 id="about-activity-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Participer à cette activité
-          </h2>
-        </div>
-
-        @if (hasActivityEnded()) {
-          <message
-            type="warning"
-            title="Participations closes"
-            message="Cette activité est terminée. Il n'est plus possible d'envoyer une participation."
-            [dismissible]="false" />
-        } @else if (!hasParticipationForm()) {
-          <message
-            type="warning"
-            title="Participation indisponible"
-            message="Aucun formulaire de participation n'est disponible pour cette activité."
-            [dismissible]="false" />
-        } @else if (!authStore.user()) {
-          <div class="py-4">
-            <h3 class="text-xl font-bold text-gray-900">Connectez-vous pour participer</h3>
-            <p class="mt-2 max-w-lg leading-6 text-gray-600">
-              Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de bord.
-            </p>
-            <div class="mt-6">
-              <a matButton="filled" routerLink="/auth/sign-in" (click)="saveReturnUrl()">Se connecter</a>
             </div>
-          </div>
-        } @else if (participationsStore.createdParticipationId()) {
-          <message
-            type="success"
-            title="Participation envoyée"
-            message="Votre demande a bien été transmise. Vous pouvez maintenant suivre son statut depuis votre tableau de bord."
-            [dismissible]="false" />
-          <div class="mt-6 flex flex-wrap gap-3">
-            <a matButton="filled" [routerLink]="['/user/participations', participationsStore.createdParticipationId()]">
-              Voir ma participation
-            </a>
-            <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
-          </div>
-        } @else if (existingParticipationResource.isLoading()) {
-          <div class="flex items-center justify-center gap-3 py-5 text-gray-600" role="status">
-            <mat-spinner diameter="28" />
-            Vérification de votre participation…
-          </div>
-        } @else if (existingParticipationResource.error()) {
-          <message
-            type="error"
-            title="Vérification impossible"
-            message="Nous ne pouvons pas vérifier votre participation pour le moment. Veuillez réessayer."
-            [dismissible]="false" />
-          <div class="mt-5 flex justify-end">
-            <button matButton="outlined" type="button" (click)="existingParticipationResource.reload()">
-              <mat-icon svgIcon="refresh-cw" />
-              Réessayer
-            </button>
-          </div>
-        } @else if (existingParticipation()) {
-          <message
-            type="warning"
-            title="Déjà participant"
-            message="Vous êtes déjà participant à cette activité. Une seule participation est autorisée par personne."
-            [dismissible]="false" />
-        } @else {
-          <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
-            <mat-card-content class="p-5 sm:p-8 lg:p-10">
-              @if (participationsStore.error()) {
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <main class="px-5 py-12 sm:px-8 lg:py-16">
+      <tabs ariaLabel="Détails et participation de l'activité" [(activeKey)]="selectedTab">
+        <tab label="Participer" key="participation" icon="clipboard-pen">
+          <section aria-labelledby="participation-title">
+            <div class="mb-7">
+              <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Inscription</p>
+              <h2 id="participation-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                Participer à cette activité
+              </h2>
+              <p class="mt-2 max-w-2xl leading-6 text-gray-600">
+                @if (!authStore.user()) {
+                  Un compte est nécessaire pour envoyer votre demande et suivre son traitement depuis votre tableau de
+                  bord.
+
+                  <div class="mt-7 gap-3">
+                    <a matButton="filled" routerLink="/auth/sign-in" (click)="saveReturnUrl()">
+                      Rejoignez la communauté
+                    </a>
+                  </div>
+                } @else {
+                  Envoyez votre demande de participation via le formulaire ci-dessous. Vous pourrez ensuite suivre son
+                  statut depuis votre tableau de bord.
+                }
+              </p>
+            </div>
+
+            @if (authStore.user()) {
+              @if (hasActivityEnded()) {
                 <message
-                  class="mb-6"
-                  type="error"
-                  title="Envoi impossible"
-                  [message]="participationsStore.error()"
-                  (dismissed)="participationsStore.clearFeedback()" />
-              }
-              <form (submit)="submitParticipation($event)">
-                <form-renderer [sections]="participationForm()" />
-                <div class="mt-7 flex justify-end border-t border-gray-200 pt-5">
-                  <button
+                  type="warning"
+                  title="Participations closes"
+                  message="Cette activité est terminée. Il n'est plus possible d'envoyer une participation."
+                  [dismissible]="false" />
+              } @else if (!hasParticipationForm()) {
+                <message
+                  type="warning"
+                  title="Participation indisponible"
+                  message="Aucun formulaire de participation n'est disponible pour cette activité."
+                  [dismissible]="false" />
+              } @else if (participationsStore.createdParticipationId()) {
+                <message
+                  type="success"
+                  title="Participation envoyée"
+                  message="Votre demande a bien été transmise. Vous pouvez maintenant suivre son statut depuis votre tableau de bord."
+                  [dismissible]="false" />
+                <div class="mt-6 flex flex-wrap gap-3">
+                  <a
                     matButton="filled"
-                    type="submit"
-                    [disabled]="
-                      participationsStore.isSaving() ||
-                      !hasParticipationForm() ||
-                      hasActivityEnded() ||
-                      existingParticipationResource.isLoading() ||
-                      !!existingParticipationResource.error() ||
-                      !!existingParticipation()
-                    ">
-                    <mat-icon svgIcon="send" />
-                    {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
+                    [routerLink]="['/user/participations', participationsStore.createdParticipationId()]">
+                    Voir ma participation
+                  </a>
+                  <a matButton="outlined" routerLink="/user/participations">Toutes mes participations</a>
+                </div>
+              } @else if (existingParticipationResource.isLoading()) {
+                <div class="flex items-center justify-center gap-3 py-5 text-gray-600" role="status">
+                  <mat-spinner diameter="28" />
+                  Vérification de votre participation…
+                </div>
+              } @else if (existingParticipationResource.error()) {
+                <message
+                  type="error"
+                  title="Vérification impossible"
+                  message="Nous ne pouvons pas vérifier votre participation pour le moment. Veuillez réessayer."
+                  [dismissible]="false" />
+                <div class="mt-5 flex justify-end">
+                  <button matButton="outlined" type="button" (click)="existingParticipationResource.reload()">
+                    <mat-icon svgIcon="refresh-cw" />
+                    Réessayer
                   </button>
                 </div>
-              </form>
-            </mat-card-content>
-          </mat-card>
-        }
-      </section>
+              } @else if (existingParticipation()) {
+                <message
+                  type="warning"
+                  title="Déjà participant"
+                  message="Vous êtes déjà participant à cette activité. Une seule participation est autorisée par personne."
+                  [dismissible]="false" />
+              } @else {
+                <mat-card appearance="outlined" class="rounded-md border-gray-200 bg-white shadow-sm">
+                  <mat-card-content class="p-5 sm:p-8 lg:p-10">
+                    @if (participationsStore.error()) {
+                      <message
+                        class="mb-6"
+                        type="error"
+                        title="Envoi impossible"
+                        [message]="participationsStore.error()"
+                        (dismissed)="participationsStore.clearFeedback()" />
+                    }
+                    <form (submit)="submitParticipation($event)">
+                      <form-renderer [sections]="participationForm()" />
+                      <div class="mt-7 flex justify-end border-t border-gray-200 pt-5">
+                        <button
+                          matButton="filled"
+                          class="disabled:opacity-10"
+                          type="submit"
+                          [disabled]="
+                            participationsStore.isSaving() ||
+                            !hasParticipationForm() ||
+                            hasActivityEnded() ||
+                            existingParticipationResource.isLoading() ||
+                            !!existingParticipationResource.error() ||
+                            !!existingParticipation()
+                          ">
+                          <mat-icon svgIcon="send" />
+                          {{ participationsStore.isSaving() ? 'Envoi en cours…' : 'Envoyer ma participation' }}
+                        </button>
+                      </div>
+                    </form>
+                  </mat-card-content>
+                </mat-card>
+              }
+            }
+          </section>
+        </tab>
+
+        <tab label="Détails de l'activité" key="details" icon="file-text">
+          <section class="max-w-3xl">
+            <article>
+              <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Présentation</p>
+              <h2 id="about-activity-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                À propos de cette activité
+              </h2>
+              <p class="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-gray-700">
+                {{ activity.description || "Aucune description détaillée n'est disponible pour cette activité." }}
+              </p>
+
+              @if (activity.types.length || activity.categories.length) {
+                <div class="mt-8 flex flex-col gap-5 border-t border-gray-200 pt-7 sm:flex-row sm:gap-10">
+                  @if (activity.types.length) {
+                    <div>
+                      <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Types</h3>
+                      <mat-chip-set aria-label="Types d'activité">
+                        @for (type of activity.types; track type.id) {
+                          <mat-chip>{{ type.name }}</mat-chip>
+                        }
+                      </mat-chip-set>
+                    </div>
+                  }
+                  @if (activity.categories.length) {
+                    <div>
+                      <h3 class="mb-3 text-xs font-bold tracking-widest text-gray-600 uppercase">Catégories</h3>
+                      <mat-chip-set aria-label="Catégories de l'activité">
+                        @for (category of activity.categories; track category.id) {
+                          <mat-chip>{{ category.name }}</mat-chip>
+                        }
+                      </mat-chip-set>
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          </section>
+
+          @if (activity.mentors.length) {
+            <section
+              class="mt-14 border-t border-gray-200 pt-10 lg:mt-20 lg:pt-14"
+              aria-labelledby="activity-mentors-title">
+              <p class="text-xs font-bold tracking-widest text-primary-700 uppercase">Accompagnement</p>
+              <h2 id="activity-mentors-title" class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                Intervenants
+              </h2>
+              <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                @for (mentor of activity.mentors; track mentor.id) {
+                  <mat-card
+                    appearance="outlined"
+                    class="rounded-md border-gray-200 bg-white transition-colors hover:border-primary-300">
+                    <mat-card-content class="flex items-center gap-4 p-4 sm:p-5">
+                      <div
+                        class="flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                        @if (mentor.avatar) {
+                          <img
+                            [src]="avatarUrl(mentor.avatar)"
+                            [alt]="mentor.name"
+                            class="size-full object-cover"
+                            loading="lazy" />
+                        } @else {
+                          <mat-icon class="text-gray-500" svgIcon="user" />
+                        }
+                      </div>
+                      <div class="min-w-0">
+                        <p class="truncate font-bold text-gray-900">{{ mentor.name }}</p>
+                        @if (mentor.jobTitle) {
+                          <p class="mt-0.5 truncate text-gray-600">{{ mentor.jobTitle }}</p>
+                        }
+                      </div>
+                    </mat-card-content>
+                  </mat-card>
+                }
+              </div>
+            </section>
+          }
+        </tab>
+      </tabs>
     </main>
   }
 </div>
