@@ -1,0 +1,40 @@
+<div
+  role="tablist"
+  class="inline-flex w-full items-center gap-1 rounded-xl border border-gray-200 bg-gray-100 p-1 shadow-sm sm:w-auto">
+  @for (tab of tabs(); track tab) {
+    <button
+      #tabButton
+      type="button"
+      role="tab"
+      [id]="tab"
+      [tabindex]="activeTab() === tab ? 0 : -1"
+      class="flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-all duration-200 sm:flex-none sm:px-5 cursor-pointer"
+      [class.bg-white]="activeTab() === tab"
+      [class.text-gray-900]="activeTab() === tab"
+      [class.shadow-sm]="activeTab() === tab"
+      [class.ring-1]="activeTab() === tab"
+      [class.ring-gray-200]="activeTab() === tab"
+      [class.text-gray-500]="activeTab() !== tab"
+      [class.hover:bg-white/70]="activeTab() !== tab"
+      [class.hover:text-gray-900]="activeTab() !== tab"
+      (click)="select(tab)">
+      @if (tab.icon()) {
+        <mat-icon
+          class="size-4 shrink-0 transition-colors"
+          [class.text-primary-600]="activeTab() === tab"
+          [class.text-gray-400]="activeTab() !== tab"
+          [svgIcon]="tab.icon()!" />
+      }
+      {{ tab.label() }}
+    </button>
+  }
+</div>
+<div class="mt-8 sm:mt-10">
+  @for (tab of tabs(); track tab) {
+    @if (activeTab() === tab) {
+      <div role="tabpanel" [id]="tab">
+        <ng-container *ngTemplateOutlet="tab.template()" />
+      </div>
+    }
+  }
+</div>
