@@ -9,7 +9,7 @@ export const unauthGuard: CanActivateFn = () => {
   const returnUrl = inject(ReturnUrl);
 
   if (authStore.isAdmin()) {
-    return router.parseUrl(returnUrl.pop() ?? '/admin');
+    return router.parseUrl('/admin');
   }
 
   if (authStore.isUser()) {
