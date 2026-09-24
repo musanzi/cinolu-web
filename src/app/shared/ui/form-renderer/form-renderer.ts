@@ -49,8 +49,8 @@ export class FormRenderer {
       this.answersModel().answers.map((answer) => [
         answer.name,
         answer.type === 'checkbox'
-          ? answer.options.filter((option) => option.checked).map((option) => option.value)
-          : answer.value
+          ? answer.options.filter((option) => option.checked).map((option) => option.label)
+          : this.responseValue(answer)
       ])
     );
   }
@@ -67,15 +67,24 @@ export class FormRenderer {
 
   private buildAnswer(field: IField): IFormAnswer {
     const initial = this.initialResponses()[field.name];
+    const options = (field.options ?? []).map((option) => ({
+      ...option,
+      checked: Array.isArray(initial) && (initial.includes(option.value) || initial.includes(option.label))
+    }));
+    const initialString = typeof initial === 'string' ? initial : '';
+    const matched = options.find((option) => option.value === initialString || option.label === initialString);
     return {
       name: field.name,
       type: field.type,
       required: field.required ?? false,
-      value: typeof initial === 'string' ? initial : '',
-      options: (field.options ?? []).map((option) => ({
-        ...option,
-        checked: Array.isArray(initial) && initial.includes(option.value)
-      }))
+      value: matched?.value ?? initialString,
+      options
     };
+  }
+
+  private responseValue(answer: IFormAnswer): string {
+    if (answer.type !== 'select' && answer.type !== 'radio') return answer.value;
+    const selected = answer.options.find((option) => option.value === answer.value);
+    return selected?.label ?? answer.value;
   }
 }
