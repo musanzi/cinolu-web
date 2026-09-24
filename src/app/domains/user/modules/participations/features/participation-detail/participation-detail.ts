@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { IFormResponses, IParticipation, ParticipationData, ParticipationStatus } from '@/app/shared/interfaces';
+import { IField, IFormResponses, IParticipation, ParticipationData, ParticipationStatus } from '@/app/shared/interfaces';
 import { FormRenderer, Message } from '@/app/shared/ui';
 import { environment } from '@/environments/environment';
 import { ParticipationsStore } from '../../data-access';
@@ -41,7 +41,7 @@ export default class ParticipationDetail {
     return participation.activity.participationForm.flatMap((section) =>
       section.fields.map((field) => ({
         label: field.label,
-        value: this.formatResponse(responses[field.name])
+        value: this.formatResponse(field, responses[field.name])
       }))
     );
   });
@@ -85,9 +85,11 @@ export default class ParticipationDetail {
     return cover.startsWith('http') ? cover : `${environment.apiUrl}/uploads/activities/${encodeURIComponent(cover)}`;
   }
 
-  private formatResponse(value: string | string[] | undefined): string {
-    if (Array.isArray(value)) return value.length ? value.join(', ') : 'Aucune réponse';
-    return value || 'Aucune réponse';
+  private formatResponse(field: IField, value: string | string[] | undefined): string {
+    const resolve = (item: string): string =>
+      field.options?.find((option) => option.value === item || option.label === item)?.label ?? item;
+    if (Array.isArray(value)) return value.length ? value.map(resolve).join(', ') : 'Aucune réponse';
+    return value ? resolve(value) : 'Aucune réponse';
   }
 
   private parseResponses(data: ParticipationData): IFormResponses {
