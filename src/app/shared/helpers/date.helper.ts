@@ -30,6 +30,12 @@ export function hasEnded(endDate: Date | string): boolean {
   return parsed.getTime() < Date.now();
 }
 
+export function endOfDay(date: Date | string): Date {
+  const parsed = new Date(date);
+  parsed.setHours(23, 59, 59, 999);
+  return parsed;
+}
+
 export function isSameDay(start: Date | string, end: Date | string): boolean {
   const startDate = new Date(start);
   const endDate = new Date(end);

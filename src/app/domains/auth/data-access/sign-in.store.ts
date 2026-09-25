@@ -36,13 +36,18 @@ export const SignInStore = signalStore(
           return _http.post<IUser>('/auth/signin', payload).pipe(
             tap((user) => {
               _authStore.setUser(user);
+
+              if (_authStore.isAdmin()) {
+                return _router.navigate(['/admin']);
+              }
+
               const returnUrl = _returnUrl.pop();
               if (returnUrl) {
                 void _router.navigateByUrl(returnUrl);
                 return;
               }
 
-              return _authStore.isAdmin() ? _router.navigate(['/admin']) : _router.navigate(['/user']);
+              return _router.navigate(['/user']);
             }),
             catchError(() => {
               patchState(store, { error: 'Incorrect email address or password.' });

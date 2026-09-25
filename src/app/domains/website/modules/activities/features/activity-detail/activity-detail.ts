@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { ReturnUrl } from '@/app/core/return-url';
-import { durationLabel, hasEnded, isSameDay, timeRangeLabel } from '@/app/shared/helpers';
+import { durationLabel, endOfDay, hasEnded, isSameDay, timeRangeLabel } from '@/app/shared/helpers';
 import { AuthStore } from '@/app/domains/auth/data-access';
 import { Tab, Tabs } from '@/app/domains/website/shared/ui';
 import { ParticipationsStore } from '@/app/domains/user/modules/participations/data-access';
@@ -85,9 +85,14 @@ export default class ActivityDetail {
   protected readonly hasParticipationForm = computed(() =>
     this.participationForm().some((section) => section.fields.length > 0)
   );
-  protected readonly hasActivityEnded = computed(() =>
-    this.activityResource.hasValue() ? hasEnded(this.activityResource.value().endDate) : false
-  );
+  protected readonly hasActivityEnded = computed(() => {
+    if (!this.activityResource.hasValue()) return false;
+
+    const activity = this.activityResource.value();
+    return isSameDay(activity.startDate, activity.endDate)
+      ? hasEnded(endOfDay(activity.endDate))
+      : hasEnded(activity.endDate);
+  });
   protected readonly isSameDay = computed(() =>
     this.activityResource.hasValue()
       ? isSameDay(this.activityResource.value().startDate, this.activityResource.value().endDate)
